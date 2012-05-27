@@ -1,20 +1,12 @@
 #include <malloc.h>
 #include "block_allocator.h"
 
-typedef struct block block;
-
 struct block
 {
 	size_t size;
 	size_t used;
 	char* buffer;
 	block* next;
-};
-
-struct block_allocator
-{
-	block* m_head;
-	size_t m_blocksize;
 };
 
 /* Private API */

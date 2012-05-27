@@ -1,4 +1,5 @@
 #include <memory.h>
+#include <stdio.h>
 #include "json.h"
 
 /* true if character represent a digit */
@@ -482,4 +483,34 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 	}
 
 	return root;
+}
+
+json_value* json_parse_file(char* const filename, char* error_pos[], char* error_desc[], int* error_line, block_allocator* allocator)
+{
+	char* buffer = NULL;
+	FILE* fp = fopen(filename, "rb");
+	size_t size;
+	size_t numRead;
+
+	if (fp == NULL)
+	{
+		fprintf(stderr, "ERROR opening '%s'\n", filename);
+		return NULL;
+	}
+
+	fseek(fp, 0, SEEK_END);
+	size = (size_t)ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	buffer = (char*)malloc(size);
+	numRead = fread(buffer, 1, size, fp);
+	fclose(fp);
+
+	if (numRead != size)
+	{
+		fprintf(stderr, "ERROR reading from '%s' read %d bytes but expected %d bytes\n", filename, numRead, size);
+		return NULL;
+	}
+
+	printf("Read %d bytes from '%s'\n", numRead, filename);
+	return json_parse(buffer, error_pos, error_desc, error_line, allocator);
 }

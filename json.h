@@ -34,6 +34,7 @@ struct json_value
 	json_type type;
 };
 
+json_value* json_parse_file(char* const filename, char* error_pos[], char* error_desc[], int* error_line, block_allocator* allocator);
 json_value* json_parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, block_allocator* allocator);
 
 #endif
