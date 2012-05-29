@@ -20,25 +20,52 @@ struct PositionValue
 	float m_value;
 };
 
+void PositionValue_Init(PositionValue* const pThis)
+{
+	pThis->m_position[0] = '\0';
+	pThis->m_value = 0.0f;
+}
+
+
 struct OffencePlay
 {
 	char m_name[MAX_OFFENCENAME_SIZE];
 	char m_defense[MAX_NUM_DEFENCE_FORMATIONS][MAX_DEFENCENAME_SIZE];
-	PositionValue m_base[MAX_NUM_OFFENCE_FORMATIONS][MAX_POSITION_SIZE];
-	PositionValue m_bc[MAX_NUM_OFFENCE_FORMATIONS][MAX_POSITION_SIZE];
-	PositionValue m_weighting[MAX_NUM_OFFENCE_FORMATIONS][MAX_POSITION_SIZE];
+	PositionValue m_base[MAX_NUM_OFFENCE_FORMATIONS];
+	PositionValue m_bc[MAX_NUM_OFFENCE_FORMATIONS];
+	PositionValue m_weighting[MAX_NUM_OFFENCE_FORMATIONS];
 };
 
 Json_Value* FindOffencePlay(Json_Value* const value);
-int OffencePlay_Load(OffencePlay* pThis, Json_Value* const playRoot);
+
+int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot);
+void OffencePlay_Init(OffencePlay* const pThis);
 
 Json_Value* FindOffencePlay(Json_Value* const value)
 {
 	return json_FindObjectByName(value, "Play");
 }
 
-int OffencePlay_Load(OffencePlay* pThis, Json_Value* const playRoot)
+void OffencePlay_Init(OffencePlay* const pThis)
 {
+	int i;
+
+	pThis->m_name[0] = '\0';
+	for (i = 0; i < MAX_NUM_DEFENCE_FORMATIONS; i++)
+	{
+		pThis->m_defense[i][0] = '\0';
+	}
+	for (i = 0; i < MAX_NUM_OFFENCE_FORMATIONS; i++)
+	{
+		PositionValue_Init(&pThis->m_base[i]);
+		PositionValue_Init(&pThis->m_bc[i]);
+		PositionValue_Init(&pThis->m_weighting[i]);
+	}
+}
+
+int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
+{
+	Json_Value* it;
 	if (playRoot->m_type != JSON_OBJECT)
 	{
 		fprintf(stderr, "NOT JSON_OBJECT\n");
@@ -54,8 +81,54 @@ int OffencePlay_Load(OffencePlay* pThis, Json_Value* const playRoot)
 		return 0;
 	}
 
-	strncpy(pThis->m_name, playRoot->m_name, MAX_OFFENCENAME_SIZE);
-	printf("Offence Play:'%s'\n", pThis->m_name);
+	OffencePlay_Init(pThis);
+	for (it = playRoot->m_first_child; it != NULL; it = it->m_next_sibling)
+	{
+		if (it->m_type == JSON_STRING)
+		{
+			if (strcmp(it->m_name, "Name") == 0)
+			{
+				strncpy(pThis->m_name, it->m_value_data.string_value, MAX_OFFENCENAME_SIZE);
+			}
+		}
+		if (it->m_type == JSON_ARRAY)
+		{
+			if (strcmp(it->m_name, "Def") == 0)
+			{
+				Json_Value* it2;
+				int i;
+
+				i = 0;
+				for (it2 = it->m_first_child; it2 != NULL; it2 = it2->m_next_sibling)
+				{
+					strncpy(pThis->m_defense[i], it2->m_value_data.string_value, MAX_DEFENCENAME_SIZE);
+					i++;
+				}
+			}
+			else
+			{
+				printf("Array '%s'\n", it->m_name);
+			}
+		}
+	}
+
+	{
+		int i;
+		printf("Offence Play:'%s'\n", pThis->m_name);
+		printf("Defence: ");
+		for (i = 0; i < MAX_NUM_DEFENCE_FORMATIONS; i++)
+		{
+			if (pThis->m_defense[i][0] != '\0')
+			{
+				if (i > 0)
+				{
+					printf(", ");
+				}
+				printf("%s", pThis->m_defense[i]);
+			}
+		}
+		printf("\n");
+	}
 	return 1;
 }
 
