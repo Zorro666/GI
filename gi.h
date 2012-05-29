@@ -1,7 +1,7 @@
 #ifndef GI_HH
 #define GI_HH
 
-#include "json.h"
+#include "Json.h"
 
 typedef enum GI_Type
 {

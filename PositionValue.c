@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "PositionValue.h"
-#include "json.h"
 
 void PositionValue_Init(PositionValue* const pThis)
 {

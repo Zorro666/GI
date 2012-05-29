@@ -34,9 +34,9 @@ struct Json_Value
 	Json_Type m_type;
 };
 
-Json_Value* json_ParseFile(char* const filename, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator);
-Json_Value* json_Parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator);
-void json_Print(const Json_Value* const value, const int indent);
-Json_Value* json_FindObjectByName(Json_Value* const value, const char* const name);
+Json_Value* Json_ParseFile(char* const filename, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator);
+Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator);
+void Json_Print(const Json_Value* const value, const int indent);
+Json_Value* Json_FindObjectByName(Json_Value* const value, const char* const name);
 
 #endif
