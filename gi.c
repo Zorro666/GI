@@ -15,16 +15,41 @@ typedef struct OffencePlay OffencePlay;
 
 typedef struct PositionValue PositionValue;
 
+typedef enum GI_Type
+{
+	GI_FLOAT,
+	GI_INT
+} GI_Type;
+
 struct PositionValue
 {
 	char m_position[MAX_POSITION_SIZE];
-	float m_value;
+	union PositionValue_Value {
+		float f;
+		int i;
+	} m_value;
+	GI_Type m_valueType;
 };
 
 void PositionValue_Init(PositionValue* const pThis)
 {
 	pThis->m_position[0] = '\0';
-	pThis->m_value = 0.0f;
+	pThis->m_value.f = 0.0f;
+}
+
+void PositionValue_Print(PositionValue* const pThis)
+{
+	if (pThis->m_position[0] != '\0')
+	{
+		if (pThis->m_valueType == GI_FLOAT)
+		{
+			printf("%s = %.2f ", pThis->m_position, pThis->m_value.f);
+		}
+		else if (pThis->m_valueType == GI_INT)
+		{
+			printf("%s = %d ", pThis->m_position, pThis->m_value.i);
+		}
+	}
 }
 
 void PositionValueArray_Parse(PositionValue positionValue[], const int maxSize, Json_Value* const root)
@@ -41,12 +66,20 @@ void PositionValueArray_Parse(PositionValue positionValue[], const int maxSize, 
 			if (value->m_type == JSON_FLOAT)
 			{
 				strncpy(positionValue[i].m_position, value->m_name, MAX_POSITION_SIZE);
-				positionValue[i].m_value = value->m_value_data.float_value;
+				positionValue[i].m_value.f = value->m_value_data.float_value;
+				positionValue[i].m_valueType = GI_FLOAT;
 				i++;
-				if (i >= maxSize)
-				{
-					return;
-				}
+			}
+			else if (value->m_type == JSON_INT)
+			{
+				strncpy(positionValue[i].m_position, value->m_name, MAX_POSITION_SIZE);
+				positionValue[i].m_value.i = value->m_value_data.int_value;
+				positionValue[i].m_valueType = GI_INT;
+				i++;
+			}
+			if (i >= maxSize)
+			{
+				return;
 			}
 		}
 	}
@@ -86,6 +119,42 @@ void OffencePlay_Init(OffencePlay* const pThis)
 		PositionValue_Init(&pThis->m_bc[i]);
 		PositionValue_Init(&pThis->m_weighting[i]);
 	}
+}
+
+void OffencePlay_Print(OffencePlay* const pThis)
+{
+	int i;
+	printf("Offence Play:'%s'\n", pThis->m_name);
+	printf("Defence: ");
+	for (i = 0; i < MAX_NUM_DEFENCE_FORMATIONS; i++)
+	{
+		if (pThis->m_defense[i][0] != '\0')
+		{
+			printf("'%s' ", pThis->m_defense[i]);
+		}
+	}
+	printf("\n");
+
+	printf("Base: ");
+	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
+	{
+		PositionValue_Print(&pThis->m_base[i]);
+	}
+	printf("\n");
+
+	printf("BC: ");
+	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
+	{
+		PositionValue_Print(&pThis->m_bc[i]);
+	}
+	printf("\n");
+
+	printf("Weighting: ");
+	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
+	{
+		PositionValue_Print(&pThis->m_weighting[i]);
+	}
+	printf("\n");
 }
 
 int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
@@ -136,27 +205,16 @@ int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
 			}
 			else if (strcmp(it->m_name, "BC") == 0)
 			{
+				PositionValueArray_Parse(pThis->m_bc, MAX_NUM_OFFENCE_POSITIONS, it);
+			}
+			else if (strcmp(it->m_name, "Weighting") == 0)
+			{
+				PositionValueArray_Parse(pThis->m_weighting, MAX_NUM_OFFENCE_POSITIONS, it);
 			}
 		}
 	}
 
-	{
-		int i;
-		printf("Offence Play:'%s'\n", pThis->m_name);
-		printf("Defence: ");
-		for (i = 0; i < MAX_NUM_DEFENCE_FORMATIONS; i++)
-		{
-			if (pThis->m_defense[i][0] != '\0')
-			{
-				if (i > 0)
-				{
-					printf(", ");
-				}
-				printf("%s", pThis->m_defense[i]);
-			}
-		}
-		printf("\n");
-	}
+	OffencePlay_Print(pThis);
 	return 1;
 }
 
