@@ -1,6 +1,8 @@
 #ifndef BLOCK_ALLOCATOR_H
 #define BLOCK_ALLOCATOR_H
 
+#include <stdlib.h>
+
 typedef struct BlockAllocator BlockAllocator;
 typedef struct Block Block;
 
