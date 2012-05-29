@@ -1,11 +1,11 @@
 #ifndef JSON_H
 #define JSON_H
 
-#include "block_allocator.h"
+#include "BlockAllocator.h"
 
-typedef struct json_value json_value;
+typedef struct Json_Value Json_Value;
 
-typedef enum json_type
+typedef enum Json_Type
 {
 	JSON_NULL,
 	JSON_OBJECT,
@@ -14,27 +14,29 @@ typedef enum json_type
 	JSON_INT,
 	JSON_FLOAT,
 	JSON_BOOL
-} json_type;
+} Json_Type;
 
-struct json_value
+struct Json_Value
 {
-	json_value* parent;
-	json_value* next_sibling;
-	json_value* first_child;
-	json_value* last_child;
+	Json_Value* m_parent;
+	Json_Value* m_next_sibling;
+	Json_Value* m_first_child;
+	Json_Value* m_last_child;
 
-	char* name;
-	union value
+	char* m_name;
+	union Value
 	{
 		char* string_value;
 		int int_value;
 		float float_value;
-	} value_data;
+	} m_value_data;
 
-	json_type type;
+	Json_Type m_type;
 };
 
-json_value* json_parse_file(char* const filename, char* error_pos[], char* error_desc[], int* error_line, block_allocator* allocator);
-json_value* json_parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, block_allocator* allocator);
+Json_Value* json_ParseFile(char* const filename, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator);
+Json_Value* json_Parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator);
+void json_Print(const Json_Value* const value, const int indent);
+Json_Value* json_FindObjectByName(Json_Value* const value, const char* const name);
 
 #endif

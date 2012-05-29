@@ -18,7 +18,7 @@ C_LINK_FLAGS +=
 C_TARGET_EXTENSION := 
 endif	# ifdef WINDIR
 
-GI_C_DEPENDS:=json.c block_allocator.c
+GI_C_DEPENDS:=json.c BlockAllocator.c
 GI_CPP_DEPENDS:=
 C_PROJECTS:=gi
 

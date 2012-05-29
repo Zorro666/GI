@@ -1,12 +1,22 @@
 #include <memory.h>
 #include <stdio.h>
+
 #include "json.h"
 
 /* true if character represent a digit */
 #define IS_DIGIT(c) (c >= '0' && c <= '9')
 
+static void json_Indent(const int n)
+{
+	int i;
+	for (i = 0; i < n; ++i) 
+	{
+		printf("  ");
+	}
+} 
+
 /* convert string to integer */
-char* atoi(const char* const first, const char* const last, int* const out)
+static char* json_Atoi(const char* const first, const char* const last, int* const out)
 {
 	int result = 0;
 	int sign = 1;
@@ -34,7 +44,7 @@ char* atoi(const char* const first, const char* const last, int* const out)
 }
 
 /* convert hexadecimal string to unsigned integer */
-char* hatoui(const char* const first, const char* const last, unsigned int* const out)
+static char* json_Hatoui(const char* const first, const char* const last, unsigned int* const out)
 {
 	unsigned int result = 0;
 	char* start = (char*)first;
@@ -65,7 +75,7 @@ char* hatoui(const char* const first, const char* const last, unsigned int* cons
 }
 
 /* convert string to floating point */
-char* atof(const char* const first, const char* const last, float* const out)
+static char* json_Atof(const char* const first, const char* const last, float* const out)
 {
 	char* start = (char*)first;
 	float sign = 1;
@@ -153,23 +163,23 @@ char* atof(const char* const first, const char* const last, float* const out)
 	return start;
 }
 
-json_value* json_alloc(block_allocator* allocator)
+Json_Value* json_Alloc(BlockAllocator* const allocator)
 {
-	json_value* value = (json_value*)block_allocator_malloc(allocator, sizeof(json_value));
-	memset(value, 0, sizeof(json_value));
+	Json_Value* value = (Json_Value*)BlockAllocator_Malloc(allocator, sizeof(Json_Value));
+	memset(value, 0, sizeof(Json_Value));
 	return value;
 }
 
-void json_append(json_value* lhs, json_value* rhs)
+void json_Append(Json_Value* const lhs, Json_Value* const rhs)
 {
-	rhs->parent = lhs;
-	if (lhs->last_child)
+	rhs->m_parent = lhs;
+	if (lhs->m_last_child)
 	{
-		lhs->last_child = lhs->last_child->next_sibling = rhs;
+		lhs->m_last_child = lhs->m_last_child->m_next_sibling = rhs;
 	}
 	else
 	{
-		lhs->first_child = lhs->last_child = rhs;
+		lhs->m_first_child = lhs->m_last_child = rhs;
 	}
 }
 
@@ -188,10 +198,10 @@ void json_append(json_value* lhs, json_value* rhs)
 
 #define CHECK_TOP() if (!top) {ERROR(it, "Unexpected character");}
 
-json_value* json_parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, block_allocator* allocator)
+Json_Value* json_Parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator)
 {
-	json_value* root = 0;
-	json_value* top = 0;
+	Json_Value* root = 0;
+	Json_Value* top = 0;
 
 	char* name = 0;
 	char* it = source;
@@ -206,14 +216,14 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 			case '[':
 				{
 					/* create new value */
-					json_value* object = json_alloc(allocator);
+					Json_Value* const object = json_Alloc(allocator);
 
 					/* name */
-					object->name = name;
+					object->m_name = name;
 					name = 0;
 
 					/* type */
-					object->type = (*it == '{') ? JSON_OBJECT : JSON_ARRAY;
+					object->m_type = (*it == '{') ? JSON_OBJECT : JSON_ARRAY;
 
 					/* skip open character */
 					++it;
@@ -221,7 +231,7 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 					/* set top and root */
 					if (top)
 					{
-						json_append(top, object);
+						json_Append(top, object);
 					}
 					else if (!root)
 					{
@@ -238,7 +248,7 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 			case '}':
 			case ']':
 				{
-					if (!top || top->type != ((*it == '}') ? JSON_OBJECT : JSON_ARRAY))
+					if (!top || top->m_type != ((*it == '}') ? JSON_OBJECT : JSON_ARRAY))
 					{
 						ERROR(it, "Mismatch closing brace/bracket");
 					}
@@ -247,12 +257,12 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 					++it;
 
 					/* set top */
-					top = top->parent;
+					top = top->m_parent;
 				}
 				break;
 
 			case ':':
-				if (!top || top->type != JSON_OBJECT)
+				if (!top || top->m_type != JSON_OBJECT)
 				{
 					ERROR(it, "Unexpected character");
 				}
@@ -313,7 +323,7 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 								case 'u':
 									{
 										unsigned int codepoint;
-										if (hatoui(it + 2, it + 6, &codepoint) != it + 6)
+										if (json_Hatoui(it + 2, it + 6, &codepoint) != it + 6)
 										{
 											ERROR(it, "Bad unicode codepoint");
 										}
@@ -355,7 +365,7 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 						}
 					}
 
-					if (!name && top->type == JSON_OBJECT)
+					if (!name && top->m_type == JSON_OBJECT)
 					{
 						/* field name in object */
 						name = first;
@@ -363,15 +373,15 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 					else
 					{
 						/* new string value */
-						json_value* object = json_alloc(allocator);
+						Json_Value* const object = json_Alloc(allocator);
 
-						object->name = name;
+						object->m_name = name;
 						name = 0;
 
-						object->type = JSON_STRING;
-						object->value_data.string_value = first;
+						object->m_type = JSON_STRING;
+						object->m_value_data.string_value = first;
 
-						json_append(top, object);
+						json_Append(top, object);
 					}
 				}
 				break;
@@ -380,33 +390,33 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 			case 't':
 			case 'f':
 				{
-					json_value* object;
+					Json_Value* object;
 					CHECK_TOP();
 
 					/* new null/bool value */
-					object = json_alloc(allocator);
+					object = json_Alloc(allocator);
 
-					object->name = name;
+					object->m_name = name;
 					name = 0;
 
 					/* null */
 					if (it[0] == 'n' && it[1] == 'u' && it[2] == 'l' && it[3] == 'l')
 					{
-						object->type = JSON_NULL;
+						object->m_type = JSON_NULL;
 						it += 4;
 					}
 					/* true */
 					else if (it[0] == 't' && it[1] == 'r' && it[2] == 'u' && it[3] == 'e')
 					{
-						object->type = JSON_BOOL;
-						object->value_data.int_value = 1;
+						object->m_type = JSON_BOOL;
+						object->m_value_data.int_value = 1;
 						it += 4;
 					}
 					/* false */
 					else if (it[0] == 'f' && it[1] == 'a' && it[2] == 'l' && it[3] == 's' && it[4] == 'e')
 					{
-						object->type = JSON_BOOL;
-						object->value_data.int_value = 0;
+						object->m_type = JSON_BOOL;
+						object->m_value_data.int_value = 0;
 						it += 5;
 					}
 					else
@@ -414,7 +424,7 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 						ERROR(it, "Unknown identifier");
 					}
 
-					json_append(top, object);
+					json_Append(top, object);
 				}
 				break;
 
@@ -431,38 +441,38 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 			case '9':
 				{
 					char* first;
-					json_value* object;
+					Json_Value* object;
 					CHECK_TOP();
 
 					/* new number value */
-					object = json_alloc(allocator);
+					object = json_Alloc(allocator);
 
-					object->name = name;
+					object->m_name = name;
 					name = 0;
 
-					object->type = JSON_INT;
+					object->m_type = JSON_INT;
 
 					first = it;
 					while (*it != '\x20' && *it != '\x9' && *it != '\xD' && *it != '\xA' && *it != ',' && *it != ']' && *it != '}')
 					{
 						if (*it == '.' || *it == 'e' || *it == 'E')
 						{
-							object->type = JSON_FLOAT;
+							object->m_type = JSON_FLOAT;
 						}
 						++it;
 					}
 
-					if (object->type == JSON_INT && atoi(first, it, &object->value_data.int_value) != it)
+					if (object->m_type == JSON_INT && json_Atoi(first, it, &object->m_value_data.int_value) != it)
 					{
 						ERROR(first, "Bad integer number");
 					}
 
-					if (object->type == JSON_FLOAT && atof(first, it, &object->value_data.float_value) != it)
+					if (object->m_type == JSON_FLOAT && json_Atof(first, it, &object->m_value_data.float_value) != it)
 					{
 						ERROR(first, "Bad float number");
 					}
 
-					json_append(top, object);
+					json_Append(top, object);
 				}
 				break;
 
@@ -485,7 +495,7 @@ json_value* json_parse(char* const source, char* error_pos[], char* error_desc[]
 	return root;
 }
 
-json_value* json_parse_file(char* const filename, char* error_pos[], char* error_desc[], int* error_line, block_allocator* allocator)
+Json_Value* json_ParseFile(char* const filename, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator)
 {
 	char* buffer = NULL;
 	FILE* fp = fopen(filename, "rb");
@@ -512,5 +522,67 @@ json_value* json_parse_file(char* const filename, char* error_pos[], char* error
 	}
 
 	printf("Read %d bytes from '%s'\n", numRead, filename);
-	return json_parse(buffer, error_pos, error_desc, error_line, allocator);
+	return json_Parse(buffer, error_pos, error_desc, error_line, allocator);
 }
+
+void json_Print(const Json_Value* const value, const int indent)
+{
+	json_Indent(indent);
+	if (value->m_name) printf("\"%s\" = ", value->m_name);
+	switch(value->m_type)
+	{
+		case JSON_NULL:
+			printf("null\n");
+			break;
+		case JSON_OBJECT:
+		case JSON_ARRAY:
+		{
+			Json_Value* it;
+			printf(value->m_type == JSON_OBJECT ? "{\n" : "[\n");
+			for (it = value->m_first_child; it; it = it->m_next_sibling)
+			{
+				json_Print(it, indent + 1);
+			}
+			json_Indent(indent);
+			printf(value->m_type == JSON_OBJECT ? "}\n" : "]\n");
+			break;
+		}
+		case JSON_STRING:
+			printf("\"%s\"\n", value->m_value_data.string_value);
+			break;
+		case JSON_INT:
+			printf("%d\n", value->m_value_data.int_value);
+			break;
+		case JSON_FLOAT:
+			printf("%f\n", value->m_value_data.float_value);
+			break;
+		case JSON_BOOL:
+			printf(value->m_value_data.int_value ? "true\n" : "false\n");
+			break;
+	}
+}
+
+Json_Value* json_FindObjectByName(Json_Value* const value, const char* const name)
+{
+	if (value->m_type == JSON_OBJECT)
+	{
+		if ((value->m_name != NULL) && (strcmp(value->m_name, name) == 0))
+		{
+			return value;
+		}
+	}
+	if ((value->m_type == JSON_OBJECT) || (value->m_type == JSON_ARRAY))
+	{
+		Json_Value* it;
+		for (it = value->m_first_child; it; it = it->m_next_sibling)
+		{
+			Json_Value* result = json_FindObjectByName(it, name);
+			if (result != NULL)
+			{
+				return result;
+			}
+		}
+	}
+	return NULL;
+}
+
