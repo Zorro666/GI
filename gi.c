@@ -8,7 +8,8 @@ typedef struct OffencePlay OffencePlay;
 #define MAX_DEFENCENAME_SIZE (16)
 
 #define MAX_NUM_DEFENCE_FORMATIONS (32)
-#define MAX_NUM_OFFENCE_FORMATIONS (32)
+
+#define MAX_NUM_OFFENCE_POSITIONS (32)
 
 #define MAX_POSITION_SIZE (8)
 
@@ -26,14 +27,38 @@ void PositionValue_Init(PositionValue* const pThis)
 	pThis->m_value = 0.0f;
 }
 
+void PositionValueArray_Parse(PositionValue positionValue[], const int maxSize, Json_Value* const root)
+{
+	Json_Value* it;
+	int i;
+
+	i = 0;
+	for (it = root->m_first_child; it != NULL; it = it->m_next_sibling)
+	{
+		if (it->m_type == JSON_OBJECT)
+		{
+			Json_Value* value = it->m_first_child;
+			if (value->m_type == JSON_FLOAT)
+			{
+				strncpy(positionValue[i].m_position, value->m_name, MAX_POSITION_SIZE);
+				positionValue[i].m_value = value->m_value_data.float_value;
+				i++;
+				if (i >= maxSize)
+				{
+					return;
+				}
+			}
+		}
+	}
+}
 
 struct OffencePlay
 {
 	char m_name[MAX_OFFENCENAME_SIZE];
 	char m_defense[MAX_NUM_DEFENCE_FORMATIONS][MAX_DEFENCENAME_SIZE];
-	PositionValue m_base[MAX_NUM_OFFENCE_FORMATIONS];
-	PositionValue m_bc[MAX_NUM_OFFENCE_FORMATIONS];
-	PositionValue m_weighting[MAX_NUM_OFFENCE_FORMATIONS];
+	PositionValue m_base[MAX_NUM_OFFENCE_POSITIONS];
+	PositionValue m_bc[MAX_NUM_OFFENCE_POSITIONS];
+	PositionValue m_weighting[MAX_NUM_OFFENCE_POSITIONS];
 };
 
 Json_Value* FindOffencePlay(Json_Value* const value);
@@ -55,7 +80,7 @@ void OffencePlay_Init(OffencePlay* const pThis)
 	{
 		pThis->m_defense[i][0] = '\0';
 	}
-	for (i = 0; i < MAX_NUM_OFFENCE_FORMATIONS; i++)
+	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
 	{
 		PositionValue_Init(&pThis->m_base[i]);
 		PositionValue_Init(&pThis->m_bc[i]);
@@ -105,9 +130,12 @@ int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
 					i++;
 				}
 			}
-			else
+			else if (strcmp(it->m_name, "Base") == 0)
 			{
-				printf("Array '%s'\n", it->m_name);
+				PositionValueArray_Parse(pThis->m_base, MAX_NUM_OFFENCE_POSITIONS, it);
+			}
+			else if (strcmp(it->m_name, "BC") == 0)
+			{
 			}
 		}
 	}
