@@ -20,42 +20,6 @@ void OffencePlay_Init(OffencePlay* const pThis)
 	}
 }
 
-void OffencePlay_Print(OffencePlay* const pThis)
-{
-	int i;
-	printf("Offence Play:'%s'\n", pThis->m_name);
-	printf("Defence: ");
-	for (i = 0; i < MAX_NUM_DEFENCE_FORMATIONS; i++)
-	{
-		if (pThis->m_defense[i][0] != '\0')
-		{
-			printf("'%s' ", pThis->m_defense[i]);
-		}
-	}
-	printf("\n");
-
-	printf("Base: ");
-	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
-	{
-		PositionValue_Print(&pThis->m_base[i]);
-	}
-	printf("\n");
-
-	printf("BC: ");
-	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
-	{
-		PositionValue_Print(&pThis->m_bc[i]);
-	}
-	printf("\n");
-
-	printf("Weighting: ");
-	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
-	{
-		PositionValue_Print(&pThis->m_weighting[i]);
-	}
-	printf("\n");
-}
-
 int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
 {
 	Json_Value* it;
@@ -113,7 +77,43 @@ int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
 		}
 	}
 
-	OffencePlay_Print(pThis);
 	return 1;
 }
+
+void OffencePlay_Print(OffencePlay* const pThis)
+{
+	int i;
+	printf("Offence Play:'%s'\n", pThis->m_name);
+	printf("Defence: ");
+	for (i = 0; i < MAX_NUM_DEFENCE_FORMATIONS; i++)
+	{
+		if (pThis->m_defense[i][0] != '\0')
+		{
+			printf("'%s' ", pThis->m_defense[i]);
+		}
+	}
+	printf("\n");
+
+	printf("Base: ");
+	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
+	{
+		PositionValue_Print(&pThis->m_base[i]);
+	}
+	printf("\n");
+
+	printf("BC: ");
+	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
+	{
+		PositionValue_Print(&pThis->m_bc[i]);
+	}
+	printf("\n");
+
+	printf("Weighting: ");
+	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
+	{
+		PositionValue_Print(&pThis->m_weighting[i]);
+	}
+	printf("\n");
+}
+
 

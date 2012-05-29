@@ -19,6 +19,8 @@ typedef enum GI_Type
 typedef struct PositionValue PositionValue;
 typedef struct OffencePlay OffencePlay;
 
-Json_Value* FindOffencePlay(Json_Value* const value);
+void gi_Init(void);
+Json_Value* gi_ParseFile(const char* const fileName, const int debug);
+Json_Value* gi_FindOffencePlay(Json_Value* const value);
 
 #endif /* #ifndef GI_HH */

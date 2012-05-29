@@ -495,7 +495,7 @@ Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[]
 	return root;
 }
 
-Json_Value* Json_ParseFile(char* const filename, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator)
+Json_Value* Json_ParseFile(const char* const filename, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator)
 {
 	char* buffer = NULL;
 	FILE* fp = fopen(filename, "rb");
