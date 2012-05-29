@@ -14,7 +14,7 @@ struct OffencePlay
 };
 
 void OffencePlay_Init(OffencePlay* const pThis);
-int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot);
+GI_Return OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot);
 void OffencePlay_Print(OffencePlay* const pThis);
 
 #endif /* #ifndef OFFENCEPLAY_HH */

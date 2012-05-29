@@ -20,22 +20,22 @@ void OffencePlay_Init(OffencePlay* const pThis)
 	}
 }
 
-int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
+GI_Return OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
 {
 	Json_Value* it;
 	if (playRoot->m_type != JSON_OBJECT)
 	{
 		fprintf(stderr, "NOT JSON_OBJECT\n");
-		return 0;
+		return GI_ERROR;
 	}
 	if (playRoot->m_name == NULL)
 	{
 		fprintf(stderr, "name is NULL\n");
-		return 0;
+		return GI_ERROR;
 	}
-	if (strcmp(playRoot->m_name, "Play") != 0)
+	if (strcmp(playRoot->m_name, "OffencePlay") != 0)
 	{
-		return 0;
+		return GI_ERROR;
 	}
 
 	OffencePlay_Init(pThis);
@@ -77,7 +77,7 @@ int OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
 		}
 	}
 
-	return 1;
+	return GI_SUCCESS;
 }
 
 void OffencePlay_Print(OffencePlay* const pThis)

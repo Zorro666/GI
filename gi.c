@@ -43,15 +43,17 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 	}
 	if (value->m_type == JSON_OBJECT)
 	{
-		if ((value->m_name != NULL) && (strcmp(value->m_name, "Play") == 0))
+		if (value->m_name != NULL) 
 		{
 			OffencePlay play;
-			OffencePlay_Load(&play, value);
-			if (debug == 1)
+			if (OffencePlay_Load(&play, value) == GI_SUCCESS)
 			{
-				OffencePlay_Print(&play);
+				if (debug == 1)
+				{
+					OffencePlay_Print(&play);
+				}
+				return GI_SUCCESS;
 			}
-			return GI_SUCCESS;
 		}
 	}
 	if ((value->m_type == JSON_OBJECT) || (value->m_type == JSON_ARRAY))
