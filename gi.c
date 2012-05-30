@@ -2,6 +2,7 @@
 
 #include "gi.h"
 #include "OffencePlay.h"
+#include "Player.h"
 
 BlockAllocator g_json_allocator;
 
@@ -45,12 +46,12 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 	{
 		if (value->m_name != NULL) 
 		{
-			OffencePlay play;
-			if (OffencePlay_Load(&play, value) == GI_SUCCESS)
+			gi_OffencePlay play;
+			if (gi_OffencePlay_Load(&play, value) == GI_SUCCESS)
 			{
 				if (debug == 1)
 				{
-					OffencePlay_Print(&play);
+					gi_OffencePlay_Print(&play);
 				}
 				return GI_SUCCESS;
 			}

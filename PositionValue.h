@@ -1,11 +1,9 @@
 #ifndef POSITIONVALUE_HH
 #define POSITIONVALUE_HH
 
-#define MAX_POSITION_SIZE (8)
-
 #include "gi.h"
 
-struct PositionValue
+struct gi_PositionValue
 {
 	char m_position[MAX_POSITION_SIZE];
 	union PositionValue_Value 
@@ -16,8 +14,8 @@ struct PositionValue
 	GI_Type m_valueType;
 };
 
-void PositionValue_Init(PositionValue* const pThis);
-void PositionValue_Print(PositionValue* const pThis);
-void PositionValueArray_Parse(PositionValue positionValue[], const int maxSize, Json_Value* const root);
+void gi_PositionValue_Init(gi_PositionValue* const pThis);
+void gi_PositionValue_Print(gi_PositionValue* const pThis);
+void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const int maxSize, Json_Value* const root);
 
 #endif /* #ifndef POSITIONVALUE_HH */

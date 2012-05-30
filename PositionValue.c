@@ -3,13 +3,13 @@
 
 #include "PositionValue.h"
 
-void PositionValue_Init(PositionValue* const pThis)
+void gi_PositionValue_Init(gi_PositionValue* const pThis)
 {
 	pThis->m_position[0] = '\0';
 	pThis->m_value.f = 0.0f;
 }
 
-void PositionValue_Print(PositionValue* const pThis)
+void gi_PositionValue_Print(gi_PositionValue* const pThis)
 {
 	if (pThis->m_position[0] != '\0')
 	{
@@ -24,7 +24,7 @@ void PositionValue_Print(PositionValue* const pThis)
 	}
 }
 
-void PositionValueArray_Parse(PositionValue positionValue[], const int maxSize, Json_Value* const root)
+void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const int maxSize, Json_Value* const root)
 {
 	Json_Value* it;
 	int i;

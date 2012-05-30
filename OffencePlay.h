@@ -4,17 +4,17 @@
 #include "gi.h"
 #include "PositionValue.h"
 
-struct OffencePlay
+struct gi_OffencePlay
 {
 	char m_name[MAX_OFFENCENAME_SIZE];
 	char m_defense[MAX_NUM_DEFENCE_FORMATIONS][MAX_DEFENCENAME_SIZE];
-	PositionValue m_base[MAX_NUM_OFFENCE_POSITIONS];
-	PositionValue m_bc[MAX_NUM_OFFENCE_POSITIONS];
-	PositionValue m_weighting[MAX_NUM_OFFENCE_POSITIONS];
+	gi_PositionValue m_base[MAX_NUM_OFFENCE_POSITIONS];
+	gi_PositionValue m_bc[MAX_NUM_OFFENCE_POSITIONS];
+	gi_PositionValue m_weighting[MAX_NUM_OFFENCE_POSITIONS];
 };
 
-void OffencePlay_Init(OffencePlay* const pThis);
-GI_Return OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot);
-void OffencePlay_Print(OffencePlay* const pThis);
+void gi_OffencePlay_Init(gi_OffencePlay* const pThis);
+GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* const root);
+void gi_OffencePlay_Print(gi_OffencePlay* const pThis);
 
 #endif /* #ifndef OFFENCEPLAY_HH */

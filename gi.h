@@ -17,13 +17,24 @@ typedef enum GI_Return
 
 #define MAX_OFFENCENAME_SIZE (16)
 #define MAX_DEFENCENAME_SIZE (16)
+#define MAX_PLAYERNAME_SIZE (128)
+#define MAX_POSITION_SIZE (8)
 
+#define MAX_NUM_OFFENCE_FORMATIONS (32)
 #define MAX_NUM_DEFENCE_FORMATIONS (32)
 
 #define MAX_NUM_OFFENCE_POSITIONS (32)
+#define MAX_NUM_DEFENCE_POSITIONS (32)
 
-typedef struct PositionValue PositionValue;
-typedef struct OffencePlay OffencePlay;
+#define MAX_NUM_OFFENCE_PLAYS (128)
+#define MAX_NUM_DEFENCE_PLAYS (128)
+
+#define MAX_NUM_PLAYERS (128)
+
+typedef struct gi_PositionValue gi_PositionValue;
+typedef struct gi_OffencePlay gi_OffencePlay;
+typedef struct gi_Player gi_Player;
+typedef struct gi_Team gi_Team;
 
 void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const int debug);

@@ -3,7 +3,7 @@
 
 #include "OffencePlay.h"
 
-void OffencePlay_Init(OffencePlay* const pThis)
+void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 {
 	int i;
 
@@ -14,32 +14,32 @@ void OffencePlay_Init(OffencePlay* const pThis)
 	}
 	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
 	{
-		PositionValue_Init(&pThis->m_base[i]);
-		PositionValue_Init(&pThis->m_bc[i]);
-		PositionValue_Init(&pThis->m_weighting[i]);
+		gi_PositionValue_Init(&pThis->m_base[i]);
+		gi_PositionValue_Init(&pThis->m_bc[i]);
+		gi_PositionValue_Init(&pThis->m_weighting[i]);
 	}
 }
 
-GI_Return OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const playRoot)
+GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
-	if (playRoot->m_type != JSON_OBJECT)
+	if (root->m_type != JSON_OBJECT)
 	{
 		fprintf(stderr, "NOT JSON_OBJECT\n");
 		return GI_ERROR;
 	}
-	if (playRoot->m_name == NULL)
+	if (root->m_name == NULL)
 	{
 		fprintf(stderr, "name is NULL\n");
 		return GI_ERROR;
 	}
-	if (strcmp(playRoot->m_name, "OffencePlay") != 0)
+	if (strcmp(root->m_name, "OffencePlay") != 0)
 	{
 		return GI_ERROR;
 	}
 
-	OffencePlay_Init(pThis);
-	for (it = playRoot->m_first_child; it != NULL; it = it->m_next_sibling)
+	gi_OffencePlay_Init(pThis);
+	for (it = root->m_first_child; it != NULL; it = it->m_next_sibling)
 	{
 		if (it->m_type == JSON_STRING)
 		{
@@ -64,15 +64,15 @@ GI_Return OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const pla
 			}
 			else if (strcmp(it->m_name, "Base") == 0)
 			{
-				PositionValueArray_Parse(pThis->m_base, MAX_NUM_OFFENCE_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_base, MAX_NUM_OFFENCE_POSITIONS, it);
 			}
 			else if (strcmp(it->m_name, "BC") == 0)
 			{
-				PositionValueArray_Parse(pThis->m_bc, MAX_NUM_OFFENCE_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_bc, MAX_NUM_OFFENCE_POSITIONS, it);
 			}
 			else if (strcmp(it->m_name, "Weighting") == 0)
 			{
-				PositionValueArray_Parse(pThis->m_weighting, MAX_NUM_OFFENCE_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_weighting, MAX_NUM_OFFENCE_POSITIONS, it);
 			}
 		}
 	}
@@ -80,7 +80,7 @@ GI_Return OffencePlay_Load(OffencePlay* const pThis, const Json_Value* const pla
 	return GI_SUCCESS;
 }
 
-void OffencePlay_Print(OffencePlay* const pThis)
+void gi_OffencePlay_Print(gi_OffencePlay* const pThis)
 {
 	int i;
 	printf("Offence Play:'%s'\n", pThis->m_name);
@@ -97,21 +97,21 @@ void OffencePlay_Print(OffencePlay* const pThis)
 	printf("Base: ");
 	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
 	{
-		PositionValue_Print(&pThis->m_base[i]);
+		gi_PositionValue_Print(&pThis->m_base[i]);
 	}
 	printf("\n");
 
 	printf("BC: ");
 	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
 	{
-		PositionValue_Print(&pThis->m_bc[i]);
+		gi_PositionValue_Print(&pThis->m_bc[i]);
 	}
 	printf("\n");
 
 	printf("Weighting: ");
 	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
 	{
-		PositionValue_Print(&pThis->m_weighting[i]);
+		gi_PositionValue_Print(&pThis->m_weighting[i]);
 	}
 	printf("\n");
 }
