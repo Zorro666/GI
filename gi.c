@@ -1,8 +1,8 @@
 #include <string.h>
 
 #include "gi.h"
-#include "OffencePlay.h"
-#include "Player.h"
+#include "gi_OffencePlay.h"
+#include "gi_Player.h"
 
 BlockAllocator g_json_allocator;
 

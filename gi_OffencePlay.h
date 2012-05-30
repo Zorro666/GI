@@ -2,7 +2,7 @@
 #define OFFENCEPLAY_HH
 
 #include "gi.h"
-#include "PositionValue.h"
+#include "gi_PositionValue.h"
 
 struct gi_OffencePlay
 {

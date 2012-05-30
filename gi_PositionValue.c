@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "PositionValue.h"
+#include "gi_PositionValue.h"
 
 void gi_PositionValue_Init(gi_PositionValue* const pThis)
 {

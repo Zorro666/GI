@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "OffencePlay.h"
+#include "gi_OffencePlay.h"
 
 void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 {

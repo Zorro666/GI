@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "Player.h"
+#include "gi_Player.h"
 
 void gi_Player_Init(gi_Player* const pThis)
 {
