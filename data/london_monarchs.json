@@ -1,0 +1,12 @@
+{
+	"Team": 
+	{
+		"Name": "London Monarchs",
+		"Squad" :
+		[
+			{"Player": "Name":"Jake", "Position":"QB", "Level":10, "Q":20, "S":60, "T":20, "Experience":-1.2 }
+			{"Player": "Name":"Tim", "Position":"RB", "Level":8, "Q":60, "S":20, "T":20, "Experience":-0.2 }
+		]
+	}
+}
+
