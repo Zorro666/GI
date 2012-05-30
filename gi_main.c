@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 	gi_Init();
 
 	gi_LoadFile("data/offense/proset.json", debug);
+	gi_LoadFile("data/london_monarchs.json", debug);
 
 	return -1;
 }

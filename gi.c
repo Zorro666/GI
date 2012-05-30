@@ -46,14 +46,27 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 	{
 		if (value->m_name != NULL) 
 		{
-			gi_OffencePlay play;
-			if (gi_OffencePlay_Load(&play, value) == GI_SUCCESS)
 			{
-				if (debug == 1)
+				gi_OffencePlay play;
+				if (gi_OffencePlay_Load(&play, value) == GI_SUCCESS)
 				{
-					gi_OffencePlay_Print(&play);
+					if (debug == 1)
+					{
+						gi_OffencePlay_Print(&play);
+					}
+					return GI_SUCCESS;
 				}
-				return GI_SUCCESS;
+			}
+			{
+				gi_Player player;
+				if (gi_Player_Load(&player, value) == GI_SUCCESS)
+				{
+					if (debug == 1)
+					{
+						gi_Player_Print(&player);
+					}
+					return GI_SUCCESS;
+				}
 			}
 		}
 	}
