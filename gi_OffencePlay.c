@@ -20,20 +20,35 @@ void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 	}
 }
 
-GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* const root)
+GI_Bool gi_OffencePlay_IsValueValid(const Json_Value* const root)
 {
-	Json_Value* it;
+	if (root == NULL)
+	{
+		fprintf(stderr, "root is NULL\n");
+		return GI_FALSE;
+	}
 	if (root->m_type != JSON_OBJECT)
 	{
 		fprintf(stderr, "NOT JSON_OBJECT\n");
-		return GI_ERROR;
+		return GI_FALSE;
 	}
 	if (root->m_name == NULL)
 	{
 		fprintf(stderr, "name is NULL\n");
-		return GI_ERROR;
+		return GI_FALSE;
 	}
 	if (strcmp(root->m_name, "OffencePlay") != 0)
+	{
+		return GI_FALSE;
+	}
+	return GI_TRUE;
+}
+
+GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* const root)
+{
+	Json_Value* it;
+
+	if (gi_OffencePlay_IsValueValid(root) == GI_FALSE)
 	{
 		return GI_ERROR;
 	}

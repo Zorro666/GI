@@ -46,6 +46,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 	{
 		if (value->m_name != NULL) 
 		{
+			if (gi_OffencePlay_IsValueValid(value) == GI_TRUE)
 			{
 				gi_OffencePlay play;
 				if (gi_OffencePlay_Load(&play, value) == GI_SUCCESS)
@@ -57,6 +58,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 					return GI_SUCCESS;
 				}
 			}
+			if (gi_Team_IsValueValid(value) == GI_TRUE)
 			{
 				gi_Team team;
 				if (gi_Team_Load(&team, value) == GI_SUCCESS)

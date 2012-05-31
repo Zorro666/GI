@@ -15,6 +15,12 @@ typedef enum GI_Return
 	GI_SUCCESS
 } GI_Return;
 
+typedef enum GI_Bool
+{
+	GI_TRUE,
+	GI_FALSE
+} GI_Bool;
+
 #define MAX_TEAMNAME_SIZE (128)
 #define MAX_PLAYERNAME_SIZE (128)
 #define MAX_OFFENCENAME_SIZE (16)

@@ -14,21 +14,35 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_experience = 0.0f;
 }
 
-GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
+GI_Bool gi_Player_IsValueValid(const Json_Value* const root)
 {
-	Json_Value* it;
-
+	if (root == NULL)
+	{
+		fprintf(stderr, "root is NULL\n");
+		return GI_FALSE;
+	}
 	if (root->m_type != JSON_OBJECT)
 	{
 		fprintf(stderr, "NOT JSON_OBJECT\n");
-		return GI_ERROR;
+		return GI_FALSE;
 	}
 	if (root->m_name == NULL)
 	{
 		fprintf(stderr, "name is NULL\n");
-		return GI_ERROR;
+		return GI_FALSE;
 	}
 	if (strcmp(root->m_name, "Player") != 0)
+	{
+		return GI_FALSE;
+	}
+	return GI_TRUE;
+}
+
+GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
+{
+	Json_Value* it;
+
+	if (gi_Player_IsValueValid(root) == GI_FALSE)
 	{
 		return GI_ERROR;
 	}

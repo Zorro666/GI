@@ -19,23 +19,37 @@ void gi_Team_Init(gi_Team* const pThis)
 	pThis->m_numDefence = 0;
 }
 
+GI_Bool gi_Team_IsValueValid(const Json_Value* const root)
+{
+	if (root == NULL)
+	{
+		fprintf(stderr, "root is NULL\n");
+		return GI_FALSE;
+	}
+	if (root->m_type != JSON_OBJECT)
+	{
+		fprintf(stderr, "NOT JSON_OBJECT\n");
+		return GI_FALSE;
+	}
+	if (root->m_name == NULL)
+	{
+		fprintf(stderr, "name is NULL\n");
+		return GI_FALSE;
+	}
+	if (strcmp(root->m_name, "Team") != 0)
+	{
+		return GI_FALSE;
+	}
+	return GI_TRUE;
+}
+
 GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
 	int numOffence = 0;
 	int numDefence = 0;
 
-	if (root->m_type != JSON_OBJECT)
-	{
-		fprintf(stderr, "NOT JSON_OBJECT\n");
-		return GI_ERROR;
-	}
-	if (root->m_name == NULL)
-	{
-		fprintf(stderr, "name is NULL\n");
-		return GI_ERROR;
-	}
-	if (strcmp(root->m_name, "Team") != 0)
+	if (gi_Team_IsValueValid(root) == GI_FALSE)
 	{
 		return GI_ERROR;
 	}
@@ -58,13 +72,14 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 				Json_Value* it2;
 				for (it2 = it->m_first_child; it2 != NULL; it2 = it2->m_next_sibling)
 				{
-					Json_Value* playerRoot;
-					if (it2->m_type == JSON_OBJECT)
+					Json_Value* playerRoot = it2->m_first_child;
+					if (gi_Player_IsValueValid(playerRoot) == GI_TRUE)
 					{
-						gi_Player* pPlayer = &pThis->m_offence[numOffence];
+						gi_Player player;
 						playerRoot = it2->m_first_child;
-						if (gi_Player_Load(pPlayer, playerRoot) == GI_SUCCESS)
+						if (gi_Player_Load(&player, playerRoot) == GI_SUCCESS)
 						{
+							pThis->m_offence[numOffence] = player;
 							numOffence++;
 						}
 					}
