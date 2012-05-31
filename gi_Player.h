@@ -20,7 +20,7 @@ struct gi_Player
 };
 
 void gi_Player_Init(gi_Player* const pThis);
-GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const playRoot);
+GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root);
 void gi_Player_Print(gi_Player* const pThis);
 
 #endif /* #ifndef PLAYER_HH */

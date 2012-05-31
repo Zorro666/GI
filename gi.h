@@ -15,9 +15,10 @@ typedef enum GI_Return
 	GI_SUCCESS
 } GI_Return;
 
+#define MAX_TEAMNAME_SIZE (128)
+#define MAX_PLAYERNAME_SIZE (128)
 #define MAX_OFFENCENAME_SIZE (16)
 #define MAX_DEFENCENAME_SIZE (16)
-#define MAX_PLAYERNAME_SIZE (128)
 #define MAX_POSITION_SIZE (8)
 
 #define MAX_NUM_OFFENCE_FORMATIONS (32)
@@ -29,7 +30,8 @@ typedef enum GI_Return
 #define MAX_NUM_OFFENCE_PLAYS (128)
 #define MAX_NUM_DEFENCE_PLAYS (128)
 
-#define MAX_NUM_PLAYERS (128)
+#define MAX_NUM_OFFENCE_PLAYERS (64)
+#define MAX_NUM_DEFENCE_PLAYERS (64)
 
 typedef struct gi_PositionValue gi_PositionValue;
 typedef struct gi_OffencePlay gi_OffencePlay;
