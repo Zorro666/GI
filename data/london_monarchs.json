@@ -4,8 +4,12 @@
 		"Name": "London Monarchs",
 		"Squad" :
 		[
-			{"Player": {"Name":"Jake", "Position":"QB", "Level":10, "Q":20, "S":60, "T":20, "Experience":-1.2 }},
-			{"Player": {"Name":"Tim", "Position":"RB", "Level":8, "Q":60, "S":20, "T":20, "Experience":-0.2 }}
+			{"Player": {"Name":"Jake1", "Position":"QB", "Level":10, "Q":20, "S":60, "T":20, "Experience":-1.2 }},
+			{"Player": {"Name":"Jake2", "Position":" C", "Level":10, "Q":20, "S":60, "T":20, "Experience":-1.2 }},
+			{"Player": {"Name":"Tim", "Position":"DE", "Level":8, "Q":60, "S":20, "T":20, "Experience":-0.2 }}
+			{"Player": {"Name":"Bob1", "Position":" R", "Level":8, "Q":60, "S":20, "T":20, "Experience":-0.2 }}
+			{"Player": {"Name":"Bob2", "Position":" K", "Level":8, "Q":60, "S":20, "T":20, "Experience":-0.2 }}
+			{"Player": {"Name":"Bob3", "Position":" P", "Level":8, "Q":60, "S":20, "T":20, "Experience":-0.2 }}
 		]
 	}
 }

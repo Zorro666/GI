@@ -38,6 +38,7 @@ typedef enum GI_Bool
 
 #define MAX_NUM_OFFENCE_PLAYERS (64)
 #define MAX_NUM_DEFENCE_PLAYERS (64)
+#define MAX_NUM_SPECIALTEAMS_PLAYERS (16)
 
 typedef struct gi_PositionValue gi_PositionValue;
 typedef struct gi_OffencePlay gi_OffencePlay;
