@@ -42,8 +42,11 @@ typedef enum GI_Bool
 
 typedef struct gi_PositionValue gi_PositionValue;
 typedef struct gi_OffencePlay gi_OffencePlay;
+typedef struct gi_DefencePlay gi_DefencePlay;
 typedef struct gi_Player gi_Player;
 typedef struct gi_Team gi_Team;
+typedef struct gi_PlayInfo gi_PlayInfo;
+typedef struct gi_GlobalInfo gi_GlobalInfo;
 
 void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const int debug);

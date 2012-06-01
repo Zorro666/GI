@@ -1,14 +1,16 @@
 #include <string.h>
 
 #include "gi.h"
-#include "gi_OffencePlay.h"
 #include "gi_Team.h"
+#include "gi_GlobalInfo.h"
 
-BlockAllocator g_json_allocator;
+static BlockAllocator s_json_allocator;
+static gi_GlobalInfo s_globalInfo;
 
 void gi_Init(void)
 {
-	BlockAllocator_Init(&g_json_allocator, 128*1024);
+	BlockAllocator_Init(&s_json_allocator, 128*1024);
+	gi_GlobalInfo_Init(&s_globalInfo);
 }
 
 Json_Value* gi_FindOffencePlay(Json_Value* const value)
@@ -23,7 +25,7 @@ Json_Value* gi_ParseFile(const char* const fileName, const int debug)
 	char* error_desc;
 	int error_line;
 
-	root = Json_ParseFile(fileName, &error_pos, &error_desc, &error_line, &g_json_allocator);
+	root = Json_ParseFile(fileName, &error_pos, &error_desc, &error_line, &s_json_allocator);
 	if (root)
 	{
 		if (debug == 1)
@@ -55,17 +57,18 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 					{
 						gi_OffencePlay_Print(&play);
 					}
+					
 					return GI_SUCCESS;
 				}
 			}
 			if (gi_Team_IsValueValid(value) == GI_TRUE)
 			{
-				gi_Team team;
-				if (gi_Team_Load(&team, value) == GI_SUCCESS)
+				gi_Team* const pTeam = &s_globalInfo.m_team;
+				if (gi_Team_Load(pTeam, value) == GI_SUCCESS)
 				{
 					if (debug == 1)
 					{
-						gi_Team_Print(&team);
+						gi_Team_Print(pTeam);
 					}
 					return GI_SUCCESS;
 				}
