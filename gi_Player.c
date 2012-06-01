@@ -18,6 +18,10 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_experience = 0.0f;
 	pThis->m_unit = GI_SQUAD_UNKNOWN;
 	pThis->m_age = -1;
+	pThis->m_specialTeamsValues.m_blocker = 0.0f;
+	pThis->m_specialTeamsValues.m_gunner = 0.0f;
+	pThis->m_specialTeamsValues.m_protector = 0.0f;
+	pThis->m_specialTeamsValues.m_runner = 0.0f;
 }
 
 GI_Bool gi_Player_IsValueValid(const Json_Value* const root)
@@ -153,7 +157,7 @@ void gi_Player_Print(gi_Player* const pThis)
 			pThis->m_qst[GI_Q], pThis->m_qst[GI_S], pThis->m_qst[GI_T], pThis->m_age, pThis->m_experience);
 }
 
-void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeamsValues* const pSpecialTeamsValues)
+void gi_Player_ComputeSpecialTeams(gi_Player* const pThis)
 {
 	const GI_POSITION position = pThis->m_position;
 	float blocker = 0.0f;
@@ -169,7 +173,7 @@ void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeams
 		case GI_TE:
 		case GI_IB:
 		case GI_OB:
-			protector = (float)(pThis->m_qst[GI_S] * pThis->m_level)/100.0f;
+			protector = 1.5f * (float)pThis->m_level * (float)(pThis->m_qst[GI_S])/100.0f;
 			break;
 		default:
 			protector = 0.0f;
@@ -180,16 +184,67 @@ void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeams
 	/* DE, DT, C, OT, OG: L x 0.8 */
 	/* IB, OB: L x 0.7 */
 	/* TE, RB, SF: S + T x 0.33 */
+	switch (position)
+	{
+		case GI_DE:
+		case GI_DT:
+		case GI_OC:
+		case GI_OG:
+			blocker = 0.8f * (float)(pThis->m_level);
+			break;
+		case GI_IB:
+		case GI_OB:
+			blocker = 0.7f * (float)(pThis->m_level);
+			break;
+		case GI_TE:
+		case GI_RB:
+		case GI_SF:
+			blocker = 0.33f * (float)(pThis->m_level) * (float)(pThis->m_qst[GI_S]+pThis->m_qst[GI_T])/100.0f;
+			break;
+		default:
+			blocker = 0.0f;
+			break;
+	};
 
 	/* Runner: */
 	/* R: L x 0.9 */
 	/* CB, WR: L x 0.8 */
 	/* TE, RB, SF: Q + T x 0.33 */
+	switch (position)
+	{
+		case GI_R:
+			runner = 0.9f * (float)(pThis->m_level);
+			break;
+		case GI_CB:
+		case GI_WR:
+			runner = 0.8f * (float)(pThis->m_level);
+			break;
+		case GI_TE:
+		case GI_RB:
+		case GI_SF:
+			runner = 0.33f * (float)(pThis->m_level) * (float)(pThis->m_qst[GI_Q]+pThis->m_qst[GI_T])/100.0f;
+			break;
+		default:
+			runner = 0.0f;
+			break;
+	};
 
 	/* Gunner: SF, WR, CB, R: Q x 1.5 */
+	switch (position)
+	{
+		case GI_SF:
+		case GI_WR:
+		case GI_CB:
+		case GI_R:
+			gunner = 1.5f * (float)(pThis->m_level) * (float)(pThis->m_qst[GI_Q])/100.0f;
+			break;
+		default:
+			gunner = 0.0f;
+			break;
+	};
 
-	pSpecialTeamsValues->m_blocker = blocker;
-	pSpecialTeamsValues->m_gunner = gunner;
-	pSpecialTeamsValues->m_protector = protector;
-	pSpecialTeamsValues->m_runner = runner;
+	pThis->m_specialTeamsValues.m_blocker = blocker;
+	pThis->m_specialTeamsValues.m_gunner = gunner;
+	pThis->m_specialTeamsValues.m_protector = protector;
+	pThis->m_specialTeamsValues.m_runner = runner;
 }

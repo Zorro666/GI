@@ -122,6 +122,8 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 	pThis->m_numDefence = numDefence;
 	pThis->m_numSpecialTeams = numSpecialTeams;
 
+	gi_Team_ComputeSpecialTeams(pThis);
+
 	return GI_SUCCESS;
 }
 
@@ -152,7 +154,6 @@ void gi_Team_ComputeSpecialTeams(gi_Team* const pThis)
 	for (i = 0; i < pThis->m_numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
-		gi_SpecialTeamsValues specialTeamsValues;
-		gi_Player_ComputeSpecialTeams(pPlayer, &specialTeamsValues);
+		gi_Player_ComputeSpecialTeams(pPlayer);
 	}
 }
