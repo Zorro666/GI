@@ -3,9 +3,9 @@
 
 #include "gi_Player.h"
 
-static char* s_offenceNames[] = {"QB", "RB", "TE", "WR", " C", "OG", "OC", "ZZ"};
+static char* s_offenceNames[] = {"QB", "RB", "TE", "WR", "C", "OG", "OC", "ZZ"};
 static char* s_defenceNames[] = {"DE", "DT", "IB", "OB", "CB", "SF", "ZZ"};
-static char* s_specialTeamsNames[] = {" R", " K", " P", "ZZ"};
+static char* s_specialTeamsNames[] = {"R", "K", "P", "ZZ"};
 
 void gi_Player_Init(gi_Player* const pThis)
 {
@@ -17,6 +17,7 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_qst[2] = 0;
 	pThis->m_experience = 0.0f;
 	pThis->m_type = GI_UNKNOWN;
+	pThis->m_age = -1;
 }
 
 GI_Bool gi_Player_IsValueValid(const Json_Value* const root)
@@ -86,6 +87,10 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 			{
 				pThis->m_qst[GI_T] = it->m_value_data.int_value;
 			}
+			else if (strcmp(it->m_name, "Age") == 0)
+			{
+				pThis->m_age = it->m_value_data.int_value;
+			}
 		}
 		else if (it->m_type == JSON_FLOAT)
 		{
@@ -138,11 +143,11 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 
 void gi_Player_Print(gi_Player* const pThis)
 {
-	printf("Player:'%s' '%s' Position: %s Level:%d QST:%d %d %d Experience:%.2f\n",
+	printf("Player:'%s' '%s' Position: %s Level:%d QST:%d %d %d Age:%d Experience:%.2f\n",
 			pThis->m_name, 
 			((pThis->m_type == GI_OFFENCE) ? "Off" : ((pThis->m_type == GI_DEFENCE) ? "Def" : "Spe")),
 			pThis->m_position, pThis->m_level, 
-			pThis->m_qst[GI_Q], pThis->m_qst[GI_S], pThis->m_qst[GI_T], pThis->m_experience);
+			pThis->m_qst[GI_Q], pThis->m_qst[GI_S], pThis->m_qst[GI_T], pThis->m_age, pThis->m_experience);
 }
 
 GI_PLAYERTYPE gi_Player_GetType(gi_Player* const pThis)

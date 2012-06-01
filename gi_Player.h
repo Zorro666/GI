@@ -26,6 +26,7 @@ struct gi_Player
 	int m_qst[3];
 	float m_experience;
 	GI_PLAYERTYPE m_type;
+	int m_age;
 };
 
 void gi_Player_Init(gi_Player* const pThis);
