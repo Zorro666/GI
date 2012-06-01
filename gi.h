@@ -47,6 +47,7 @@ typedef enum GI_SQUAD_UNIT
 #define MAX_NUM_OFFENCE_PLAYERS (64)
 #define MAX_NUM_DEFENCE_PLAYERS (64)
 #define MAX_NUM_SPECIALTEAMS_PLAYERS (16)
+#define MAX_NUM_SQUAD_PLAYERS (64)
 
 typedef struct gi_PositionValue gi_PositionValue;
 typedef struct gi_OffencePlay gi_OffencePlay;
@@ -55,6 +56,15 @@ typedef struct gi_Player gi_Player;
 typedef struct gi_Team gi_Team;
 typedef struct gi_PlayInfo gi_PlayInfo;
 typedef struct gi_GlobalInfo gi_GlobalInfo;
+typedef struct gi_SpecialTeamsValues gi_SpecialTeamsValues;
+
+struct gi_SpecialTeamsValues
+{
+	float m_protector;
+	float m_blocker;
+	float m_runner;
+	float m_gunner;
+};
 
 void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const int debug);

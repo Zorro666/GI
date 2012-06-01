@@ -149,3 +149,34 @@ void gi_Player_Print(gi_Player* const pThis)
 			pThis->m_position, pThis->m_level, 
 			pThis->m_qst[GI_Q], pThis->m_qst[GI_S], pThis->m_qst[GI_T], pThis->m_age, pThis->m_experience);
 }
+
+GI_Bool gi_Player_Valid(gi_Player* const pThis)
+{
+	if (pThis->m_unit == GI_UNKNOWN)
+	{
+		return GI_FALSE;
+	}
+	return GI_TRUE;
+}
+
+void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeamsValues* const pSpecialTeamsValues)
+{
+	pSpecialTeamsValues->m_blocker = 0.0f;
+	pSpecialTeamsValues->m_gunner = 0.0f;
+	pSpecialTeamsValues->m_protector = 0.0f;
+	pSpecialTeamsValues->m_runner = 0.0f;
+
+	/* Personal Protector: RB, SF, TE, IB, OB: S x 1.5 */
+
+	/* Blocker: */
+	/* DE, DT, C, OT, OG: L x 0.8 */
+	/* IB, OB: L x 0.7 */
+	/* TE, RB, SF: S + T x 0.33 */
+
+	/* Runner: */
+	/* R: L x 0.9 */
+	/* CB, WR: L x 0.8 */
+	/* TE, RB, SF: Q + T x 0.33 */
+
+	/* Gunner: SF, WR, CB, R: Q x 1.5 */
+}

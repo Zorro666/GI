@@ -7,10 +7,12 @@
 
 struct gi_Team
 {
-	gi_Player m_offence[MAX_NUM_OFFENCE_PLAYERS];
-	gi_Player m_defence[MAX_NUM_DEFENCE_PLAYERS];
-	gi_Player m_specialTeams[MAX_NUM_SPECIALTEAMS_PLAYERS];
+	gi_Player m_squad[MAX_NUM_SQUAD_PLAYERS];
+	gi_Player* m_offence[MAX_NUM_OFFENCE_PLAYERS];
+	gi_Player* m_defence[MAX_NUM_DEFENCE_PLAYERS];
+	gi_Player* m_specialTeams[MAX_NUM_SPECIALTEAMS_PLAYERS];
 	char m_name[MAX_TEAMNAME_SIZE];
+	int m_numPlayers;
 	int m_numOffence;
 	int m_numDefence;
 	int m_numSpecialTeams;

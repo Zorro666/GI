@@ -6,19 +6,24 @@
 void gi_Team_Init(gi_Team* const pThis)
 {
 	int i;
+	for (i = 0; i < MAX_NUM_SQUAD_PLAYERS; i++)
+	{
+		gi_Player_Init(&pThis->m_squad[i]);
+	}
 	for (i = 0; i < MAX_NUM_OFFENCE_PLAYERS; i++)
 	{
-		gi_Player_Init(&pThis->m_offence[i]);
+		pThis->m_offence[i] = NULL;
 	}
 	for (i = 0; i < MAX_NUM_DEFENCE_PLAYERS; i++)
 	{
-		gi_Player_Init(&pThis->m_defence[i]);
+		pThis->m_defence[i] = NULL;
 	}
 	for (i = 0; i < MAX_NUM_SPECIALTEAMS_PLAYERS; i++)
 	{
-		gi_Player_Init(&pThis->m_specialTeams[i]);
+		pThis->m_specialTeams[i] = NULL;
 	}
 	pThis->m_name[0] = '\0';
+	pThis->m_numPlayers = 0;
 	pThis->m_numOffence = 0;
 	pThis->m_numDefence = 0;
 	pThis->m_numSpecialTeams = 0;
@@ -54,6 +59,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 	int numOffence = 0;
 	int numDefence = 0;
 	int numSpecialTeams = 0;
+	int numPlayers = 0;
 
 	if (gi_Team_IsValueValid(root) == GI_FALSE)
 	{
@@ -87,18 +93,23 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 						{
 							if (player.m_unit == GI_OFFENCE)
 							{
-								pThis->m_offence[numOffence] = player;
+								pThis->m_offence[numOffence] = &pThis->m_squad[numPlayers];
 								numOffence++;
 							}
 							else if (player.m_unit == GI_DEFENCE)
 							{
-								pThis->m_defence[numDefence] = player;
+								pThis->m_defence[numDefence] = &pThis->m_squad[numPlayers];
 								numDefence++;
 							}
 							else if (player.m_unit == GI_SPECIALTEAMS)
 							{
-								pThis->m_specialTeams[numSpecialTeams] = player;
+								pThis->m_specialTeams[numSpecialTeams] = &pThis->m_squad[numPlayers];
 								numSpecialTeams++;
+							}
+							if (player.m_unit != GI_UNKNOWN)
+							{
+								pThis->m_squad[numPlayers] = player;
+								numPlayers++;
 							}
 						}
 					}
@@ -106,6 +117,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 			}
 		}
 	}
+	pThis->m_numPlayers = numPlayers;
 	pThis->m_numOffence = numOffence;
 	pThis->m_numDefence = numDefence;
 	pThis->m_numSpecialTeams = numSpecialTeams;
@@ -116,29 +128,33 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 void gi_Team_Print(gi_Team* const pThis)
 {
 	int i;
-	printf("Team:'%s'\n", pThis->m_name);
+	printf("Team:'%s' %d\n", pThis->m_name, pThis->m_numPlayers);
 	printf("Offence: %d\n", pThis->m_numOffence);
-	for (i = 0; i < MAX_NUM_OFFENCE_PLAYERS; i++)
+	for (i = 0; i < pThis->m_numOffence; i++)
 	{
-		if (pThis->m_offence[i].m_name[0] != '\0')
-		{
-			gi_Player_Print(&pThis->m_offence[i]);
-		}
+		gi_Player_Print(pThis->m_offence[i]);
 	}
 	printf("Defence: %d\n", pThis->m_numDefence);
-	for (i = 0; i < MAX_NUM_DEFENCE_PLAYERS; i++)
+	for (i = 0; i < pThis->m_numDefence; i++)
 	{
-		if (pThis->m_defence[i].m_name[0] != '\0')
-		{
-			gi_Player_Print(&pThis->m_defence[i]);
-		}
+		gi_Player_Print(pThis->m_defence[i]);
 	}
 	printf("SpecialTeams: %d\n", pThis->m_numSpecialTeams);
-	for (i = 0; i < MAX_NUM_SPECIALTEAMS_PLAYERS; i++)
+	for (i = 0; i < pThis->m_numSpecialTeams; i++)
 	{
-		if (pThis->m_specialTeams[i].m_name[0] != '\0')
-		{
-			gi_Player_Print(&pThis->m_specialTeams[i]);
-		}
+		gi_Player_Print(pThis->m_specialTeams[i]);
+	}
+}
+void gi_Team_ComputeSpecialTeams(gi_Team* const pThis)
+{
+	int i;
+	for (i = 0; i < pThis->m_numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		float protector;
+		float blocker;
+		float runner;
+		float gunner;
+		gi_Player_ComputeSpecialTeams(pThis, &protector, &blocker, &runner, &gunner);
 	}
 }
