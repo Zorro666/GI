@@ -1,5 +1,5 @@
-#ifndef PLAYER_HH
-#define PLAYER_HH
+#ifndef GI_PLAYER_HH
+#define GI_PLAYER_HH
 
 #include "gi.h"
 
@@ -34,4 +34,4 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root);
 void gi_Player_Print(gi_Player* const pThis);
 GI_PLAYERTYPE gi_Player_GetType(gi_Player* const pThis);
 
-#endif /* #ifndef PLAYER_HH */
+#endif /* #ifndef GI_PLAYER_HH */

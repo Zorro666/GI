@@ -1,5 +1,5 @@
-#ifndef POSITIONVALUE_HH
-#define POSITIONVALUE_HH
+#ifndef GI_POSITIONVALUE_HH
+#define GI_POSITIONVALUE_HH
 
 #include "gi.h"
 
@@ -18,4 +18,4 @@ void gi_PositionValue_Init(gi_PositionValue* const pThis);
 void gi_PositionValue_Print(gi_PositionValue* const pThis);
 void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const int maxSize, Json_Value* const root);
 
-#endif /* #ifndef POSITIONVALUE_HH */
+#endif /* #ifndef GI_POSITIONVALUE_HH */

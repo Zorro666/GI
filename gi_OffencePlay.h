@@ -1,5 +1,5 @@
-#ifndef OFFENCEPLAY_HH
-#define OFFENCEPLAY_HH
+#ifndef GI_OFFENCEPLAY_HH
+#define GI_OFFENCEPLAY_HH
 
 #include "gi.h"
 #include "gi_PositionValue.h"
@@ -18,4 +18,4 @@ GI_Bool gi_OffencePlay_IsValueValid(const Json_Value* const root);
 GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* const root);
 void gi_OffencePlay_Print(gi_OffencePlay* const pThis);
 
-#endif /* #ifndef OFFENCEPLAY_HH */
+#endif /* #ifndef GI_OFFENCEPLAY_HH */
