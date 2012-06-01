@@ -3,20 +3,20 @@
 
 #include "gi_Player.h"
 
-static char* s_offenceNames[] = {"QB", "RB", "TE", "WR", "C", "OG", "OC", "ZZ"};
-static char* s_defenceNames[] = {"DE", "DT", "IB", "OB", "CB", "SF", "ZZ"};
-static char* s_specialTeamsNames[] = {"R", "K", "P", "ZZ"};
+static char* s_positionNames[GI_POSITION_UNKNOWN+1] = {
+	/*GI_QB, GI_RB, GI_WR, GI_TE, GI_OC, GI_OG, GI_OT, GI_DE, GI_DT, GI_IB, GI_OB, GI_CB, GI_SF, GI_R, GI_K, GI_P, GI_POSITION_UNKNOWN */
+	"QB", "RB", "WR", "TE", "OC", "OG", "OT", "DE", "DT", "IB", "OB", "CB", "SF", "R", "K", "P", "UNKNOWN" };
 
 void gi_Player_Init(gi_Player* const pThis)
 {
 	pThis->m_name[0] = '\0';
-	pThis->m_position[0] = '\0';
+	pThis->m_position = GI_POSITION_UNKNOWN;
 	pThis->m_level = 0;
 	pThis->m_qst[0] = 0;
 	pThis->m_qst[1] = 0;
 	pThis->m_qst[2] = 0;
 	pThis->m_experience = 0.0f;
-	pThis->m_unit = GI_UNKNOWN;
+	pThis->m_unit = GI_SQUAD_UNKNOWN;
 	pThis->m_age = -1;
 }
 
@@ -48,6 +48,8 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
 	int i;
+	char position[MAX_POSITION_SIZE];
+	position[0] = '\0';
 
 	if (gi_Player_IsValueValid(root) == GI_FALSE)
 	{
@@ -66,7 +68,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 			}
 			else if (strcmp(it->m_name, "Position") == 0)
 			{
-				strncpy(pThis->m_position, it->m_value_data.string_value, MAX_POSITION_SIZE);
+				strncpy(position, it->m_value_data.string_value, MAX_POSITION_SIZE);
 			}
 		}
 		else if (it->m_type == JSON_INT)
@@ -101,43 +103,44 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		}
 	}
 
-	pThis->m_unit = GI_UNKNOWN;
-	for (i = 0; ; i++)
+	pThis->m_unit = GI_SQUAD_UNKNOWN;
+	for (i = 0; i < GI_POSITION_UNKNOWN; i++)
 	{
-		if (strcmp(s_offenceNames[i], "ZZ") == 0)
+		if (strcmp(s_positionNames[i], position) == 0)
 		{
+			pThis->m_position = i;
 			break;
 		}
-		if (strcmp(pThis->m_position, s_offenceNames[i]) == 0)
-		{
+	}
+	switch (pThis->m_position)
+	{
+		case GI_QB:
+		case GI_RB:
+		case GI_WR:
+		case GI_TE:
+		case GI_OC:
+		case GI_OG:
+		case GI_OT:
 			pThis->m_unit = GI_OFFENCE;
 			break;
-		}
-	}
-	for (i = 0; ; i++)
-	{
-		if (strcmp(s_defenceNames[i], "ZZ") == 0)
-		{
-			break;
-		}
-		if (strcmp(pThis->m_position, s_defenceNames[i]) == 0)
-		{
+		case GI_DE:
+		case GI_DT:
+		case GI_IB:
+		case GI_OB:
+		case GI_CB:
+		case GI_SF:
 			pThis->m_unit = GI_DEFENCE;
 			break;
-		}
-	}
-	for (i = 0; ; i++)
-	{
-		if (strcmp(s_specialTeamsNames[i], "ZZ") == 0)
-		{
-			break;
-		}
-		if (strcmp(pThis->m_position, s_specialTeamsNames[i]) == 0)
-		{
+		case GI_R:
+		case GI_K:
+		case GI_P:
 			pThis->m_unit = GI_SPECIALTEAMS;
 			break;
-		}
+		default:
+			pThis->m_unit = GI_SQUAD_UNKNOWN;
+			break;
 	}
+
 	return GI_SUCCESS;
 }
 
@@ -146,27 +149,32 @@ void gi_Player_Print(gi_Player* const pThis)
 	printf("Player:'%s' '%s' Position: %s Level:%d QST:%d %d %d Age:%d Experience:%.2f\n",
 			pThis->m_name, 
 			((pThis->m_unit == GI_OFFENCE) ? "Offence" : ((pThis->m_unit == GI_DEFENCE) ? "Defence" : "Special Teams")),
-			pThis->m_position, pThis->m_level, 
+			s_positionNames[pThis->m_position], pThis->m_level, 
 			pThis->m_qst[GI_Q], pThis->m_qst[GI_S], pThis->m_qst[GI_T], pThis->m_age, pThis->m_experience);
-}
-
-GI_Bool gi_Player_Valid(gi_Player* const pThis)
-{
-	if (pThis->m_unit == GI_UNKNOWN)
-	{
-		return GI_FALSE;
-	}
-	return GI_TRUE;
 }
 
 void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeamsValues* const pSpecialTeamsValues)
 {
-	pSpecialTeamsValues->m_blocker = 0.0f;
-	pSpecialTeamsValues->m_gunner = 0.0f;
-	pSpecialTeamsValues->m_protector = 0.0f;
-	pSpecialTeamsValues->m_runner = 0.0f;
+	const GI_POSITION position = pThis->m_position;
+	float blocker = 0.0f;
+	float gunner = 0.0f;
+	float protector = 0.0f;
+	float runner = 0.0f;
 
 	/* Personal Protector: RB, SF, TE, IB, OB: S x 1.5 */
+	switch (position)
+	{
+		case GI_RB:
+		case GI_SF:
+		case GI_TE:
+		case GI_IB:
+		case GI_OB:
+			protector = (float)(pThis->m_qst[GI_S] * pThis->m_level)/100.0f;
+			break;
+		default:
+			protector = 0.0f;
+			break;
+	};
 
 	/* Blocker: */
 	/* DE, DT, C, OT, OG: L x 0.8 */
@@ -179,4 +187,9 @@ void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeams
 	/* TE, RB, SF: Q + T x 0.33 */
 
 	/* Gunner: SF, WR, CB, R: Q x 1.5 */
+
+	pSpecialTeamsValues->m_blocker = blocker;
+	pSpecialTeamsValues->m_gunner = gunner;
+	pSpecialTeamsValues->m_protector = protector;
+	pSpecialTeamsValues->m_runner = runner;
 }

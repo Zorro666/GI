@@ -106,7 +106,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 								pThis->m_specialTeams[numSpecialTeams] = &pThis->m_squad[numPlayers];
 								numSpecialTeams++;
 							}
-							if (player.m_unit != GI_UNKNOWN)
+							if (player.m_unit != GI_SQUAD_UNKNOWN)
 							{
 								pThis->m_squad[numPlayers] = player;
 								numPlayers++;
@@ -145,16 +145,14 @@ void gi_Team_Print(gi_Team* const pThis)
 		gi_Player_Print(pThis->m_specialTeams[i]);
 	}
 }
+
 void gi_Team_ComputeSpecialTeams(gi_Team* const pThis)
 {
 	int i;
 	for (i = 0; i < pThis->m_numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
-		float protector;
-		float blocker;
-		float runner;
-		float gunner;
-		gi_Player_ComputeSpecialTeams(pThis, &protector, &blocker, &runner, &gunner);
+		gi_SpecialTeamsValues specialTeamsValues;
+		gi_Player_ComputeSpecialTeams(pPlayer, &specialTeamsValues);
 	}
 }
