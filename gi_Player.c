@@ -145,7 +145,7 @@ void gi_Player_Print(gi_Player* const pThis)
 {
 	printf("Player:'%s' '%s' Position: %s Level:%d QST:%d %d %d Age:%d Experience:%.2f\n",
 			pThis->m_name, 
-			((pThis->m_type == GI_OFFENCE) ? "Off" : ((pThis->m_type == GI_DEFENCE) ? "Def" : "Spe")),
+			((pThis->m_type == GI_OFFENCE) ? "Offence" : ((pThis->m_type == GI_DEFENCE) ? "Defence" : "Special Teams")),
 			pThis->m_position, pThis->m_level, 
 			pThis->m_qst[GI_Q], pThis->m_qst[GI_S], pThis->m_qst[GI_T], pThis->m_age, pThis->m_experience);
 }
