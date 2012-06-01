@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "gi.h"
@@ -32,6 +33,12 @@ Json_Value* gi_ParseFile(const char* const fileName, const int debug)
 		{
 			Json_Print(root, 0);
 		}
+	}
+	else
+	{
+		fprintf(stderr, "ERROR parsing file '%s'\n", fileName);
+		fprintf(stderr, "ERROR line:%d pos:'%s' desc:'%s'\n", error_line, error_pos, error_desc);
+		return NULL;
 	}
 
 	/* TODO: error handling output the error information */

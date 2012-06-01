@@ -16,7 +16,7 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_qst[1] = 0;
 	pThis->m_qst[2] = 0;
 	pThis->m_experience = 0.0f;
-	pThis->m_type = GI_UNKNOWN;
+	pThis->m_unit = GI_UNKNOWN;
 	pThis->m_age = -1;
 }
 
@@ -101,7 +101,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		}
 	}
 
-	pThis->m_type = GI_UNKNOWN;
+	pThis->m_unit = GI_UNKNOWN;
 	for (i = 0; ; i++)
 	{
 		if (strcmp(s_offenceNames[i], "ZZ") == 0)
@@ -110,7 +110,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		}
 		if (strcmp(pThis->m_position, s_offenceNames[i]) == 0)
 		{
-			pThis->m_type = GI_OFFENCE;
+			pThis->m_unit = GI_OFFENCE;
 			break;
 		}
 	}
@@ -122,7 +122,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		}
 		if (strcmp(pThis->m_position, s_defenceNames[i]) == 0)
 		{
-			pThis->m_type = GI_DEFENCE;
+			pThis->m_unit = GI_DEFENCE;
 			break;
 		}
 	}
@@ -134,7 +134,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		}
 		if (strcmp(pThis->m_position, s_specialTeamsNames[i]) == 0)
 		{
-			pThis->m_type = GI_SPECIALTEAMS;
+			pThis->m_unit = GI_SPECIALTEAMS;
 			break;
 		}
 	}
@@ -145,12 +145,7 @@ void gi_Player_Print(gi_Player* const pThis)
 {
 	printf("Player:'%s' '%s' Position: %s Level:%d QST:%d %d %d Age:%d Experience:%.2f\n",
 			pThis->m_name, 
-			((pThis->m_type == GI_OFFENCE) ? "Offence" : ((pThis->m_type == GI_DEFENCE) ? "Defence" : "Special Teams")),
+			((pThis->m_unit == GI_OFFENCE) ? "Offence" : ((pThis->m_unit == GI_DEFENCE) ? "Defence" : "Special Teams")),
 			pThis->m_position, pThis->m_level, 
 			pThis->m_qst[GI_Q], pThis->m_qst[GI_S], pThis->m_qst[GI_T], pThis->m_age, pThis->m_experience);
-}
-
-GI_PLAYERTYPE gi_Player_GetType(gi_Player* const pThis)
-{
-	return pThis->m_type;
 }

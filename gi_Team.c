@@ -85,17 +85,17 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 						playerRoot = it2->m_first_child;
 						if (gi_Player_Load(&player, playerRoot) == GI_SUCCESS)
 						{
-							if (player.m_type == GI_OFFENCE)
+							if (player.m_unit == GI_OFFENCE)
 							{
 								pThis->m_offence[numOffence] = player;
 								numOffence++;
 							}
-							else if (player.m_type == GI_DEFENCE)
+							else if (player.m_unit == GI_DEFENCE)
 							{
 								pThis->m_defence[numDefence] = player;
 								numDefence++;
 							}
-							else if (player.m_type == GI_SPECIALTEAMS)
+							else if (player.m_unit == GI_SPECIALTEAMS)
 							{
 								pThis->m_specialTeams[numSpecialTeams] = player;
 								numSpecialTeams++;
