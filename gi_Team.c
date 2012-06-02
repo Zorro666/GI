@@ -146,6 +146,7 @@ void gi_Team_Print(gi_Team* const pThis)
 	{
 		gi_Player_Print(pThis->m_specialTeams[i]);
 	}
+	gi_Team_PrintBestSpecialTeams(pThis);
 }
 
 void gi_Team_ComputeSpecialTeams(gi_Team* const pThis)
@@ -157,3 +158,71 @@ void gi_Team_ComputeSpecialTeams(gi_Team* const pThis)
 		gi_Player_ComputeSpecialTeams(pPlayer);
 	}
 }
+
+typedef struct FloatItem
+{
+	float m_value;
+	int m_key;
+} FloatItem;
+
+static int floatItem_Compare(const void* a, const void* b)
+{
+	const float valueA = ((const FloatItem*)a)->m_value;
+	const float valueB = ((const FloatItem*)b)->m_value;
+	return (valueA < valueB);
+}
+
+static void gi_Team_computeAndPrintStats(gi_Team* const pThis, FloatItem* const pStats, const char* const statName)
+{
+	int i;
+	qsort(pStats, (size_t)(pThis->m_numPlayers), sizeof(pStats[0]), floatItem_Compare);
+	printf("\n");
+	for (i = 0; i < pThis->m_numPlayers; i++)
+	{
+		if (pStats[i].m_value > 0.00000001f)
+		{
+			const int playerIndex = pStats[i].m_key;
+			gi_Player* const pPlayer = &pThis->m_squad[playerIndex];
+			printf("Player[%d] '%s' '%s':%f\n", playerIndex, pPlayer->m_name, statName, pStats[i].m_value);
+		}
+	}
+}
+
+void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis)
+{
+	int i;
+	FloatItem stats[MAX_NUM_SQUAD_PLAYERS];
+
+	for (i = 0; i < pThis->m_numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		stats[i].m_value = pPlayer->m_specialTeamsValues.m_blocker;
+		stats[i].m_key = i;
+	}
+	gi_Team_computeAndPrintStats(pThis, stats, "Blocker");
+
+	for (i = 0; i < pThis->m_numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		stats[i].m_value = pPlayer->m_specialTeamsValues.m_gunner;
+		stats[i].m_key = i;
+	}
+	gi_Team_computeAndPrintStats(pThis, stats, "Gunner");
+
+	for (i = 0; i < pThis->m_numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		stats[i].m_value = pPlayer->m_specialTeamsValues.m_protector;
+		stats[i].m_key = i;
+	}
+	gi_Team_computeAndPrintStats(pThis, stats, "Protector");
+
+	for (i = 0; i < pThis->m_numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		stats[i].m_value = pPlayer->m_specialTeamsValues.m_runner;
+		stats[i].m_key = i;
+	}
+	gi_Team_computeAndPrintStats(pThis, stats, "Runner");
+}
+
