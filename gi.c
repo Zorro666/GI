@@ -106,19 +106,50 @@ GI_Return gi_LoadFile(const char* const fileName, const int debug)
 	return GI_ERROR;
 }
 
-static GI_Return gi_Output_SpecialTeamsStats(gi_Team* const pTeam)
+static FILE* openOutputFile(const char* const fileName)
 {
-	FILE* pFile;
-	char* fileName;
-
-	fileName = "SpecialTeams_debug.txt";
+	FILE* pFile = NULL;
 	pFile = fopen(fileName, "wa");
 	if (pFile == NULL)
 	{
 		fprintf(stderr,"ERROR opening file '%s'\n", fileName);
+	}
+	return pFile;
+}
+
+static GI_Return gi_Output_SpecialTeamsStats(gi_Team* const pTeam)
+{
+	FILE* pFile;
+	const char* const fileName = "SpecialTeams_output.txt";
+	pFile = openOutputFile(fileName);
+	if (pFile == NULL)
+	{
 		return GI_ERROR;
 	}
 	gi_Team_PrintBestSpecialTeams(pTeam, pFile);
+	fclose(pFile);
+	return GI_SUCCESS;
+}
+
+static GI_Return gi_Output_Team(gi_Team* const pTeam)
+{
+	FILE* pFile;
+	char fileName[MAX_OUTPUTFILENAME_SIZE];
+
+	if (pTeam->m_name[0] == '\0')
+	{
+		fprintf(stderr, "gi_Output_Team team name is empty\n");
+		return GI_ERROR;
+	}
+	fileName[0] = '\0';
+	strcpy(fileName, pTeam->m_name);
+	strcat(fileName, "_output.txt");
+	pFile = openOutputFile(fileName);
+	if (pFile == NULL)
+	{
+		return GI_ERROR;
+	}
+	gi_Team_Print(pTeam, pFile);
 	fclose(pFile);
 	return GI_SUCCESS;
 }
@@ -129,5 +160,9 @@ void gi_Output(void)
 	if (gi_Output_SpecialTeamsStats(pTeam) == GI_ERROR)
 	{
 		fprintf(stderr,"ERROR outputting special teams stats\n");
+	}
+	if (gi_Output_Team(pTeam) == GI_ERROR)
+	{
+		fprintf(stderr,"ERROR outputting team\n");
 	}
 }
