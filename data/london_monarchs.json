@@ -17,7 +17,7 @@
 {"Player": {"Name":"Irvin", "Position":"WR", "Age":4, "Level":7, "Q":70, "S":0, "T":30, "Experience":-1.35}},
 {"Player": {"Name":"Ganzi", "Position":"TE", "Age":1, "Level":8, "Q":35, "S":35, "T":30, "Experience":-0.55}},
 {"Player": {"Name":"Sharpe", "Position":"TE", "Age":3, "Level":11, "Q":50, "S":30, "T":20, "Experience":0.05}},
-{"Player": {"Name":"Ringo", "Position":"C", "Age":2, "Level":11, "Q":40, "S":55, "T":5, "Experience":-0.3}},
+{"Player": {"Name":"Ringo", "Position":"OC", "Age":2, "Level":11, "Q":40, "S":55, "T":5, "Experience":-0.3}},
 {"Player": {"Name":"Kiesling", "Position":"OG", "Age":4, "Level":7, "Q":40, "S":60, "T":0, "Experience":-1.05}},
 {"Player": {"Name":"Fortmann", "Position":"OG", "Age":3, "Level":6, "Q":50, "S":50, "T":0, "Experience":-0.75}},
 {"Player": {"Name":"Merlos", "Position":"OG", "Age":1, "Level":8, "Q":45, "S":55, "T":0, "Experience":-0.9}},
