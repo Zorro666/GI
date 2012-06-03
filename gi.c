@@ -14,11 +14,6 @@ void gi_Init(void)
 	gi_GlobalInfo_Init(&s_globalInfo);
 }
 
-Json_Value* gi_FindOffencePlay(Json_Value* const value)
-{
-	return Json_FindObjectByName(value, "Play");
-}
-
 Json_Value* gi_ParseFile(const char* const fileName, const int debug)
 {
 	Json_Value* root;
