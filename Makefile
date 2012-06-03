@@ -24,6 +24,8 @@ C_PROJECTS:=gi
 
 all: $(C_PROJECTS)
 
+rebuild: nuke all
+
 define upperString
 $(shell echo $1 | tr [a-z] [A-Z] )
 endef
