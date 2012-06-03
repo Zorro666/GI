@@ -5,3 +5,4 @@
 *.so
 gi
 gi.exe
+*_debug.txt
