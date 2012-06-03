@@ -3,21 +3,40 @@
 
 #include "gi_Player.h"
 
-static char* s_positionNames[GI_POSITION_UNKNOWN+1] = {
-	/*GI_QB, GI_RB, GI_WR, GI_TE, GI_OC, GI_OG, GI_OT, GI_DE, GI_DT, GI_IB, GI_OB, GI_CB, GI_SF, GI_R, GI_K, GI_P, GI_POSITION_UNKNOWN */
-	"QB", "RB", "WR", "TE", "OC", "OG", "OT", "DE", "DT", "IB", "OB", "CB", "SF", "R", "K", "P", "UNKNOWN" };
+static void gi_Player_ComputeQSTs(gi_Player* const pThis)
+{
+	float level = (float)pThis->m_rawLevel;
+	float experience = pThis->m_experience;
+	float Q = (float)(pThis->m_rawQST[GI_Q])/100.0f;
+	float S = (float)(pThis->m_rawQST[GI_S])/100.0f;
+	float T = (float)(pThis->m_rawQST[GI_T])/100.0f;
+
+	level += experience;
+	Q *= level;
+	S *= level;
+	T *= level;
+
+	pThis->m_level = level;
+	pThis->m_QST[GI_Q] = Q;
+	pThis->m_QST[GI_S] = S;
+	pThis->m_QST[GI_T] = T;
+}
 
 void gi_Player_Init(gi_Player* const pThis)
 {
 	pThis->m_name[0] = '\0';
 	pThis->m_position = GI_POSITION_UNKNOWN;
-	pThis->m_level = 0;
-	pThis->m_qst[0] = 0;
-	pThis->m_qst[1] = 0;
-	pThis->m_qst[2] = 0;
+	pThis->m_rawLevel = 0;
+	pThis->m_rawQST[0] = 0;
+	pThis->m_rawQST[1] = 0;
+	pThis->m_rawQST[2] = 0;
 	pThis->m_experience = 0.0f;
 	pThis->m_unit = GI_SQUAD_UNKNOWN;
 	pThis->m_age = -1;
+	pThis->m_level = 0.0f;
+	pThis->m_QST[0] = 0.0f;
+	pThis->m_QST[1] = 0.0f;
+	pThis->m_QST[2] = 0.0f;
 	gi_SpecialTeamsValues_Init(&pThis->m_specialTeamsValues);
 }
 
@@ -76,19 +95,19 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		{
 			if (strcmp(it->m_name, "Level") == 0)
 			{
-				pThis->m_level = it->m_value_data.int_value;
+				pThis->m_rawLevel = it->m_value_data.int_value;
 			}
 			else if (strcmp(it->m_name, "Q") == 0)
 			{
-				pThis->m_qst[GI_Q] = it->m_value_data.int_value;
+				pThis->m_rawQST[GI_Q] = it->m_value_data.int_value;
 			}
 			else if (strcmp(it->m_name, "S") == 0)
 			{
-				pThis->m_qst[GI_S] = it->m_value_data.int_value;
+				pThis->m_rawQST[GI_S] = it->m_value_data.int_value;
 			}
 			else if (strcmp(it->m_name, "T") == 0)
 			{
-				pThis->m_qst[GI_T] = it->m_value_data.int_value;
+				pThis->m_rawQST[GI_T] = it->m_value_data.int_value;
 			}
 			else if (strcmp(it->m_name, "Age") == 0)
 			{
@@ -107,7 +126,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 	pThis->m_unit = GI_SQUAD_UNKNOWN;
 	for (i = 0; i < GI_POSITION_UNKNOWN; i++)
 	{
-		if (strcmp(s_positionNames[i], position) == 0)
+		if (strcmp(gi_GetPositionName(i), position) == 0)
 		{
 			pThis->m_position = i;
 			break;
@@ -142,16 +161,20 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 			break;
 	}
 
+	gi_Player_ComputeQSTs(pThis);
+
 	return GI_SUCCESS;
 }
 
 void gi_Player_Print(gi_Player* const pThis, FILE* const pFile)
 {
-	fprintf(pFile, "Player:'%s' '%s' Position: %s Level:%d QST:%d %d %d Age:%d Experience:%.2f\n",
+	fprintf(pFile, "Player:'%s' '%s' Position:%s Level:%d QST:%d %d %d Age:%d Experience:%.2f L:%5.2f QST:%5.2f %5.2f %5.2f\n",
 			pThis->m_name, 
 			((pThis->m_unit == GI_OFFENCE) ? "Offence" : ((pThis->m_unit == GI_DEFENCE) ? "Defence" : "Special Teams")),
-			s_positionNames[pThis->m_position], pThis->m_level, 
-			pThis->m_qst[GI_Q], pThis->m_qst[GI_S], pThis->m_qst[GI_T], pThis->m_age, pThis->m_experience);
+			gi_GetPositionName(pThis->m_position), pThis->m_rawLevel, 
+			pThis->m_rawQST[GI_Q], pThis->m_rawQST[GI_S], pThis->m_rawQST[GI_T], pThis->m_age, pThis->m_experience,
+			pThis->m_level, pThis->m_QST[GI_Q], pThis->m_QST[GI_S], pThis->m_QST[GI_T]
+			);
 }
 
 void gi_Player_ComputeSpecialTeams(gi_Player* const pThis)
@@ -161,6 +184,31 @@ void gi_Player_ComputeSpecialTeams(gi_Player* const pThis)
 	float gunner = 0.0f;
 	float protector = 0.0f;
 	float runner = 0.0f;
+	float level = (float)pThis->m_rawLevel;
+	float experience = pThis->m_experience;
+	float Q = (float)(pThis->m_rawQST[GI_Q])/100.0f;
+	float S = (float)(pThis->m_rawQST[GI_S])/100.0f;
+	float T = (float)(pThis->m_rawQST[GI_T])/100.0f;
+
+	/* Ignore experience for R, K, P */
+	switch (position)
+	{
+		case GI_R:
+		case GI_K:
+		case GI_P:
+			experience = 0.0f;
+			break;
+		default:
+			break;
+	};
+	level += experience;
+	if (level > 10.0f)
+	{
+		level = 10.0f+((level-10.0f)*0.2f);
+	}
+	Q *= level;
+	S *= level;
+	T *= level;
 
 	/* Personal Protector: RB, SF, TE, IB, OB: S x 1.5 */
 	switch (position)
@@ -170,7 +218,7 @@ void gi_Player_ComputeSpecialTeams(gi_Player* const pThis)
 		case GI_TE:
 		case GI_IB:
 		case GI_OB:
-			protector = 1.5f * (float)pThis->m_level * (float)(pThis->m_qst[GI_S])/100.0f;
+			protector = 1.5f*S;
 			break;
 		default:
 			protector = 0.0f;
@@ -187,16 +235,16 @@ void gi_Player_ComputeSpecialTeams(gi_Player* const pThis)
 		case GI_DT:
 		case GI_OC:
 		case GI_OG:
-			blocker = 0.8f * (float)(pThis->m_level);
+			blocker = 0.8f*level;
 			break;
 		case GI_IB:
 		case GI_OB:
-			blocker = 0.7f * (float)(pThis->m_level);
+			blocker = 0.7f*level;
 			break;
 		case GI_TE:
 		case GI_RB:
 		case GI_SF:
-			blocker = 0.33f * (float)(pThis->m_level) * (float)(pThis->m_qst[GI_S]+pThis->m_qst[GI_T])/100.0f;
+			blocker = 0.33f*(S+T);
 			break;
 		default:
 			blocker = 0.0f;
@@ -210,16 +258,16 @@ void gi_Player_ComputeSpecialTeams(gi_Player* const pThis)
 	switch (position)
 	{
 		case GI_R:
-			runner = 0.9f * (float)(pThis->m_level);
+			runner = 0.9f*level;
 			break;
 		case GI_CB:
 		case GI_WR:
-			runner = 0.8f * (float)(pThis->m_level);
+			runner = 0.8f*level;
 			break;
 		case GI_TE:
 		case GI_RB:
 		case GI_SF:
-			runner = 0.33f * (float)(pThis->m_level) * (float)(pThis->m_qst[GI_Q]+pThis->m_qst[GI_T])/100.0f;
+			runner = 0.33f*(Q+T);
 			break;
 		default:
 			runner = 0.0f;
@@ -233,7 +281,7 @@ void gi_Player_ComputeSpecialTeams(gi_Player* const pThis)
 		case GI_WR:
 		case GI_CB:
 		case GI_R:
-			gunner = 1.5f * (float)(pThis->m_level) * (float)(pThis->m_qst[GI_Q])/100.0f;
+			gunner = 1.5f*Q;
 			break;
 		default:
 			gunner = 0.0f;

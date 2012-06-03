@@ -191,7 +191,8 @@ static void gi_Team_computeAndPrintStats(gi_Team* const pThis, FILE* const pFile
 		{
 			const int playerIndex = pStats[i].m_key;
 			gi_Player* const pPlayer = &pThis->m_squad[playerIndex];
-			fprintf(pFile, "Player[%d] '%s' '%s':%f\n", playerIndex, pPlayer->m_name, statName, pStats[i].m_value);
+			fprintf(pFile, "Player[%d] '%s' Position:%s '%s':%f\n", playerIndex, pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), 
+							statName, pStats[i].m_value);
 		}
 	}
 }

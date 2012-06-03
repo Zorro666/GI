@@ -1,4 +1,3 @@
-* pre-compute level-experience * QST -> qst values
 * sort team by position
 * array[MAX_POSITIONS] of where the position starts in the player array
 * array[MAX_POSITIONS] of number of players per position

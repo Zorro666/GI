@@ -29,6 +29,27 @@ typedef enum GI_SQUAD_UNIT
 	GI_SQUAD_UNKNOWN
 } GI_SQUAD_UNIT;
 
+typedef enum GI_POSITION
+{
+	GI_QB = 0,
+	GI_RB = 1,
+	GI_WR = 2,
+	GI_TE = 3,
+	GI_OC = 4,
+	GI_OG = 5,
+	GI_OT = 6,
+	GI_DE = 7,
+	GI_DT = 8,
+	GI_IB = 9,
+	GI_OB = 10,
+	GI_CB = 11,
+	GI_SF = 12,
+	GI_R = 13,
+	GI_K = 14,
+	GI_P = 15,
+	GI_POSITION_UNKNOWN = 16
+} GI_POSITION;
+
 #define MAX_TEAMNAME_SIZE (128)
 #define MAX_PLAYERNAME_SIZE (128)
 #define MAX_OFFENCENAME_SIZE (16)
@@ -62,6 +83,7 @@ typedef struct gi_SpecialTeamsValues gi_SpecialTeamsValues;
 void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const int debug);
 GI_Return gi_LoadFile(const char* const fileName, const int debug);
+const char* gi_GetPositionName(const GI_POSITION position);
 void gi_Output(void);
 
 #endif /* #ifndef GI_HH */

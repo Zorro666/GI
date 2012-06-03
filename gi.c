@@ -8,10 +8,19 @@
 static BlockAllocator s_json_allocator;
 static gi_GlobalInfo s_globalInfo;
 
+static const char* const s_positionNames[GI_POSITION_UNKNOWN+1] = {
+	/*GI_QB, GI_RB, GI_WR, GI_TE, GI_OC, GI_OG, GI_OT, GI_DE, GI_DT, GI_IB, GI_OB, GI_CB, GI_SF, GI_R, GI_K, GI_P, GI_POSITION_UNKNOWN */
+	"QB", "RB", "WR", "TE", "OC", "OG", "OT", "DE", "DT", "IB", "OB", "CB", "SF", "R", "K", "P", "UNKNOWN" };
+
 void gi_Init(void)
 {
 	BlockAllocator_Init(&s_json_allocator, 128*1024);
 	gi_GlobalInfo_Init(&s_globalInfo);
+}
+
+const char* gi_GetPositionName(const GI_POSITION position)
+{
+	return s_positionNames[position];
 }
 
 Json_Value* gi_ParseFile(const char* const fileName, const int debug)
