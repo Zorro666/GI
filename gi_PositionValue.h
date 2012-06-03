@@ -1,6 +1,7 @@
 #ifndef GI_POSITIONVALUE_HH
 #define GI_POSITIONVALUE_HH
 
+#include <stdio.h>
 #include "gi.h"
 
 struct gi_PositionValue
@@ -15,7 +16,7 @@ struct gi_PositionValue
 };
 
 void gi_PositionValue_Init(gi_PositionValue* const pThis);
-void gi_PositionValue_Print(gi_PositionValue* const pThis);
+void gi_PositionValue_Print(gi_PositionValue* const pThis, FILE* const pFile);
 void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const int maxSize, Json_Value* const root);
 
 #endif /* #ifndef GI_POSITIONVALUE_HH */

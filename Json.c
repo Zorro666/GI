@@ -6,12 +6,12 @@
 /* true if character represent a digit */
 #define IS_DIGIT(c) (c >= '0' && c <= '9')
 
-static void Json_Indent(const int n)
+static void Json_Indent(FILE* const pFile, const int n)
 {
 	int i;
 	for (i = 0; i < n; ++i) 
 	{
-		printf("  ");
+		fprintf(pFile, "  ");
 	}
 } 
 
@@ -525,39 +525,42 @@ Json_Value* Json_ParseFile(const char* const filename, char* error_pos[], char* 
 	return Json_Parse(buffer, error_pos, error_desc, error_line, allocator);
 }
 
-void Json_Print(const Json_Value* const value, const int indent)
+void Json_Print(const Json_Value* const value, FILE* const pFile, const int indent)
 {
-	Json_Indent(indent);
-	if (value->m_name) printf("\"%s\" = ", value->m_name);
+	Json_Indent(pFile, indent);
+	if (value->m_name)
+	{
+		fprintf(pFile, "\"%s\" = ", value->m_name);
+	}
 	switch(value->m_type)
 	{
 		case JSON_NULL:
-			printf("null\n");
+			fprintf(pFile, "null\n");
 			break;
 		case JSON_OBJECT:
 		case JSON_ARRAY:
 		{
 			Json_Value* it;
-			printf(value->m_type == JSON_OBJECT ? "{\n" : "[\n");
+			fprintf(pFile, value->m_type == JSON_OBJECT ? "{\n" : "[\n");
 			for (it = value->m_first_child; it; it = it->m_next_sibling)
 			{
-				Json_Print(it, indent + 1);
+				Json_Print(it, pFile, indent + 1);
 			}
-			Json_Indent(indent);
-			printf(value->m_type == JSON_OBJECT ? "}\n" : "]\n");
+			Json_Indent(pFile, indent);
+			fprintf(pFile, value->m_type == JSON_OBJECT ? "}\n" : "]\n");
 			break;
 		}
 		case JSON_STRING:
-			printf("\"%s\"\n", value->m_value_data.string_value);
+			fprintf(pFile, "\"%s\"\n", value->m_value_data.string_value);
 			break;
 		case JSON_INT:
-			printf("%d\n", value->m_value_data.int_value);
+			fprintf(pFile, "%d\n", value->m_value_data.int_value);
 			break;
 		case JSON_FLOAT:
-			printf("%f\n", value->m_value_data.float_value);
+			fprintf(pFile, "%f\n", value->m_value_data.float_value);
 			break;
 		case JSON_BOOL:
-			printf(value->m_value_data.int_value ? "true\n" : "false\n");
+			fprintf(pFile, value->m_value_data.int_value ? "true\n" : "false\n");
 			break;
 	}
 }

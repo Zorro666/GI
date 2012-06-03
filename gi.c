@@ -31,7 +31,7 @@ Json_Value* gi_ParseFile(const char* const fileName, const int debug)
 	{
 		if (debug == 1)
 		{
-			Json_Print(root, 0);
+			Json_Print(root, stdout, 0);
 		}
 	}
 	else
@@ -62,7 +62,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 				{
 					if (debug == 1)
 					{
-						gi_OffencePlay_Print(&play);
+						gi_OffencePlay_Print(&play, stdout);
 					}
 					
 					return GI_SUCCESS;
@@ -75,7 +75,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 				{
 					if (debug == 1)
 					{
-						gi_Team_Print(pTeam);
+						gi_Team_Print(pTeam, stdout);
 					}
 					return GI_SUCCESS;
 				}

@@ -148,9 +148,9 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 	return GI_SUCCESS;
 }
 
-void gi_Player_Print(gi_Player* const pThis)
+void gi_Player_Print(gi_Player* const pThis, FILE* const pFile)
 {
-	printf("Player:'%s' '%s' Position: %s Level:%d QST:%d %d %d Age:%d Experience:%.2f\n",
+	fprintf(pFile, "Player:'%s' '%s' Position: %s Level:%d QST:%d %d %d Age:%d Experience:%.2f\n",
 			pThis->m_name, 
 			((pThis->m_unit == GI_OFFENCE) ? "Offence" : ((pThis->m_unit == GI_DEFENCE) ? "Defence" : "Special Teams")),
 			s_positionNames[pThis->m_position], pThis->m_level, 

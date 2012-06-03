@@ -1,6 +1,7 @@
 #ifndef JSON_H
 #define JSON_H
 
+#include <stdio.h>
 #include "BlockAllocator.h"
 
 typedef struct Json_Value Json_Value;
@@ -36,7 +37,7 @@ struct Json_Value
 
 Json_Value* Json_ParseFile(const char* const filename, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator);
 Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator);
-void Json_Print(const Json_Value* const value, const int indent);
+void Json_Print(const Json_Value* const value, FILE* const pFile, const int indent);
 Json_Value* Json_FindObjectByName(Json_Value* const value, const char* const name);
 
 #endif

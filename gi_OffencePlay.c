@@ -95,40 +95,40 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 	return GI_SUCCESS;
 }
 
-void gi_OffencePlay_Print(gi_OffencePlay* const pThis)
+void gi_OffencePlay_Print(gi_OffencePlay* const pThis, FILE* const pFile)
 {
 	int i;
-	printf("Offence Play:'%s'\n", pThis->m_name);
-	printf("Defence: ");
+	fprintf(pFile, "Offence Play:'%s'\n", pThis->m_name);
+	fprintf(pFile, "Defence: ");
 	for (i = 0; i < MAX_NUM_DEFENCE_FORMATIONS; i++)
 	{
 		if (pThis->m_defense[i][0] != '\0')
 		{
-			printf("'%s' ", pThis->m_defense[i]);
+			fprintf(pFile, "'%s' ", pThis->m_defense[i]);
 		}
 	}
-	printf("\n");
+	fprintf(pFile, "\n");
 
-	printf("Base: ");
+	fprintf(pFile, "Base: ");
 	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
 	{
-		gi_PositionValue_Print(&pThis->m_base[i]);
+		gi_PositionValue_Print(&pThis->m_base[i], pFile);
 	}
-	printf("\n");
+	fprintf(pFile, "\n");
 
-	printf("BC: ");
+	fprintf(pFile, "BC: ");
 	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
 	{
-		gi_PositionValue_Print(&pThis->m_bc[i]);
+		gi_PositionValue_Print(&pThis->m_bc[i], pFile);
 	}
-	printf("\n");
+	fprintf(pFile, "\n");
 
-	printf("Weighting: ");
+	fprintf(pFile, "Weighting: ");
 	for (i = 0; i < MAX_NUM_OFFENCE_POSITIONS; i++)
 	{
-		gi_PositionValue_Print(&pThis->m_weighting[i]);
+		gi_PositionValue_Print(&pThis->m_weighting[i], pFile);
 	}
-	printf("\n");
+	fprintf(pFile, "\n");
 }
 
 

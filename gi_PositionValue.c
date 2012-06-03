@@ -9,17 +9,17 @@ void gi_PositionValue_Init(gi_PositionValue* const pThis)
 	pThis->m_value.f = 0.0f;
 }
 
-void gi_PositionValue_Print(gi_PositionValue* const pThis)
+void gi_PositionValue_Print(gi_PositionValue* const pThis, FILE* const pFile)
 {
 	if (pThis->m_position[0] != '\0')
 	{
 		if (pThis->m_valueType == GI_FLOAT)
 		{
-			printf("%s = %.2f ", pThis->m_position, pThis->m_value.f);
+			fprintf(pFile, "%s = %.2f ", pThis->m_position, pThis->m_value.f);
 		}
 		else if (pThis->m_valueType == GI_INT)
 		{
-			printf("%s = %d ", pThis->m_position, pThis->m_value.i);
+			fprintf(pFile, "%s = %d ", pThis->m_position, pThis->m_value.i);
 		}
 	}
 }
