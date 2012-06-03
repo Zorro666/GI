@@ -130,6 +130,10 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 void gi_Team_Print(gi_Team* const pThis, FILE* const pFile)
 {
 	int i;
+	if (pThis->m_numPlayers == 0)
+	{
+		return;
+	}
 	fprintf(pFile, "Team:'%s' %d\n", pThis->m_name, pThis->m_numPlayers);
 	fprintf(pFile, "Offence: %d\n", pThis->m_numOffence);
 	for (i = 0; i < pThis->m_numOffence; i++)
@@ -146,7 +150,6 @@ void gi_Team_Print(gi_Team* const pThis, FILE* const pFile)
 	{
 		gi_Player_Print(pThis->m_specialTeams[i], pFile);
 	}
-	gi_Team_PrintBestSpecialTeams(pThis, pFile);
 }
 
 void gi_Team_ComputeSpecialTeams(gi_Team* const pThis)
@@ -175,8 +178,13 @@ static int floatItem_Compare(const void* a, const void* b)
 static void gi_Team_computeAndPrintStats(gi_Team* const pThis, FILE* const pFile, FloatItem* const pStats, const char* const statName)
 {
 	int i;
+	if (pThis->m_numPlayers == 0)
+	{
+		return;
+	}
 	qsort(pStats, (size_t)(pThis->m_numPlayers), sizeof(pStats[0]), floatItem_Compare);
 	fprintf(pFile, "\n");
+	fprintf(pFile, "**** %s ****\n", statName);
 	for (i = 0; i < pThis->m_numPlayers; i++)
 	{
 		if (pStats[i].m_value > 0.00000001f)
@@ -192,6 +200,10 @@ void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 {
 	int i;
 	FloatItem stats[MAX_NUM_SQUAD_PLAYERS];
+	if (pThis->m_numPlayers == 0)
+	{
+		return;
+	}
 
 	for (i = 0; i < pThis->m_numPlayers; i++)
 	{

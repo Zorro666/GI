@@ -105,3 +105,29 @@ GI_Return gi_LoadFile(const char* const fileName, const int debug)
 	}
 	return GI_ERROR;
 }
+
+static GI_Return gi_Output_SpecialTeamsStats(gi_Team* const pTeam)
+{
+	FILE* pFile;
+	char* fileName;
+
+	fileName = "SpecialTeams_debug.txt";
+	pFile = fopen(fileName, "wa");
+	if (pFile == NULL)
+	{
+		fprintf(stderr,"ERROR opening file '%s'\n", fileName);
+		return GI_ERROR;
+	}
+	gi_Team_PrintBestSpecialTeams(pTeam, pFile);
+	fclose(pFile);
+	return GI_SUCCESS;
+}
+
+void gi_Output(void)
+{
+	gi_Team* const pTeam = &s_globalInfo.m_team;
+	if (gi_Output_SpecialTeamsStats(pTeam) == GI_ERROR)
+	{
+		fprintf(stderr,"ERROR outputting special teams stats\n");
+	}
+}
