@@ -12,10 +12,10 @@ struct gi_Team
 	gi_Player* m_defence[MAX_NUM_DEFENCE_PLAYERS];
 	gi_Player* m_specialTeams[MAX_NUM_SPECIALTEAMS_PLAYERS];
 	char m_name[MAX_TEAMNAME_SIZE];
-	int m_numPlayers;
-	int m_numOffence;
-	int m_numDefence;
-	int m_numSpecialTeams;
+	size_t m_numPlayers;
+	size_t m_numOffence;
+	size_t m_numDefence;
+	size_t m_numSpecialTeams;
 };
 
 void gi_Team_Init(gi_Team* const pThis);

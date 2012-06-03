@@ -3,6 +3,101 @@
 
 #include "gi_Team.h"
 
+typedef struct IntItem
+{
+	int m_value;
+	size_t m_key;
+} IntItem;
+
+static int intItem_Compare(const void* a, const void* b)
+{
+	const int valueA = ((const IntItem*)a)->m_value;
+	const int valueB = ((const IntItem*)b)->m_value;
+	return (valueA < valueB);
+}
+
+typedef struct FloatItem
+{
+	float m_value;
+	size_t m_key;
+} FloatItem;
+
+static int floatItem_Compare(const void* a, const void* b)
+{
+	const float valueA = ((const FloatItem*)a)->m_value;
+	const float valueB = ((const FloatItem*)b)->m_value;
+	return (valueA < valueB);
+}
+
+static void gi_Team_SortByPosition(gi_Team* const pThis)
+{
+	gi_Player squadTemp[MAX_NUM_SQUAD_PLAYERS];
+	IntItem stats[MAX_NUM_SQUAD_PLAYERS];
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+
+	if (numPlayers == 0)
+	{
+		return;
+	}
+
+	for (i = 0; i < numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		stats[i].m_value = pPlayer->m_position;
+		stats[i].m_key = i;
+	}
+	qsort(stats, numPlayers, sizeof(stats[0]), intItem_Compare);
+	for (i = 0; i < numPlayers; i++)
+	{
+		squadTemp[i] = pThis->m_squad[i];
+	}
+	for (i = 0; i < numPlayers; i++)
+	{
+		size_t reverseI = numPlayers-i-1;
+		const size_t playerIndex = stats[reverseI].m_key;
+		pThis->m_squad[i] = squadTemp[playerIndex];
+	}
+}
+
+static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
+{
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+	size_t numOffence = 0;
+	size_t numDefence = 0;
+	size_t numSpecialTeams = 0;
+
+	if (numPlayers == 0)
+	{
+		return;
+	}
+
+	for (i = 0; i < numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		const GI_SQUAD_UNIT unit = pPlayer->m_unit;
+		if (unit == GI_OFFENCE)
+		{
+			pThis->m_offence[numOffence] = pPlayer;
+			numOffence++;
+		}
+		else if (unit == GI_DEFENCE)
+		{
+			pThis->m_defence[numDefence] = pPlayer;
+			numDefence++;
+		}
+		else if (unit == GI_SPECIALTEAMS)
+		{
+			pThis->m_specialTeams[numSpecialTeams] = pPlayer;
+			numSpecialTeams++;
+		}
+	}
+	pThis->m_numOffence = numOffence;
+	pThis->m_numDefence = numDefence;
+	pThis->m_numSpecialTeams = numSpecialTeams;
+}
+
 void gi_Team_Init(gi_Team* const pThis)
 {
 	int i;
@@ -56,10 +151,7 @@ GI_Bool gi_Team_IsValueValid(const Json_Value* const root)
 GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
-	int numOffence = 0;
-	int numDefence = 0;
-	int numSpecialTeams = 0;
-	int numPlayers = 0;
+	size_t numPlayers = 0;
 
 	if (gi_Team_IsValueValid(root) == GI_FALSE)
 	{
@@ -91,21 +183,6 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 						playerRoot = it2->m_first_child;
 						if (gi_Player_Load(&player, playerRoot) == GI_SUCCESS)
 						{
-							if (player.m_unit == GI_OFFENCE)
-							{
-								pThis->m_offence[numOffence] = &pThis->m_squad[numPlayers];
-								numOffence++;
-							}
-							else if (player.m_unit == GI_DEFENCE)
-							{
-								pThis->m_defence[numDefence] = &pThis->m_squad[numPlayers];
-								numDefence++;
-							}
-							else if (player.m_unit == GI_SPECIALTEAMS)
-							{
-								pThis->m_specialTeams[numSpecialTeams] = &pThis->m_squad[numPlayers];
-								numSpecialTeams++;
-							}
 							if (player.m_unit != GI_SQUAD_UNKNOWN)
 							{
 								pThis->m_squad[numPlayers] = player;
@@ -118,9 +195,9 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 		}
 	}
 	pThis->m_numPlayers = numPlayers;
-	pThis->m_numOffence = numOffence;
-	pThis->m_numDefence = numDefence;
-	pThis->m_numSpecialTeams = numSpecialTeams;
+
+	gi_Team_SortByPosition(pThis);
+	gi_Team_UpdatePositionArrays(pThis);
 
 	gi_Team_ComputeSpecialTeams(pThis);
 
@@ -129,12 +206,13 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 
 void gi_Team_Print(gi_Team* const pThis, FILE* const pFile)
 {
-	int i;
-	if (pThis->m_numPlayers == 0)
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+	if (numPlayers == 0)
 	{
 		return;
 	}
-	fprintf(pFile, "Team:'%s' %d\n", pThis->m_name, pThis->m_numPlayers);
+	fprintf(pFile, "Team:'%s' %d\n", pThis->m_name, numPlayers);
 	fprintf(pFile, "Offence: %d\n", pThis->m_numOffence);
 	for (i = 0; i < pThis->m_numOffence; i++)
 	{
@@ -154,42 +232,35 @@ void gi_Team_Print(gi_Team* const pThis, FILE* const pFile)
 
 void gi_Team_ComputeSpecialTeams(gi_Team* const pThis)
 {
-	int i;
-	for (i = 0; i < pThis->m_numPlayers; i++)
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+	if (numPlayers == 0)
+	{
+		return;
+	}
+	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
 		gi_Player_ComputeSpecialTeams(pPlayer);
 	}
 }
 
-typedef struct FloatItem
-{
-	float m_value;
-	int m_key;
-} FloatItem;
-
-static int floatItem_Compare(const void* a, const void* b)
-{
-	const float valueA = ((const FloatItem*)a)->m_value;
-	const float valueB = ((const FloatItem*)b)->m_value;
-	return (valueA < valueB);
-}
-
 static void gi_Team_computeAndPrintStats(gi_Team* const pThis, FILE* const pFile, FloatItem* const pStats, const char* const statName)
 {
-	int i;
-	if (pThis->m_numPlayers == 0)
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+	if (numPlayers == 0)
 	{
 		return;
 	}
-	qsort(pStats, (size_t)(pThis->m_numPlayers), sizeof(pStats[0]), floatItem_Compare);
+	qsort(pStats, numPlayers, sizeof(pStats[0]), floatItem_Compare);
 	fprintf(pFile, "\n");
 	fprintf(pFile, "**** %s ****\n", statName);
-	for (i = 0; i < pThis->m_numPlayers; i++)
+	for (i = 0; i < numPlayers; i++)
 	{
 		if (pStats[i].m_value > 0.00000001f)
 		{
-			const int playerIndex = pStats[i].m_key;
+			const size_t playerIndex = pStats[i].m_key;
 			gi_Player* const pPlayer = &pThis->m_squad[playerIndex];
 			fprintf(pFile, "Player[%d] '%s' Position:%s '%s':%f\n", playerIndex, pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), 
 							statName, pStats[i].m_value);
@@ -199,14 +270,16 @@ static void gi_Team_computeAndPrintStats(gi_Team* const pThis, FILE* const pFile
 
 void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 {
-	int i;
 	FloatItem stats[MAX_NUM_SQUAD_PLAYERS];
-	if (pThis->m_numPlayers == 0)
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+
+	if (numPlayers == 0)
 	{
 		return;
 	}
 
-	for (i = 0; i < pThis->m_numPlayers; i++)
+	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
 		stats[i].m_value = pPlayer->m_specialTeamsValues.m_blocker;
@@ -214,7 +287,7 @@ void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Blocker");
 
-	for (i = 0; i < pThis->m_numPlayers; i++)
+	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
 		stats[i].m_value = pPlayer->m_specialTeamsValues.m_gunner;
@@ -222,7 +295,7 @@ void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Gunner");
 
-	for (i = 0; i < pThis->m_numPlayers; i++)
+	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
 		stats[i].m_value = pPlayer->m_specialTeamsValues.m_protector;
@@ -230,7 +303,7 @@ void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Protector");
 
-	for (i = 0; i < pThis->m_numPlayers; i++)
+	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
 		stats[i].m_value = pPlayer->m_specialTeamsValues.m_runner;
