@@ -1,0 +1,5 @@
+* pre-compute level-experience * QST -> qst values
+* sort team by position
+* array[MAX_POSITIONS] of where the position starts in the player array
+* array[MAX_POSITIONS] of number of players per position
+* compute some play values per player per offence play that has been loaded and output
