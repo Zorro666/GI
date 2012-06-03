@@ -8,7 +8,7 @@
 static BlockAllocator s_json_allocator;
 static gi_GlobalInfo s_globalInfo;
 
-static const char* const s_positionNames[GI_POSITION_UNKNOWN+1] = {
+static const char* const s_positionNames[GI_NUM_POSITIONS] = {
 	/*GI_QB, GI_RB, GI_WR, GI_TE, GI_OC, GI_OG, GI_OT, GI_DE, GI_DT, GI_IB, GI_OB, GI_CB, GI_SF, GI_R, GI_K, GI_P, GI_POSITION_UNKNOWN */
 	"QB", "RB", "WR", "TE", "OC", "OG", "OT", "DE", "DT", "IB", "OB", "CB", "SF", "R", "K", "P", "UNKNOWN" };
 
@@ -143,7 +143,7 @@ static GI_Return gi_Output_SpecialTeamsStats(gi_Team* const pTeam)
 static GI_Return gi_Output_Team(gi_Team* const pTeam)
 {
 	FILE* pFile;
-	char fileName[MAX_OUTPUTFILENAME_SIZE];
+	char fileName[GI_MAX_OUTPUTFILENAME_SIZE];
 
 	if (pTeam->m_name[0] == '\0')
 	{

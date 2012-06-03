@@ -2,37 +2,12 @@
 #include <string.h>
 
 #include "gi_Team.h"
-
-typedef struct IntItem
-{
-	int m_value;
-	size_t m_key;
-} IntItem;
-
-static int intItem_Compare(const void* a, const void* b)
-{
-	const int valueA = ((const IntItem*)a)->m_value;
-	const int valueB = ((const IntItem*)b)->m_value;
-	return (valueA < valueB);
-}
-
-typedef struct FloatItem
-{
-	float m_value;
-	size_t m_key;
-} FloatItem;
-
-static int floatItem_Compare(const void* a, const void* b)
-{
-	const float valueA = ((const FloatItem*)a)->m_value;
-	const float valueB = ((const FloatItem*)b)->m_value;
-	return (valueA < valueB);
-}
+#include "gi_Compare.h"
 
 static void gi_Team_SortByPosition(gi_Team* const pThis)
 {
-	gi_Player squadTemp[MAX_NUM_SQUAD_PLAYERS];
-	IntItem stats[MAX_NUM_SQUAD_PLAYERS];
+	gi_Player squadTemp[GI_MAX_NUM_SQUAD_PLAYERS];
+	IntItem stats[GI_MAX_NUM_SQUAD_PLAYERS];
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
 
@@ -67,16 +42,37 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 	size_t numOffence = 0;
 	size_t numDefence = 0;
 	size_t numSpecialTeams = 0;
+	size_t currentPosition;
+	size_t currentStart;
 
 	if (numPlayers == 0)
 	{
 		return;
 	}
 
+	currentStart = 0;
+	currentPosition = GI_POSITION_UNKNOWN;
 	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
 		const GI_SQUAD_UNIT unit = pPlayer->m_unit;
+		const size_t position = pPlayer->m_position;
+		if (position != currentPosition)
+		{
+			if ((position < currentPosition) && (currentPosition != GI_POSITION_UNKNOWN))
+			{
+				fprintf(stderr, "ERROR unsorted positions in squad %d < %d\n", position, currentPosition);
+				return;
+			}
+			if (currentPosition != GI_POSITION_UNKNOWN)
+			{
+				pThis->m_positionCounts[currentPosition] = i - currentStart;
+			}
+			pThis->m_positionStarts[position] = i;
+			currentPosition = position;
+			currentStart = i;
+		}
+
 		if (unit == GI_OFFENCE)
 		{
 			pThis->m_offence[numOffence] = pPlayer;
@@ -93,6 +89,16 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 			numSpecialTeams++;
 		}
 	}
+	pThis->m_positionCounts[currentPosition] = numPlayers - pThis->m_positionStarts[currentPosition];
+
+#if 0
+	for (i = 0; i < GI_NUM_POSITIONS; i++)
+	{
+		fprintf(stderr, "position[%d] '%s': start:%d count:%d\n", i, gi_GetPositionName(i), 
+						pThis->m_positionStarts[i], pThis->m_positionCounts[i]);
+	}
+#endif /*#if 0*/
+
 	pThis->m_numOffence = numOffence;
 	pThis->m_numDefence = numDefence;
 	pThis->m_numSpecialTeams = numSpecialTeams;
@@ -100,23 +106,29 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 
 void gi_Team_Init(gi_Team* const pThis)
 {
-	int i;
-	for (i = 0; i < MAX_NUM_SQUAD_PLAYERS; i++)
+	size_t i;
+	for (i = 0; i < GI_MAX_NUM_SQUAD_PLAYERS; i++)
 	{
 		gi_Player_Init(&pThis->m_squad[i]);
 	}
-	for (i = 0; i < MAX_NUM_OFFENCE_PLAYERS; i++)
+	for (i = 0; i < GI_MAX_NUM_OFFENCE_PLAYERS; i++)
 	{
 		pThis->m_offence[i] = NULL;
 	}
-	for (i = 0; i < MAX_NUM_DEFENCE_PLAYERS; i++)
+	for (i = 0; i < GI_MAX_NUM_DEFENCE_PLAYERS; i++)
 	{
 		pThis->m_defence[i] = NULL;
 	}
-	for (i = 0; i < MAX_NUM_SPECIALTEAMS_PLAYERS; i++)
+	for (i = 0; i < GI_MAX_NUM_SPECIALTEAMS_PLAYERS; i++)
 	{
 		pThis->m_specialTeams[i] = NULL;
 	}
+	for (i = 0; i < GI_NUM_POSITIONS; i++)
+	{
+		pThis->m_positionStarts[i] = 0;
+		pThis->m_positionCounts[i] = 0;
+	}
+
 	pThis->m_name[0] = '\0';
 	pThis->m_numPlayers = 0;
 	pThis->m_numOffence = 0;
@@ -166,7 +178,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 		{
 			if (strcmp(it->m_name, "Name") == 0)
 			{
-				strncpy(pThis->m_name, it->m_value_data.string_value, MAX_TEAMNAME_SIZE);
+				strncpy(pThis->m_name, it->m_value_data.string_value, GI_MAX_TEAMNAME_SIZE);
 			}
 		}
 		if (it->m_type == JSON_ARRAY)
@@ -270,7 +282,7 @@ static void gi_Team_computeAndPrintStats(gi_Team* const pThis, FILE* const pFile
 
 void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 {
-	FloatItem stats[MAX_NUM_SQUAD_PLAYERS];
+	FloatItem stats[GI_MAX_NUM_SQUAD_PLAYERS];
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
 

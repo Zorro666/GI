@@ -24,10 +24,10 @@ void gi_PositionValue_Print(gi_PositionValue* const pThis, FILE* const pFile)
 	}
 }
 
-void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const int maxSize, Json_Value* const root)
+void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root)
 {
 	Json_Value* it;
-	int i;
+	size_t i;
 
 	i = 0;
 	for (it = root->m_first_child; it != NULL; it = it->m_next_sibling)
@@ -37,14 +37,14 @@ void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const int max
 			Json_Value* value = it->m_first_child;
 			if (value->m_type == JSON_FLOAT)
 			{
-				strncpy(positionValue[i].m_position, value->m_name, MAX_POSITION_SIZE);
+				strncpy(positionValue[i].m_position, value->m_name, GI_MAX_POSITION_SIZE);
 				positionValue[i].m_value.f = value->m_value_data.float_value;
 				positionValue[i].m_valueType = GI_FLOAT;
 				i++;
 			}
 			else if (value->m_type == JSON_INT)
 			{
-				strncpy(positionValue[i].m_position, value->m_name, MAX_POSITION_SIZE);
+				strncpy(positionValue[i].m_position, value->m_name, GI_MAX_POSITION_SIZE);
 				positionValue[i].m_value.i = value->m_value_data.int_value;
 				positionValue[i].m_valueType = GI_INT;
 				i++;

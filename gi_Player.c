@@ -67,8 +67,8 @@ GI_Bool gi_Player_IsValueValid(const Json_Value* const root)
 GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
-	int i;
-	char position[MAX_POSITION_SIZE];
+	size_t i;
+	char position[GI_MAX_POSITION_SIZE];
 	position[0] = '\0';
 
 	if (gi_Player_IsValueValid(root) == GI_FALSE)
@@ -84,11 +84,11 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		{
 			if (strcmp(it->m_name, "Name") == 0)
 			{
-				strncpy(pThis->m_name, it->m_value_data.string_value, MAX_PLAYERNAME_SIZE);
+				strncpy(pThis->m_name, it->m_value_data.string_value, GI_MAX_PLAYERNAME_SIZE);
 			}
 			else if (strcmp(it->m_name, "Position") == 0)
 			{
-				strncpy(position, it->m_value_data.string_value, MAX_POSITION_SIZE);
+				strncpy(position, it->m_value_data.string_value, GI_MAX_POSITION_SIZE);
 			}
 		}
 		else if (it->m_type == JSON_INT)

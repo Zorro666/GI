@@ -2,8 +2,8 @@
 
 void gi_PlayInfo_Init(gi_PlayInfo* const pThis)
 {
-	int i;
-	for (i = 0; i < MAX_NUM_OFFENCE_PLAYS; i++)
+	size_t i;
+	for (i = 0; i < GI_MAX_NUM_OFFENCE_PLAYS; i++)
 	{
 		gi_OffencePlay_Init(&pThis->m_offencePlays[i]);
 	}

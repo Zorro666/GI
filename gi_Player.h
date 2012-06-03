@@ -15,7 +15,7 @@ typedef enum GI_QST
 
 struct gi_Player
 {
-	char m_name[MAX_PLAYERNAME_SIZE];
+	char m_name[GI_MAX_PLAYERNAME_SIZE];
 	GI_POSITION m_position;
 	int m_rawLevel;
 	int m_rawQST[GI_NUM_QST];
