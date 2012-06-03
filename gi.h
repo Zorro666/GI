@@ -58,14 +58,6 @@ typedef struct gi_PlayInfo gi_PlayInfo;
 typedef struct gi_GlobalInfo gi_GlobalInfo;
 typedef struct gi_SpecialTeamsValues gi_SpecialTeamsValues;
 
-struct gi_SpecialTeamsValues
-{
-	float m_protector;
-	float m_blocker;
-	float m_runner;
-	float m_gunner;
-};
-
 void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const int debug);
 GI_Return gi_LoadFile(const char* const fileName, const int debug);

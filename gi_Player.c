@@ -18,10 +18,7 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_experience = 0.0f;
 	pThis->m_unit = GI_SQUAD_UNKNOWN;
 	pThis->m_age = -1;
-	pThis->m_specialTeamsValues.m_blocker = 0.0f;
-	pThis->m_specialTeamsValues.m_gunner = 0.0f;
-	pThis->m_specialTeamsValues.m_protector = 0.0f;
-	pThis->m_specialTeamsValues.m_runner = 0.0f;
+	gi_SpecialTeamsValues_Init(&pThis->m_specialTeamsValues);
 }
 
 GI_Bool gi_Player_IsValueValid(const Json_Value* const root)
@@ -243,8 +240,5 @@ void gi_Player_ComputeSpecialTeams(gi_Player* const pThis)
 			break;
 	};
 
-	pThis->m_specialTeamsValues.m_blocker = blocker;
-	pThis->m_specialTeamsValues.m_gunner = gunner;
-	pThis->m_specialTeamsValues.m_protector = protector;
-	pThis->m_specialTeamsValues.m_runner = runner;
+	gi_SpecialTeamsValues_Set(&pThis->m_specialTeamsValues, blocker, gunner, protector, runner);
 }

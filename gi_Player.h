@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "gi.h"
+#include "gi_SpecialTeamsValues.h"
 
 typedef enum GI_QST
 {
