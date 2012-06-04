@@ -7,6 +7,7 @@ void gi_PositionValue_Init(gi_PositionValue* const pThis)
 {
 	pThis->m_positionName[0] = '\0';
 	pThis->m_position = GI_POSITION_UNKNOWN;
+	pThis->m_basePosition = GI_POSITION_UNKNOWN;
 	pThis->m_value.f = 0.0f;
 	pThis->m_valueType = GI_TYPE_UNKNOWN;
 	pThis->m_qst = GI_QST_UNKNOWN;
@@ -18,7 +19,8 @@ void gi_PositionValue_Print(const gi_PositionValue* const pThis, FILE* const pFi
 	{
 		if ((pThis->m_valueType == GI_TYPE_FLOAT) || (pThis->m_valueType == GI_TYPE_INT))
 		{
-			fprintf(pFile, "'%s' %s", pThis->m_positionName, gi_GetPositionName(pThis->m_position));
+			fprintf(pFile, "'%s' %s %s", pThis->m_positionName, 
+								gi_GetPositionName(pThis->m_basePosition), gi_GetPositionName(pThis->m_position));
 			if (pThis->m_qst != GI_QST_NONE)
 			{
 				fprintf(pFile, ".%s", gi_GetQSTName(pThis->m_qst));
@@ -82,6 +84,7 @@ void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t 
 
 				strncpy(positionValue[i].m_positionName, value->m_name, GI_POSITIONNAME_MAX_SIZE);
 				positionValue[i].m_position = gi_GetPositionFromName(szPositionnName);
+				positionValue[i].m_basePosition = gi_GetBasePosition(positionValue[i].m_position);
 			}
 			if (i >= maxSize)
 			{

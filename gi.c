@@ -105,6 +105,80 @@ GI_QST gi_GetQSTFromName(const char* const qst)
 	return GI_QST_UNKNOWN;
 }
 
+GI_QST gi_GetBasePosition(const GI_POSITION position)
+{
+	GI_POSITION base = position;
+	switch (position)
+	{
+		case GI_POSITION_QB:
+			base = GI_POSITION_QB;
+			break;
+		case GI_POSITION_WR:
+		case GI_POSITION_SE:
+		case GI_POSITION_FL:
+			base = GI_POSITION_WR;
+			break;
+		case GI_POSITION_RB:
+		case GI_POSITION_RB1:
+		case GI_POSITION_RB2:
+		case GI_POSITION_HB:
+		case GI_POSITION_FB:
+			base = GI_POSITION_RB;
+			break;
+		case GI_POSITION_TE:
+		case GI_POSITION_TE1:
+		case GI_POSITION_TE2:
+			base = GI_POSITION_TE;
+			break;
+		case GI_POSITION_OC:
+		case GI_POSITION_C:
+			base = GI_POSITION_OC;
+			break;
+		case GI_POSITION_OG:
+		case GI_POSITION_LG:
+		case GI_POSITION_RG:
+			base = GI_POSITION_OG;
+			break;
+		case GI_POSITION_OT:
+		case GI_POSITION_LT:
+		case GI_POSITION_RT:
+			base = GI_POSITION_OT;
+			break;
+		case GI_POSITION_DE:
+			base = GI_POSITION_DE;
+			break;
+		case GI_POSITION_DT:
+			base = GI_POSITION_DT;
+			break;
+		case GI_POSITION_IB:
+			base = GI_POSITION_IB;
+			break;
+		case GI_POSITION_OB:
+			base = GI_POSITION_OB;
+			break;
+		case GI_POSITION_CB:
+			base = GI_POSITION_CB;
+			break;
+		case GI_POSITION_SF:
+		case GI_POSITION_FS:
+		case GI_POSITION_SS:
+			base = GI_POSITION_SF;
+			break;
+		case GI_POSITION_R:
+			base = GI_POSITION_R;
+			break;
+		case GI_POSITION_K:
+			base = GI_POSITION_K;
+			break;
+		case GI_POSITION_P:
+			base = GI_POSITION_P;
+			break;
+		default:
+			break;
+	};
+	return base;
+}
+
 Json_Value* gi_ParseFile(const char* const fileName, const int debug)
 {
 	Json_Value* root;

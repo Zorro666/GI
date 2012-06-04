@@ -108,11 +108,13 @@ typedef struct gi_SpecialTeamsValues gi_SpecialTeamsValues;
 void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const int debug);
 GI_Return gi_LoadFile(const char* const fileName, const int debug);
+void gi_Output(void);
+
 const char* gi_GetPositionName(const GI_POSITION position);
 const char* gi_GetUnitName(const GI_UNIT unit);
 const char* gi_GetQSTName(const GI_QST qst);
 GI_POSITION gi_GetPositionFromName(const char* const position);
 GI_QST gi_GetQSTFromName(const char* const position);
-void gi_Output(void);
+GI_QST gi_GetBasePosition(const GI_POSITION position);
 
 #endif /* #ifndef GI_HH */
