@@ -1,2 +1,3 @@
+* system to link position to its aliases : LG, RG -> OG, C, OC -> OC etc.
 * compute some play values per player per offence play that has been loaded and output
 * compute some play values per player per defence play that has been loaded and output
