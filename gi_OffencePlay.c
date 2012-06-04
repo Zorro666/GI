@@ -12,7 +12,7 @@ void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 	{
 		pThis->m_defense[i][0] = '\0';
 	}
-	for (i = 0; i < GI_MAX_NUM_OFFENCE_POSITIONS; i++)
+	for (i = 0; i < GI_NUM_POSITIONS; i++)
 	{
 		gi_PositionValue_Init(&pThis->m_base[i]);
 		gi_PositionValue_Init(&pThis->m_bc[i]);
@@ -79,15 +79,15 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 			}
 			else if (strcmp(it->m_name, "Base") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_base, GI_MAX_NUM_OFFENCE_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_base, GI_NUM_POSITIONS, it);
 			}
 			else if (strcmp(it->m_name, "BC") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_bc, GI_MAX_NUM_OFFENCE_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_bc, GI_NUM_POSITIONS, it);
 			}
 			else if (strcmp(it->m_name, "Weighting") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_weighting, GI_MAX_NUM_OFFENCE_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_weighting, GI_NUM_POSITIONS, it);
 			}
 		}
 	}
@@ -95,7 +95,7 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 	return GI_SUCCESS;
 }
 
-void gi_OffencePlay_Print(gi_OffencePlay* const pThis, FILE* const pFile)
+void gi_OffencePlay_Print(const gi_OffencePlay* const pThis, FILE* const pFile)
 {
 	size_t i;
 	fprintf(pFile, "Offence Play:'%s'\n", pThis->m_name);
@@ -110,21 +110,21 @@ void gi_OffencePlay_Print(gi_OffencePlay* const pThis, FILE* const pFile)
 	fprintf(pFile, "\n");
 
 	fprintf(pFile, "Base: ");
-	for (i = 0; i < GI_MAX_NUM_OFFENCE_POSITIONS; i++)
+	for (i = 0; i < GI_NUM_POSITIONS; i++)
 	{
 		gi_PositionValue_Print(&pThis->m_base[i], pFile);
 	}
 	fprintf(pFile, "\n");
 
 	fprintf(pFile, "BC: ");
-	for (i = 0; i < GI_MAX_NUM_OFFENCE_POSITIONS; i++)
+	for (i = 0; i < GI_NUM_POSITIONS; i++)
 	{
 		gi_PositionValue_Print(&pThis->m_bc[i], pFile);
 	}
 	fprintf(pFile, "\n");
 
 	fprintf(pFile, "Weighting: ");
-	for (i = 0; i < GI_MAX_NUM_OFFENCE_POSITIONS; i++)
+	for (i = 0; i < GI_NUM_POSITIONS; i++)
 	{
 		gi_PositionValue_Print(&pThis->m_weighting[i], pFile);
 	}

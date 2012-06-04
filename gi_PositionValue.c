@@ -9,7 +9,7 @@ void gi_PositionValue_Init(gi_PositionValue* const pThis)
 	pThis->m_value.f = 0.0f;
 }
 
-void gi_PositionValue_Print(gi_PositionValue* const pThis, FILE* const pFile)
+void gi_PositionValue_Print(const gi_PositionValue* const pThis, FILE* const pFile)
 {
 	if (pThis->m_position[0] != '\0')
 	{

@@ -166,7 +166,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 	return GI_SUCCESS;
 }
 
-void gi_Player_Print(gi_Player* const pThis, FILE* const pFile)
+void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile)
 {
 	fprintf(pFile, "Player:'%s' '%s' Position:%s Level:%d QST:%d %d %d Age:%d Experience:%.2f L:%5.2f QST:%5.2f %5.2f %5.2f\n",
 			pThis->m_name, 

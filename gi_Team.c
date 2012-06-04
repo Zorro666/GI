@@ -216,7 +216,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 	return GI_SUCCESS;
 }
 
-void gi_Team_Print(gi_Team* const pThis, FILE* const pFile)
+void gi_Team_Print(const gi_Team* const pThis, FILE* const pFile)
 {
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
@@ -257,7 +257,8 @@ void gi_Team_ComputeSpecialTeams(gi_Team* const pThis)
 	}
 }
 
-static void gi_Team_computeAndPrintStats(gi_Team* const pThis, FILE* const pFile, FloatItem* const pStats, const char* const statName)
+static void gi_Team_computeAndPrintStats(const gi_Team* const pThis, FILE* const pFile, 
+																				 FloatItem* const pStats, const char* const statName)
 {
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
@@ -273,14 +274,14 @@ static void gi_Team_computeAndPrintStats(gi_Team* const pThis, FILE* const pFile
 		if (pStats[i].m_value > 0.00000001f)
 		{
 			const size_t playerIndex = pStats[i].m_key;
-			gi_Player* const pPlayer = &pThis->m_squad[playerIndex];
+			const gi_Player* const pPlayer = &pThis->m_squad[playerIndex];
 			fprintf(pFile, "Player[%d] '%s' Position:%s '%s':%f\n", playerIndex, pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), 
 							statName, pStats[i].m_value);
 		}
 	}
 }
 
-void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
+void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, FILE* const pFile)
 {
 	FloatItem stats[GI_MAX_NUM_SQUAD_PLAYERS];
 	size_t i;
@@ -293,7 +294,7 @@ void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 
 	for (i = 0; i < numPlayers; i++)
 	{
-		gi_Player* const pPlayer = &pThis->m_squad[i];
+		const gi_Player* const pPlayer = &pThis->m_squad[i];
 		stats[i].m_value = pPlayer->m_specialTeamsValues.m_blocker;
 		stats[i].m_key = i;
 	}
@@ -301,7 +302,7 @@ void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 
 	for (i = 0; i < numPlayers; i++)
 	{
-		gi_Player* const pPlayer = &pThis->m_squad[i];
+		const gi_Player* const pPlayer = &pThis->m_squad[i];
 		stats[i].m_value = pPlayer->m_specialTeamsValues.m_gunner;
 		stats[i].m_key = i;
 	}
@@ -309,7 +310,7 @@ void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 
 	for (i = 0; i < numPlayers; i++)
 	{
-		gi_Player* const pPlayer = &pThis->m_squad[i];
+		const gi_Player* const pPlayer = &pThis->m_squad[i];
 		stats[i].m_value = pPlayer->m_specialTeamsValues.m_protector;
 		stats[i].m_key = i;
 	}
@@ -317,7 +318,7 @@ void gi_Team_PrintBestSpecialTeams(gi_Team* const pThis, FILE* const pFile)
 
 	for (i = 0; i < numPlayers; i++)
 	{
-		gi_Player* const pPlayer = &pThis->m_squad[i];
+		const gi_Player* const pPlayer = &pThis->m_squad[i];
 		stats[i].m_value = pPlayer->m_specialTeamsValues.m_runner;
 		stats[i].m_key = i;
 	}
