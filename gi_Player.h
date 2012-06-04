@@ -5,26 +5,18 @@
 #include "gi.h"
 #include "gi_SpecialTeamsValues.h"
 
-typedef enum GI_QST
-{
-	GI_Q = 0,
-	GI_S = 1,
-	GI_T = 2,
-	GI_NUM_QST = 3
-} GI_QST;
-
 struct gi_Player
 {
-	char m_name[GI_MAX_PLAYERNAME_SIZE];
+	char m_name[GI_PLAYERNAME_MAX_SIZE];
 	GI_POSITION m_position;
 	int m_rawLevel;
-	int m_rawQST[GI_NUM_QST];
+	int m_rawQST[GI_QST_NUM];
 	float m_experience;
-	GI_SQUAD_UNIT m_unit;
+	GI_SQUAD m_unit;
 	int m_age;
 	gi_SpecialTeamsValues m_specialTeamsValues;
 	float m_level;
-	float m_QST[GI_NUM_QST];
+	float m_QST[GI_QST_NUM];
 };
 
 void gi_Player_Init(gi_Player* const pThis);

@@ -8,9 +8,33 @@
 static BlockAllocator s_json_allocator;
 static gi_GlobalInfo s_globalInfo;
 
-static const char* const s_positionNames[GI_NUM_POSITIONS] = {
-	/*GI_QB, GI_RB, GI_WR, GI_TE, GI_OC, GI_OG, GI_OT, GI_DE, GI_DT, GI_IB, GI_OB, GI_CB, GI_SF, GI_R, GI_K, GI_P, GI_POSITION_UNKNOWN */
-	"QB", "RB", "WR", "TE", "OC", "OG", "OT", "DE", "DT", "IB", "OB", "CB", "SF", "R", "K", "P", "UNKNOWN" };
+static const char* const s_positionNames[GI_POSITION_NUM] = {
+	"QB",     	/*GI_QB = 0,*/
+	"RB",     	/*GI_RB = 1,*/
+	"WR",     	/*GI_WR = 2,*/
+	"TE",     	/*GI_TE = 3,*/
+	"OC",     	/*GI_OC = 4,*/
+	"OG",     	/*GI_OG = 5,*/
+	"OT",     	/*GI_OT = 6,*/
+	"DE",     	/*GI_DE = 7,*/
+	"DT",     	/*GI_DT = 8,*/
+	"IB",     	/*GI_IB = 9,*/
+	"OB",     	/*GI_OB = 10,*/
+	"CB",     	/*GI_CB = 11,*/
+	"SF",     	/*GI_SF = 12,*/
+	"R",      	/*GI_R = 13,*/
+	"K",      	/*GI_K = 14,*/
+	"P",      	/*GI_P = 15,*/
+	"SE",     	/*GI_SE = 16,*/
+	"FL",     	/*GI_FL = 17,*/
+	"RB1",    	/*GI_RB1 = 18,*/
+	"RB2",    	/*GI_RB2 = 19,*/
+	"HB",     	/*GI_HB = 20,*/
+	"FB",     	/*GI_FB = 21,*/
+	"FS",     	/*GI_FS = 22,*/
+	"SS",     	/*GI_SS = 23,*/
+	"UNKNOWN" 	/*GI_POSITION_UNKNOWN = 24,*/
+	};
 
 void gi_Init(void)
 {
@@ -21,6 +45,35 @@ void gi_Init(void)
 const char* gi_GetPositionName(const GI_POSITION position)
 {
 	return s_positionNames[position];
+}
+
+GI_POSITION gi_GetPositionFromName(const char* const position)
+{
+	size_t i;
+	for (i = 0; i < GI_POSITION_UNKNOWN; i++)
+	{
+		if (strcmp(s_positionNames[i], position) == 0)
+		{
+			break;
+		}
+	}
+	return i;
+}
+
+const char* gi_GetSquadName(const GI_SQUAD unit)
+{
+	switch(unit)
+	{
+		case GI_SQUAD_OFFENCE:
+			return "Offence";
+		case GI_SQUAD_DEFENCE:
+			return "Defence";
+		case GI_SQUAD_SPECIALTEAMS:
+			return "Special Teams";
+		default:
+			return "Unit Unknown";
+	}
+	return "Unit Unknown";
 }
 
 Json_Value* gi_ParseFile(const char* const fileName, const int debug)
@@ -68,6 +121,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 					{
 						gi_OffencePlay_Print(&play, stdout);
 					}
+					gi_OffencePlay_Print(&play, stdout);
 					
 					return GI_SUCCESS;
 				}
@@ -143,7 +197,7 @@ static GI_Return gi_Output_SpecialTeamsStats(gi_Team* const pTeam)
 static GI_Return gi_Output_Team(gi_Team* const pTeam)
 {
 	FILE* pFile;
-	char fileName[GI_MAX_OUTPUTFILENAME_SIZE];
+	char fileName[GI_OUTPUTFILENAME_MAX_SIZE];
 
 	if (pTeam->m_name[0] == '\0')
 	{

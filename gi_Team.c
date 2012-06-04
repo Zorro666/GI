@@ -6,8 +6,8 @@
 
 static void gi_Team_SortByPosition(gi_Team* const pThis)
 {
-	gi_Player squadTemp[GI_MAX_NUM_SQUAD_PLAYERS];
-	IntItem stats[GI_MAX_NUM_SQUAD_PLAYERS];
+	gi_Player squadTemp[GI_SQUAD_PLAYERS_MAX_SIZE];
+	IntItem stats[GI_SQUAD_PLAYERS_MAX_SIZE];
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
 
@@ -55,7 +55,7 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
-		const GI_SQUAD_UNIT unit = pPlayer->m_unit;
+		const GI_SQUAD unit = pPlayer->m_unit;
 		const size_t position = pPlayer->m_position;
 		if (position != currentPosition)
 		{
@@ -73,17 +73,17 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 			currentStart = i;
 		}
 
-		if (unit == GI_OFFENCE)
+		if (unit == GI_SQUAD_OFFENCE)
 		{
 			pThis->m_offence[numOffence] = pPlayer;
 			numOffence++;
 		}
-		else if (unit == GI_DEFENCE)
+		else if (unit == GI_SQUAD_DEFENCE)
 		{
 			pThis->m_defence[numDefence] = pPlayer;
 			numDefence++;
 		}
-		else if (unit == GI_SPECIALTEAMS)
+		else if (unit == GI_SQUAD_SPECIALTEAMS)
 		{
 			pThis->m_specialTeams[numSpecialTeams] = pPlayer;
 			numSpecialTeams++;
@@ -107,23 +107,23 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 void gi_Team_Init(gi_Team* const pThis)
 {
 	size_t i;
-	for (i = 0; i < GI_MAX_NUM_SQUAD_PLAYERS; i++)
+	for (i = 0; i < GI_SQUAD_PLAYERS_MAX_SIZE; i++)
 	{
 		gi_Player_Init(&pThis->m_squad[i]);
 	}
-	for (i = 0; i < GI_MAX_NUM_OFFENCE_PLAYERS; i++)
+	for (i = 0; i < GI_OFFENCE_PLAYERS_MAX_SIZE; i++)
 	{
 		pThis->m_offence[i] = NULL;
 	}
-	for (i = 0; i < GI_MAX_NUM_DEFENCE_PLAYERS; i++)
+	for (i = 0; i < GI_DEFENCE_PLAYERS_MAX_SIZE; i++)
 	{
 		pThis->m_defence[i] = NULL;
 	}
-	for (i = 0; i < GI_MAX_NUM_SPECIALTEAMS_PLAYERS; i++)
+	for (i = 0; i < GI_SPECIALTEAMS_PLAYERS_MAX_SIZE; i++)
 	{
 		pThis->m_specialTeams[i] = NULL;
 	}
-	for (i = 0; i < GI_NUM_POSITIONS; i++)
+	for (i = 0; i < GI_POSITION_NUM; i++)
 	{
 		pThis->m_positionStarts[i] = 0;
 		pThis->m_positionCounts[i] = 0;
@@ -178,7 +178,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 		{
 			if (strcmp(it->m_name, "Name") == 0)
 			{
-				strncpy(pThis->m_name, it->m_value_data.string_value, GI_MAX_TEAMNAME_SIZE);
+				strncpy(pThis->m_name, it->m_value_data.string_value, GI_TEAMNAME_MAX_SIZE);
 			}
 		}
 		if (it->m_type == JSON_ARRAY)
@@ -283,7 +283,7 @@ static void gi_Team_computeAndPrintStats(const gi_Team* const pThis, FILE* const
 
 void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, FILE* const pFile)
 {
-	FloatItem stats[GI_MAX_NUM_SQUAD_PLAYERS];
+	FloatItem stats[GI_SQUAD_PLAYERS_MAX_SIZE];
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
 

@@ -2,17 +2,18 @@
 #include <string.h>
 
 #include "gi_OffencePlay.h"
+#include "gi_Player.h"
 
 void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 {
 	size_t i;
 
 	pThis->m_name[0] = '\0';
-	for (i = 0; i < GI_MAX_NUM_DEFENCE_FORMATIONS; i++)
+	for (i = 0; i < GI_DEFENCE_FORMATIONS_MAX_SIZE; i++)
 	{
 		pThis->m_defense[i][0] = '\0';
 	}
-	for (i = 0; i < GI_NUM_POSITIONS; i++)
+	for (i = 0; i < GI_POSITION_NUM; i++)
 	{
 		gi_PositionValue_Init(&pThis->m_base[i]);
 		gi_PositionValue_Init(&pThis->m_bc[i]);
@@ -60,7 +61,7 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 		{
 			if (strcmp(it->m_name, "Name") == 0)
 			{
-				strncpy(pThis->m_name, it->m_value_data.string_value, GI_MAX_OFFENCENAME_SIZE);
+				strncpy(pThis->m_name, it->m_value_data.string_value, GI_OFFENCENAME_MAX_SIZE);
 			}
 		}
 		if (it->m_type == JSON_ARRAY)
@@ -73,21 +74,21 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 				i = 0;
 				for (it2 = it->m_first_child; it2 != NULL; it2 = it2->m_next_sibling)
 				{
-					strncpy(pThis->m_defense[i], it2->m_value_data.string_value, GI_MAX_DEFENCENAME_SIZE);
+					strncpy(pThis->m_defense[i], it2->m_value_data.string_value, GI_DEFENCENAME_MAX_SIZE);
 					i++;
 				}
 			}
 			else if (strcmp(it->m_name, "Base") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_base, GI_NUM_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it);
 			}
 			else if (strcmp(it->m_name, "BC") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_bc, GI_NUM_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_bc, GI_POSITION_NUM, it);
 			}
 			else if (strcmp(it->m_name, "Weighting") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_weighting, GI_NUM_POSITIONS, it);
+				gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it);
 			}
 		}
 	}
@@ -100,7 +101,7 @@ void gi_OffencePlay_Print(const gi_OffencePlay* const pThis, FILE* const pFile)
 	size_t i;
 	fprintf(pFile, "Offence Play:'%s'\n", pThis->m_name);
 	fprintf(pFile, "Defence: ");
-	for (i = 0; i < GI_MAX_NUM_DEFENCE_FORMATIONS; i++)
+	for (i = 0; i < GI_DEFENCE_FORMATIONS_MAX_SIZE; i++)
 	{
 		if (pThis->m_defense[i][0] != '\0')
 		{
@@ -110,25 +111,31 @@ void gi_OffencePlay_Print(const gi_OffencePlay* const pThis, FILE* const pFile)
 	fprintf(pFile, "\n");
 
 	fprintf(pFile, "Base: ");
-	for (i = 0; i < GI_NUM_POSITIONS; i++)
+	for (i = 0; i < GI_POSITION_NUM; i++)
 	{
 		gi_PositionValue_Print(&pThis->m_base[i], pFile);
 	}
 	fprintf(pFile, "\n");
 
 	fprintf(pFile, "BC: ");
-	for (i = 0; i < GI_NUM_POSITIONS; i++)
+	for (i = 0; i < GI_POSITION_NUM; i++)
 	{
 		gi_PositionValue_Print(&pThis->m_bc[i], pFile);
 	}
 	fprintf(pFile, "\n");
 
 	fprintf(pFile, "Weighting: ");
-	for (i = 0; i < GI_NUM_POSITIONS; i++)
+	for (i = 0; i < GI_POSITION_NUM; i++)
 	{
 		gi_PositionValue_Print(&pThis->m_weighting[i], pFile);
 	}
 	fprintf(pFile, "\n");
 }
 
-
+float gi_OffencePlay_ComputeBase(const gi_OffencePlay* const pThis, const gi_Player* const pPlayer)
+{
+	const float base = pThis->m_base[0].m_value.f;
+	const float q = pPlayer->m_QST[GI_QST_Q];
+	const float value = base * q;
+	return value;
+}

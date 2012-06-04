@@ -6,8 +6,8 @@
 
 struct gi_PlayInfo
 {
-	gi_OffencePlay m_offencePlays[GI_MAX_NUM_OFFENCE_PLAYS];
-	/*gi_DefencePlay m_defencePlays[GI_MAX_NUM_OFFENCE_PLAYS];*/
+	gi_OffencePlay m_offencePlays[GI_OFFENCE_PLAYS_MAX_SIZE];
+	/*gi_DefencePlay m_defencePlays[GI_OFFENCE_PLAYS_MAX_SIZE];*/
 	int m_numOffencePlays;
 	int m_numDefencePlays;
 };

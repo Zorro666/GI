@@ -7,11 +7,11 @@
 
 struct gi_OffencePlay
 {
-	char m_name[GI_MAX_OFFENCENAME_SIZE];
-	char m_defense[GI_MAX_NUM_DEFENCE_FORMATIONS][GI_MAX_DEFENCENAME_SIZE];
-	gi_PositionValue m_base[GI_NUM_POSITIONS];
-	gi_PositionValue m_bc[GI_NUM_POSITIONS];
-	gi_PositionValue m_weighting[GI_NUM_POSITIONS];
+	char m_name[GI_OFFENCENAME_MAX_SIZE];
+	char m_defense[GI_DEFENCE_FORMATIONS_MAX_SIZE][GI_DEFENCENAME_MAX_SIZE];
+	gi_PositionValue m_base[GI_POSITION_NUM];
+	gi_PositionValue m_bc[GI_POSITION_NUM];
+	gi_PositionValue m_weighting[GI_POSITION_NUM];
 };
 
 void gi_OffencePlay_Init(gi_OffencePlay* const pThis);
