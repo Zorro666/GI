@@ -55,7 +55,7 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
-		const GI_SQUAD unit = pPlayer->m_unit;
+		const GI_UNIT unit = pPlayer->m_unit;
 		const size_t position = pPlayer->m_position;
 		if (position != currentPosition)
 		{
@@ -73,17 +73,17 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 			currentStart = i;
 		}
 
-		if (unit == GI_SQUAD_OFFENCE)
+		if (unit == GI_UNIT_OFFENCE)
 		{
 			pThis->m_offence[numOffence] = pPlayer;
 			numOffence++;
 		}
-		else if (unit == GI_SQUAD_DEFENCE)
+		else if (unit == GI_UNIT_DEFENCE)
 		{
 			pThis->m_defence[numDefence] = pPlayer;
 			numDefence++;
 		}
-		else if (unit == GI_SQUAD_SPECIALTEAMS)
+		else if (unit == GI_UNIT_SPECIALTEAMS)
 		{
 			pThis->m_specialTeams[numSpecialTeams] = pPlayer;
 			numSpecialTeams++;
@@ -195,7 +195,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 						playerRoot = it2->m_first_child;
 						if (gi_Player_Load(&player, playerRoot) == GI_SUCCESS)
 						{
-							if (player.m_unit != GI_SQUAD_UNKNOWN)
+							if (player.m_unit != GI_UNIT_UNKNOWN)
 							{
 								pThis->m_squad[numPlayers] = player;
 								numPlayers++;

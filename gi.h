@@ -22,13 +22,14 @@ typedef enum GI_Bool
 	GI_FALSE
 } GI_Bool;
 
-typedef enum GI_SQUAD
+typedef enum GI_UNIT
 {
-	GI_SQUAD_OFFENCE,
-	GI_SQUAD_DEFENCE,
-	GI_SQUAD_SPECIALTEAMS,
-	GI_SQUAD_UNKNOWN
-} GI_SQUAD;
+	GI_UNIT_OFFENCE = 0,
+	GI_UNIT_DEFENCE = 1,
+	GI_UNIT_SPECIALTEAMS = 2,
+	GI_UNIT_UNKNOWN = 3,
+	GI_UNIT_NUM = GI_UNIT_UNKNOWN+1
+} GI_UNIT;
 
 typedef enum GI_POSITION
 {
@@ -52,11 +53,18 @@ typedef enum GI_POSITION
 	GI_POSITION_FL = 17,
 	GI_POSITION_RB1 = 18,
 	GI_POSITION_RB2 = 19,
-	GI_POSITION_HB = 20,
-	GI_POSITION_FB = 21,
-	GI_POSITION_FS = 22,
-	GI_POSITION_SS = 23,
-	GI_POSITION_UNKNOWN = 24,
+	GI_POSITION_TE1 = 20,
+	GI_POSITION_TE2 = 21,
+	GI_POSITION_LG = 22,
+	GI_POSITION_RG = 23,
+	GI_POSITION_LT = 24,
+	GI_POSITION_RT = 25,
+	GI_POSITION_HB = 26,
+	GI_POSITION_FB = 27,
+	GI_POSITION_FS = 28,
+	GI_POSITION_SS = 29,
+	GI_POSITION_C = 30,
+	GI_POSITION_UNKNOWN = 31,
 	GI_POSITION_NUM = GI_POSITION_UNKNOWN+1
 } GI_POSITION;
 
@@ -65,7 +73,8 @@ typedef enum GI_QST
 	GI_QST_Q = 0,
 	GI_QST_S = 1,
 	GI_QST_T = 2,
-	GI_QST_UNKNOWN = 3,
+	GI_QST_NONE = 3,
+	GI_QST_UNKNOWN = 4,
 	GI_QST_NUM = GI_QST_UNKNOWN+1
 } GI_QST;
 
@@ -100,8 +109,10 @@ void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const int debug);
 GI_Return gi_LoadFile(const char* const fileName, const int debug);
 const char* gi_GetPositionName(const GI_POSITION position);
-const char* gi_GetSquadName(const GI_SQUAD unit);
+const char* gi_GetUnitName(const GI_UNIT unit);
+const char* gi_GetQSTName(const GI_QST qst);
 GI_POSITION gi_GetPositionFromName(const char* const position);
+GI_QST gi_GetQSTFromName(const char* const position);
 void gi_Output(void);
 
 #endif /* #ifndef GI_HH */

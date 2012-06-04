@@ -8,7 +8,7 @@ struct gi_PositionValue
 {
 	char m_positionName[GI_POSITIONNAME_MAX_SIZE];
 	GI_POSITION m_position;
-	GI_QST m_stat;
+	GI_QST m_qst;
 	union PositionValue_Value 
 	{
 		float f;

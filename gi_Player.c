@@ -31,7 +31,7 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_rawQST[1] = 0;
 	pThis->m_rawQST[2] = 0;
 	pThis->m_experience = 0.0f;
-	pThis->m_unit = GI_SQUAD_UNKNOWN;
+	pThis->m_unit = GI_UNIT_UNKNOWN;
 	pThis->m_age = -1;
 	pThis->m_level = 0.0f;
 	pThis->m_QST[0] = 0.0f;
@@ -122,7 +122,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		}
 	}
 
-	pThis->m_unit = GI_SQUAD_UNKNOWN;
+	pThis->m_unit = GI_UNIT_UNKNOWN;
 	pThis->m_position = gi_GetPositionFromName(position);
 	switch (pThis->m_position)
 	{
@@ -133,7 +133,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		case GI_POSITION_OC:
 		case GI_POSITION_OG:
 		case GI_POSITION_OT:
-			pThis->m_unit = GI_SQUAD_OFFENCE;
+			pThis->m_unit = GI_UNIT_OFFENCE;
 			break;
 		case GI_POSITION_DE:
 		case GI_POSITION_DT:
@@ -141,15 +141,15 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		case GI_POSITION_OB:
 		case GI_POSITION_CB:
 		case GI_POSITION_SF:
-			pThis->m_unit = GI_SQUAD_DEFENCE;
+			pThis->m_unit = GI_UNIT_DEFENCE;
 			break;
 		case GI_POSITION_R:
 		case GI_POSITION_K:
 		case GI_POSITION_P:
-			pThis->m_unit = GI_SQUAD_SPECIALTEAMS;
+			pThis->m_unit = GI_UNIT_SPECIALTEAMS;
 			break;
 		default:
-			pThis->m_unit = GI_SQUAD_UNKNOWN;
+			pThis->m_unit = GI_UNIT_UNKNOWN;
 			break;
 	}
 
@@ -162,10 +162,13 @@ void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile)
 {
 	fprintf(pFile, "Player:'%s' '%s' Position:%s Level:%d QST:%d %d %d Age:%d Experience:%.2f L:%5.2f QST:%5.2f %5.2f %5.2f\n",
 			pThis->m_name, 
-			gi_GetSquadName(pThis->m_unit),
-			gi_GetPositionName(pThis->m_position), pThis->m_rawLevel, 
-			pThis->m_rawQST[GI_QST_Q], pThis->m_rawQST[GI_QST_S], pThis->m_rawQST[GI_QST_T], pThis->m_age, pThis->m_experience,
-			pThis->m_level, pThis->m_QST[GI_QST_Q], pThis->m_QST[GI_QST_S], pThis->m_QST[GI_QST_T]
+			gi_GetUnitName(pThis->m_unit),
+			gi_GetPositionName(pThis->m_position), 
+			pThis->m_rawLevel, 
+			pThis->m_rawQST[GI_QST_Q], pThis->m_rawQST[GI_QST_S], pThis->m_rawQST[GI_QST_T], 
+			pThis->m_age, pThis->m_experience,
+			pThis->m_level, 
+			pThis->m_QST[GI_QST_Q], pThis->m_QST[GI_QST_S], pThis->m_QST[GI_QST_T]
 			);
 }
 

@@ -9,7 +9,7 @@ void gi_PositionValue_Init(gi_PositionValue* const pThis)
 	pThis->m_position = GI_POSITION_UNKNOWN;
 	pThis->m_value.f = 0.0f;
 	pThis->m_valueType = GI_TYPE_UNKNOWN;
-	pThis->m_stat = GI_QST_UNKNOWN;
+	pThis->m_qst = GI_QST_UNKNOWN;
 }
 
 void gi_PositionValue_Print(const gi_PositionValue* const pThis, FILE* const pFile)
@@ -18,7 +18,12 @@ void gi_PositionValue_Print(const gi_PositionValue* const pThis, FILE* const pFi
 	{
 		if ((pThis->m_valueType == GI_TYPE_FLOAT) || (pThis->m_valueType == GI_TYPE_INT))
 		{
-			fprintf(pFile, "'%s' %s.%c = ", pThis->m_positionName, gi_GetPositionName(pThis->m_position), 'Q');
+			fprintf(pFile, "'%s' %s", pThis->m_positionName, gi_GetPositionName(pThis->m_position));
+			if (pThis->m_qst != GI_QST_NONE)
+			{
+				fprintf(pFile, ".%s", gi_GetQSTName(pThis->m_qst));
+			}
+			fprintf(pFile, " = ");
 		}
 		if (pThis->m_valueType == GI_TYPE_FLOAT)
 		{
@@ -56,8 +61,27 @@ void gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t 
 			}
 			if ((value->m_type == JSON_FLOAT) || (value->m_type == JSON_INT))
 			{
+				char szPositionnName[GI_POSITIONNAME_MAX_SIZE];
+				char* pSepStart = NULL;
+
+				strncpy(szPositionnName, value->m_name, GI_POSITIONNAME_MAX_SIZE);
+				pSepStart = strchr(szPositionnName, '[');
+				if (pSepStart != NULL)
+				{
+					char szQSTName[GI_POSITIONNAME_MAX_SIZE];
+					char* const pSepEnd = strchr(pSepStart, ']');
+					pSepStart[0] = '\0';
+					pSepEnd[0] = '\0';
+					strcpy(szQSTName, pSepStart+1);
+					positionValue[i].m_qst = gi_GetQSTFromName(szQSTName);
+				}
+				else
+				{
+					positionValue[i].m_qst = GI_QST_NONE;
+				}
+
 				strncpy(positionValue[i].m_positionName, value->m_name, GI_POSITIONNAME_MAX_SIZE);
-				positionValue[i].m_position = gi_GetPositionFromName(value->m_name);
+				positionValue[i].m_position = gi_GetPositionFromName(szPositionnName);
 			}
 			if (i >= maxSize)
 			{

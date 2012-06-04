@@ -9,31 +9,53 @@ static BlockAllocator s_json_allocator;
 static gi_GlobalInfo s_globalInfo;
 
 static const char* const s_positionNames[GI_POSITION_NUM] = {
-	"QB",     	/*GI_QB = 0,*/
-	"RB",     	/*GI_RB = 1,*/
-	"WR",     	/*GI_WR = 2,*/
-	"TE",     	/*GI_TE = 3,*/
-	"OC",     	/*GI_OC = 4,*/
-	"OG",     	/*GI_OG = 5,*/
-	"OT",     	/*GI_OT = 6,*/
-	"DE",     	/*GI_DE = 7,*/
-	"DT",     	/*GI_DT = 8,*/
-	"IB",     	/*GI_IB = 9,*/
-	"OB",     	/*GI_OB = 10,*/
-	"CB",     	/*GI_CB = 11,*/
-	"SF",     	/*GI_SF = 12,*/
-	"R",      	/*GI_R = 13,*/
-	"K",      	/*GI_K = 14,*/
-	"P",      	/*GI_P = 15,*/
-	"SE",     	/*GI_SE = 16,*/
-	"FL",     	/*GI_FL = 17,*/
-	"RB1",    	/*GI_RB1 = 18,*/
-	"RB2",    	/*GI_RB2 = 19,*/
-	"HB",     	/*GI_HB = 20,*/
-	"FB",     	/*GI_FB = 21,*/
-	"FS",     	/*GI_FS = 22,*/
-	"SS",     	/*GI_SS = 23,*/
-	"UNKNOWN" 	/*GI_POSITION_UNKNOWN = 24,*/
+	"QB",     	/*GI_POSITION_QB = 0,*/
+	"RB",     	/*GI_POSITION_RB = 1,*/
+	"WR",     	/*GI_POSITION_WR = 2,*/
+	"TE",     	/*GI_POSITION_TE = 3,*/
+	"OC",     	/*GI_POSITION_OC = 4,*/
+	"OG",     	/*GI_POSITION_OG = 5,*/
+	"OT",     	/*GI_POSITION_OT = 6,*/
+	"DE",     	/*GI_POSITION_DE = 7,*/
+	"DT",     	/*GI_POSITION_DT = 8,*/
+	"IB",     	/*GI_POSITION_IB = 9,*/
+	"OB",     	/*GI_POSITION_OB = 10,*/
+	"CB",     	/*GI_POSITION_CB = 11,*/
+	"SF",     	/*GI_POSITION_SF = 12,*/
+	"R",      	/*GI_POSITION_R = 13,*/
+	"K",      	/*GI_POSITION_K = 14,*/
+	"P",      	/*GI_POSITION_P = 15,*/
+	"SE",     	/*GI_POSITION_SE = 16,*/
+	"FL",     	/*GI_POSITION_FL = 17,*/
+	"RB1",    	/*GI_POSITION_RB1 = 18,*/
+	"RB2",    	/*GI_RPOSITION_B2 = 19,*/
+	"TE1",			/*GI_POSITION_TE1 = 20,*/
+	"TE2",			/*GI_POSITION_TE2 = 21,*/
+	"LG",				/*GI_POSITION_LG = 22,*/
+	"RG",				/*GI_POSITION_RG = 23,*/
+	"LT",				/*GI_POSITION_LT = 24,*/
+	"RT",				/*GI_POSITION_RT = 25,*/
+	"HB",     	/*GI_POSITION_HB = 26,*/
+	"FB",     	/*GI_POSITION_FB = 27,*/
+	"FS",     	/*GI_POSITION_FS = 28,*/
+	"SS",     	/*GI_POSITION_SS = 29,*/
+	"C",     		/*GI_POSITION_C = 30,*/
+	"UNKNOWN" 	/*GI_POSITION_UNKNOWN = 31,*/
+	};
+
+static const char* const s_unitNames[GI_UNIT_NUM] = {
+	"Offence",     		/*GI_UNIT_OFFENCE = 0,*/
+	"Defence",     		/*GI_UNIT_DEFENCE = 1,*/
+	"Special Teams", 	/*GI_UNIT_SPECIALTEAMS = 2,*/
+	"UNKNOWN"     		/*GI_UNIT_UNKNOWN = 3,*/
+	};
+
+static const char* const s_qstNames[GI_QST_NUM] = {
+	"Q",     		/*GI_QST_Q = 0,*/
+	"S",     		/*GI_QST_S = 1,*/
+	"T", 				/*GI_QST_T = 2,*/
+	"NONE", 		/*GI_QST_NONE = 3,*/
+	"UNKNOWN"  	/*GI_QST_UNKNOWN = 4,*/
 	};
 
 void gi_Init(void)
@@ -50,30 +72,37 @@ const char* gi_GetPositionName(const GI_POSITION position)
 GI_POSITION gi_GetPositionFromName(const char* const position)
 {
 	size_t i;
-	for (i = 0; i < GI_POSITION_UNKNOWN; i++)
+	for (i = 0; i < GI_POSITION_NUM; i++)
 	{
 		if (strcmp(s_positionNames[i], position) == 0)
 		{
-			break;
+			return i;
 		}
 	}
-	return i;
+	return GI_POSITION_UNKNOWN;
 }
 
-const char* gi_GetSquadName(const GI_SQUAD unit)
+const char* gi_GetUnitName(const GI_UNIT unit)
 {
-	switch(unit)
+	return s_unitNames[unit];
+}
+
+const char* gi_GetQSTName(const GI_QST qst)
+{
+	return s_qstNames[qst];
+}
+
+GI_QST gi_GetQSTFromName(const char* const qst)
+{
+	size_t i;
+	for (i = 0; i < GI_QST_NUM; i++)
 	{
-		case GI_SQUAD_OFFENCE:
-			return "Offence";
-		case GI_SQUAD_DEFENCE:
-			return "Defence";
-		case GI_SQUAD_SPECIALTEAMS:
-			return "Special Teams";
-		default:
-			return "Unit Unknown";
+		if (strcmp(s_qstNames[i], qst) == 0)
+		{
+			return i;
+		}
 	}
-	return "Unit Unknown";
+	return GI_QST_UNKNOWN;
 }
 
 Json_Value* gi_ParseFile(const char* const fileName, const int debug)

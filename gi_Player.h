@@ -12,7 +12,7 @@ struct gi_Player
 	int m_rawLevel;
 	int m_rawQST[GI_QST_NUM];
 	float m_experience;
-	GI_SQUAD m_unit;
+	GI_UNIT m_unit;
 	int m_age;
 	gi_SpecialTeamsValues m_specialTeamsValues;
 	float m_level;
