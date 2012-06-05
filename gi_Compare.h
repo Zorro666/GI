@@ -1,16 +1,16 @@
 #ifndef GI_COMPARE_HH
 #define GI_COMPARE_HH
 
-typedef struct IntItem
+typedef struct SizetItem
 {
-	int m_value;
+	size_t m_value;
 	size_t m_key;
-} IntItem;
+} SizetItem;
 
-static int intItem_Compare(const void* a, const void* b)
+static int SizetItem_Compare(const void* a, const void* b)
 {
-	const int valueA = ((const IntItem*)a)->m_value;
-	const int valueB = ((const IntItem*)b)->m_value;
+	const size_t valueA = ((const SizetItem*)a)->m_value;
+	const size_t valueB = ((const SizetItem*)b)->m_value;
 	return (valueA < valueB);
 }
 
@@ -20,7 +20,7 @@ typedef struct FloatItem
 	size_t m_key;
 } FloatItem;
 
-static int floatItem_Compare(const void* a, const void* b)
+static int FloatItem_Compare(const void* a, const void* b)
 {
 	const float valueA = ((const FloatItem*)a)->m_value;
 	const float valueB = ((const FloatItem*)b)->m_value;

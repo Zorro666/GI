@@ -1,3 +1,4 @@
-* system to link position to its aliases : LG, RG -> OG, C, OC -> OC etc.
+* When computing base stat compute for all aliases and return them? or just highest
+* TODO: error if wrong type of data found when parsing position value arrays
 * compute some play values per player per offence play that has been loaded and output
 * compute some play values per player per defence play that has been loaded and output

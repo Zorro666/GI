@@ -179,7 +179,7 @@ GI_QST gi_GetBasePosition(const GI_POSITION position)
 	return base;
 }
 
-Json_Value* gi_ParseFile(const char* const fileName, const int debug)
+Json_Value* gi_ParseFile(const char* const fileName, const size_t debug)
 {
 	Json_Value* root;
 	char* error_pos;
@@ -205,7 +205,7 @@ Json_Value* gi_ParseFile(const char* const fileName, const int debug)
 	return root;
 }
 
-GI_Return gi_HandleValue(Json_Value* const value, const int debug)
+GI_Return gi_HandleValue(Json_Value* const value, const size_t debug)
 {
 	if (value == NULL)
 	{
@@ -217,27 +217,27 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 		{
 			if (gi_OffencePlay_IsValueValid(value) == GI_TRUE)
 			{
-				gi_OffencePlay play;
-				if (gi_OffencePlay_Load(&play, value) == GI_SUCCESS)
+				gi_OffencePlay offencePlay;
+				if (gi_OffencePlay_Load(&offencePlay, value) == GI_SUCCESS)
 				{
 					if (debug == 1)
 					{
-						gi_OffencePlay_Print(&play, stdout);
+						gi_OffencePlay_Print(&offencePlay, stdout);
 					}
-					gi_OffencePlay_Print(&play, stdout);
-					
+					gi_globalInfo_AddOffencePlay(&s_globalInfo, &offencePlay);
 					return GI_SUCCESS;
 				}
 			}
 			if (gi_Team_IsValueValid(value) == GI_TRUE)
 			{
-				gi_Team* const pTeam = &s_globalInfo.m_team;
-				if (gi_Team_Load(pTeam, value) == GI_SUCCESS)
+				gi_Team team;
+				if (gi_Team_Load(&team, value) == GI_SUCCESS)
 				{
 					if (debug == 1)
 					{
-						gi_Team_Print(pTeam, stdout);
+						gi_Team_Print(&team, stdout);
 					}
+					gi_globalInfo_AddTeam(&s_globalInfo, &team);
 					return GI_SUCCESS;
 				}
 			}
@@ -254,7 +254,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const int debug)
 	return GI_ERROR;
 }
 
-GI_Return gi_LoadFile(const char* const fileName, const int debug)
+GI_Return gi_LoadFile(const char* const fileName, const size_t debug)
 {
 	Json_Value* value = gi_ParseFile(fileName, debug);
 	if (value == NULL)
@@ -283,7 +283,7 @@ static FILE* openOutputFile(const char* const fileName)
 	return pFile;
 }
 
-static GI_Return gi_Output_SpecialTeamsStats(gi_Team* const pTeam)
+static GI_Return gi_Output_SpecialTeamsStats(const gi_Team* const pTeam)
 {
 	FILE* pFile;
 	const char* const fileName = "SpecialTeams_output.txt";
@@ -297,14 +297,14 @@ static GI_Return gi_Output_SpecialTeamsStats(gi_Team* const pTeam)
 	return GI_SUCCESS;
 }
 
-static GI_Return gi_Output_Team(gi_Team* const pTeam)
+static GI_Return gi_Output_Team(const gi_Team* const pTeam)
 {
 	FILE* pFile;
 	char fileName[GI_OUTPUTFILENAME_MAX_SIZE];
 
 	if (pTeam->m_name[0] == '\0')
 	{
-		fprintf(stderr, "gi_Output_Team team name is empty\n");
+		fprintf(stderr, "ERROR: gi_Output_Team: team name is empty\n");
 		return GI_ERROR;
 	}
 	fileName[0] = '\0';
@@ -322,7 +322,7 @@ static GI_Return gi_Output_Team(gi_Team* const pTeam)
 
 void gi_Output(void)
 {
-	gi_Team* const pTeam = &s_globalInfo.m_team;
+	const gi_Team* const pTeam = &s_globalInfo.m_team;
 	if (gi_Output_SpecialTeamsStats(pTeam) == GI_ERROR)
 	{
 		fprintf(stderr,"ERROR outputting special teams stats\n");
@@ -331,4 +331,5 @@ void gi_Output(void)
 	{
 		fprintf(stderr,"ERROR outputting team\n");
 	}
+	gi_Team_ComputeOffenceBase(pTeam, &s_globalInfo.m_playInfo);
 }

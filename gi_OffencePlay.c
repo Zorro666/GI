@@ -19,6 +19,9 @@ void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 		gi_PositionValue_Init(&pThis->m_bc[i]);
 		gi_PositionValue_Init(&pThis->m_weighting[i]);
 	}
+	pThis->m_numBase = 0;
+	pThis->m_numBC = 0;
+	pThis->m_numWeighting = 0;
 }
 
 GI_Bool gi_OffencePlay_IsValueValid(const Json_Value* const root)
@@ -80,15 +83,18 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 			}
 			else if (strcmp(it->m_name, "Base") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it);
+				/* TODO: base should be FLOAT data - ERROR if INT data found */
+				pThis->m_numBase = gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it);
 			}
 			else if (strcmp(it->m_name, "BC") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_bc, GI_POSITION_NUM, it);
+				/* TODO: bc should be INT data - ERROR if FLOAT data found */
+				pThis->m_numBC = gi_PositionValueArray_Parse(pThis->m_bc, GI_POSITION_NUM, it);
 			}
 			else if (strcmp(it->m_name, "Weighting") == 0)
 			{
-				gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it);
+				/* TODO: weighting should be INT data - ERROR if FLOAT data found */
+				pThis->m_numWeighting = gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it);
 			}
 		}
 	}
@@ -134,8 +140,23 @@ void gi_OffencePlay_Print(const gi_OffencePlay* const pThis, FILE* const pFile)
 
 float gi_OffencePlay_ComputeBase(const gi_OffencePlay* const pThis, const gi_Player* const pPlayer)
 {
-	const float base = pThis->m_base[0].m_value.f;
-	const float q = pPlayer->m_QST[GI_QST_Q];
-	const float value = base * q;
-	return value;
+	size_t i;
+	const GI_POSITION playerPosition = pPlayer->m_position;
+	float baseValue = 0.0f;
+
+	for (i = 0; i < pThis->m_numBase; i++)
+	{
+		const gi_PositionValue* const pPositionValue = &pThis->m_base[i];
+		if (pPositionValue->m_basePosition == playerPosition)
+		{
+			if (pPositionValue->m_valueType == GI_TYPE_FLOAT)
+			{
+				const GI_QST playQST = pPositionValue->m_qst;
+				const float playerStat = pPlayer->m_QST[playQST] * pPositionValue->m_value.f;
+				baseValue += playerStat;
+			}
+		}
+	}
+
+	return baseValue;
 }

@@ -3,9 +3,18 @@
 
 #include "gi.h"
 
+void sams(void)
+{
+	int a;
+	int b;
+	a =123456789;
+	b =6;
+	printf("result %d x %d = %d\n", a,b,a*b);
+}
+
 int main(int argc, char* argv[])
 {
-	int debug = 0;
+	size_t debug = 0;
 	int i;
 	for (i = 0; i < argc; i++)
 	{
@@ -22,5 +31,6 @@ int main(int argc, char* argv[])
 	gi_LoadFile("data/london_monarchs.json", debug);
 
 	gi_Output();
+	sams();
 	return -1;
 }

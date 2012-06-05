@@ -106,8 +106,8 @@ typedef struct gi_GlobalInfo gi_GlobalInfo;
 typedef struct gi_SpecialTeamsValues gi_SpecialTeamsValues;
 
 void gi_Init(void);
-Json_Value* gi_ParseFile(const char* const fileName, const int debug);
-GI_Return gi_LoadFile(const char* const fileName, const int debug);
+Json_Value* gi_ParseFile(const char* const fileName, const size_t debug);
+GI_Return gi_LoadFile(const char* const fileName, const size_t debug);
 void gi_Output(void);
 
 const char* gi_GetPositionName(const GI_POSITION position);

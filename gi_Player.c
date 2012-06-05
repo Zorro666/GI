@@ -32,7 +32,7 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_rawQST[2] = 0;
 	pThis->m_experience = 0.0f;
 	pThis->m_unit = GI_UNIT_UNKNOWN;
-	pThis->m_age = -1;
+	pThis->m_age = 0;
 	pThis->m_level = 0.0f;
 	pThis->m_QST[0] = 0.0f;
 	pThis->m_QST[1] = 0.0f;
@@ -92,32 +92,34 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 		}
 		else if (it->m_type == JSON_INT)
 		{
+			const size_t value = (size_t)(it->m_value_data.int_value);
 			if (strcmp(it->m_name, "Level") == 0)
 			{
-				pThis->m_rawLevel = it->m_value_data.int_value;
+				pThis->m_rawLevel = value;
 			}
 			else if (strcmp(it->m_name, "Q") == 0)
 			{
-				pThis->m_rawQST[GI_QST_Q] = it->m_value_data.int_value;
+				pThis->m_rawQST[GI_QST_Q] = value;
 			}
 			else if (strcmp(it->m_name, "S") == 0)
 			{
-				pThis->m_rawQST[GI_QST_S] = it->m_value_data.int_value;
+				pThis->m_rawQST[GI_QST_S] = value;
 			}
 			else if (strcmp(it->m_name, "T") == 0)
 			{
-				pThis->m_rawQST[GI_QST_T] = it->m_value_data.int_value;
+				pThis->m_rawQST[GI_QST_T] = value;
 			}
 			else if (strcmp(it->m_name, "Age") == 0)
 			{
-				pThis->m_age = it->m_value_data.int_value;
+				pThis->m_age = value;
 			}
 		}
 		else if (it->m_type == JSON_FLOAT)
 		{
+			const float value = it->m_value_data.float_value;
 			if (strcmp(it->m_name, "Experience") == 0)
 			{
-				pThis->m_experience = it->m_value_data.float_value;
+				pThis->m_experience = value;
 			}
 		}
 	}

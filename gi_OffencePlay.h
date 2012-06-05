@@ -12,6 +12,9 @@ struct gi_OffencePlay
 	gi_PositionValue m_base[GI_POSITION_NUM];
 	gi_PositionValue m_bc[GI_POSITION_NUM];
 	gi_PositionValue m_weighting[GI_POSITION_NUM];
+	size_t m_numBase;
+	size_t m_numBC;
+	size_t m_numWeighting;
 };
 
 void gi_OffencePlay_Init(gi_OffencePlay* const pThis);

@@ -3,11 +3,12 @@
 
 #include "gi_Team.h"
 #include "gi_Compare.h"
+#include "gi_PlayInfo.h"
 
 static void gi_Team_SortByPosition(gi_Team* const pThis)
 {
 	gi_Player squadTemp[GI_SQUAD_PLAYERS_MAX_SIZE];
-	IntItem stats[GI_SQUAD_PLAYERS_MAX_SIZE];
+	SizetItem stats[GI_SQUAD_PLAYERS_MAX_SIZE];
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
 
@@ -22,7 +23,7 @@ static void gi_Team_SortByPosition(gi_Team* const pThis)
 		stats[i].m_value = pPlayer->m_position;
 		stats[i].m_key = i;
 	}
-	qsort(stats, numPlayers, sizeof(stats[0]), intItem_Compare);
+	qsort(stats, numPlayers, sizeof(stats[0]), SizetItem_Compare);
 	for (i = 0; i < numPlayers; i++)
 	{
 		squadTemp[i] = pThis->m_squad[i];
@@ -266,7 +267,7 @@ static void gi_Team_computeAndPrintStats(const gi_Team* const pThis, FILE* const
 	{
 		return;
 	}
-	qsort(pStats, numPlayers, sizeof(pStats[0]), floatItem_Compare);
+	qsort(pStats, numPlayers, sizeof(pStats[0]), FloatItem_Compare);
 	fprintf(pFile, "\n");
 	fprintf(pFile, "**** %s ****\n", statName);
 	for (i = 0; i < numPlayers; i++)
@@ -323,5 +324,33 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, FILE* const pFile
 		stats[i].m_key = i;
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Runner");
+}
+
+void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo)
+{
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+
+	if (numPlayers == 0)
+	{
+		return;
+	}
+	printf("HELLO\n");
+	for (i = 0; i < numPlayers; i++)
+	{
+		size_t p;
+		float baseValues[GI_OFFENCE_PLAYS_MAX_SIZE];
+		const gi_Player* const pPlayer = &pThis->m_squad[i];
+		gi_PlayInfo_ComputeOffenceBase(pPlayInfo, pPlayer, baseValues);
+		for (p = 0; p < GI_OFFENCE_PLAYS_MAX_SIZE; p++)
+		{
+			if (baseValues[p] > 0.0f)
+			{
+				fprintf(stdout, "Play '%s' Player '%s' %s value %f\n", 
+								pPlayInfo->m_offencePlays[p].m_name, 
+								pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), baseValues[p]);
+			}
+		}
+	}
 }
 
