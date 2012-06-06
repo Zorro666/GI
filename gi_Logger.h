@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#include "gi.h"
 #include "gi_LoggerChannel.h"
 
 #define GI_FATAL_ERROR gi_Logger_FatalError
@@ -11,11 +12,11 @@
 #define GI_WARNING gi_Logger_Warning
 #define GI_LOG gi_Logger_Log
 
-enum gi_LogChannel {	CHANNEL_FATAL_ERROR = 0,
-											CHANNEL_ERROR = 1,
-											CHANNEL_WARNING = 2,
-											CHANNEL_LOG = 3,
-											LOGGER_NUM_DEFAULT_CHANNELS = 4
+enum gi_LogChannel {	GI_CHANNEL_FATAL_ERROR = 0,
+											GI_CHANNEL_ERROR = 1,
+											GI_CHANNEL_WARNING = 2,
+											GI_CHANNEL_LOG = 3,
+											GI_CHANNEL_NUM_DEFAULT_CHANNELS = 4
 									};
 enum gi_LogFlags { FLAGS_DEFAULT = GI_LOGGERCHANNEL_FLAGS_CONSOLE_OUTPUT | GI_LOGGERCHANNEL_FLAGS_FILE_OUTPUT };
 
@@ -42,5 +43,7 @@ void gi_Logger_FatalError(const char* const fmt, ...);
 void gi_Logger_Error(const char* const fmt, ...);
 void gi_Logger_Warning(const char* const fmt, ...);
 void gi_Logger_Log(const char* const fmt, ...);
+
+void gi_Logger_SetErrorStatus(void);
 
 #endif /* #ifdef GI_LOGGER_HH */

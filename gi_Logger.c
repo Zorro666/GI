@@ -1,202 +1,195 @@
 #include <string.h>
+#include <malloc.h>
 
-#include "les_logger.h"
+#include "gi_Logger.h"
 
-#define LES_LOG_MAX_NUM_CHANNELS 128
+#define GI_LOG_MAX_NUM_CHANNELS 128
 
 #define DEFAULT_LOG_OUTPUT_FILE "log.txt"
-LES_LoggerChannel** LES_Logger::s_channelPtrs = LES_NULL;
-bool LES_Logger::s_errorFlag = false;
 
-LES_LoggerChannel* LES_Logger::s_defaultChannels[LOGGER_NUM_DEFAULT_CHANNELS];
+gi_LoggerChannel** s_channelPtrs = NULL;
+GI_Bool s_errorFlag = GI_FALSE;
 
-#if 0
-	static void gi_Logger_SetErrorStatus(void);
+gi_LoggerChannel* s_defaultChannels[GI_CHANNEL_NUM_DEFAULT_CHANNELS];
 
-	static bool s_errorFlag;
-	static LES_LoggerChannel** s_channelPtrs;
+/* ///////////////////////////////////////////////////////////////////////////////////////////////// */
+/* // */
+/* // Public data and functions */
+/* // */
+/* ///////////////////////////////////////////////////////////////////////////////////////////////// */
 
-	friend class LES_LoggerChannel;
-
-	static LES_LoggerChannel* s_defaultChannels[LOGGER_NUM_DEFAULT_CHANNELS];
-#endif
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Public data and functions
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-void LES_Logger::Init(void)
+void gi_Logger_Init(void)
 {
-	s_channelPtrs = new LES_LoggerChannel*[LES_LOG_MAX_NUM_CHANNELS];
-	if (s_channelPtrs == LES_NULL)
+	size_t defaultFlags;
+	s_channelPtrs = (gi_LoggerChannel**)malloc(sizeof(gi_LoggerChannel*)*GI_LOG_MAX_NUM_CHANNELS);
+	if (s_channelPtrs == NULL)
 	{
 		return;
 	}
-	memset(s_channelPtrs, LES_NULL, sizeof(LES_LoggerChannel*)*LES_LOG_MAX_NUM_CHANNELS);
-	memset(s_defaultChannels, LES_NULL, sizeof(LES_LoggerChannel*)*LOGGER_NUM_DEFAULT_CHANNELS);
+	memset(s_channelPtrs, 0, sizeof(gi_LoggerChannel*)*GI_LOG_MAX_NUM_CHANNELS);
+	memset(s_defaultChannels, 0, sizeof(gi_LoggerChannel*)*GI_CHANNEL_NUM_DEFAULT_CHANNELS);
 
-	//Create default channels
-	unsigned int defaultFlags;
-	defaultFlags = LES_Logger::FLAGS_DEFAULT;
+	/*Create default channels*/
+	defaultFlags = FLAGS_DEFAULT;
 
-	s_defaultChannels[CHANNEL_FATAL_ERROR] = CreateChannel("FATAL_ERROR", "FATAL_ERROR: ", DEFAULT_LOG_OUTPUT_FILE, 
-										 																		 defaultFlags | LES_LOGGERCHANNEL_FLAGS_FATAL);
+	s_defaultChannels[GI_CHANNEL_FATAL_ERROR] = gi_Logger_CreateChannel("FATAL_ERROR", "FATAL_ERROR: ", DEFAULT_LOG_OUTPUT_FILE, 
+										 																		 defaultFlags | GI_LOGGERCHANNEL_FLAGS_FATAL);
 
-	s_defaultChannels[CHANNEL_ERROR] = CreateChannel("ERROR", "ERROR: ", DEFAULT_LOG_OUTPUT_FILE, defaultFlags);
-	s_defaultChannels[CHANNEL_WARNING] = CreateChannel("WARNING", "WARNING: ", DEFAULT_LOG_OUTPUT_FILE, defaultFlags);
-	s_defaultChannels[CHANNEL_LOG] = CreateChannel("LOG", "", DEFAULT_LOG_OUTPUT_FILE, defaultFlags);
+	s_defaultChannels[GI_CHANNEL_ERROR] = gi_Logger_CreateChannel("ERROR", "ERROR: ", DEFAULT_LOG_OUTPUT_FILE, defaultFlags);
+	s_defaultChannels[GI_CHANNEL_WARNING] = gi_Logger_CreateChannel("WARNING", "WARNING: ", DEFAULT_LOG_OUTPUT_FILE, defaultFlags);
+	s_defaultChannels[GI_CHANNEL_LOG] = gi_Logger_CreateChannel("LOG", "", DEFAULT_LOG_OUTPUT_FILE, defaultFlags);
 }
 
-void LES_Logger::Shutdown(void)
+void gi_Logger_Shutdown(void)
 {
-	//Loop over channels closing them down
+	/*Loop over channels closing them down*/
 }
 
-bool LES_Logger::GetErrorStatus(void)
+GI_Bool gi_Logger_GetErrorStatus(void)
 {
 	return s_errorFlag;
 }
 
-void LES_Logger::ClearErrorStatus(void)
+void gi_Logger_ClearErrorStatus(void)
 {
-	s_errorFlag = false;
+	s_errorFlag = GI_FALSE;
 }
 
-void LES_Logger::SetErrorStatus(void)
+void gi_Logger_SetErrorStatus(void)
 {
-	s_errorFlag = true;
+	s_errorFlag = GI_TRUE;
 }
 
-LES_LoggerChannel* LES_Logger::GetDefaultChannel(const int channel)
+gi_LoggerChannel* gi_Logger_GetDefaultChannel(const int channel)
 {
-	if ((channel < 0) || (channel >= LOGGER_NUM_DEFAULT_CHANNELS))
+	if ((channel < 0) || (channel >= GI_CHANNEL_NUM_DEFAULT_CHANNELS))
 	{
-		return LES_NULL;
+		return NULL;
 	}
 	return s_defaultChannels[channel];
 }
 
-unsigned int LES_Logger::GetChannelFlags(const int channel)
+unsigned int gi_Logger_GetChannelFlags(const int channel)
 {
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(channel);
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)
 	{
-		return channelPtr->GetFlags();
+		return gi_LoggerChannel_GetFlags(channelPtr);
 	}
 	return 0;
 }
 
-void LES_Logger::SetChannelFlags(const int channel, const int flags)
+void gi_Logger_SetChannelFlags(const int channel, const size_t flags)
 {
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(channel);
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)
 	{
-		channelPtr->SetFlags(flags);
+		gi_LoggerChannel_SetFlags(channelPtr, flags);
 	}
 }
 
-void LES_Logger::SetFatal(const int channel, const bool fatal)
+void gi_Logger_SetFatal(const int channel, const GI_Bool fatal)
 {
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(channel);
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)
 	{
-		channelPtr->ChangeFlags(LES_LOGGERCHANNEL_FLAGS_FATAL, fatal);
+		gi_LoggerChannel_ChangeFlags(channelPtr, GI_LOGGERCHANNEL_FLAGS_FATAL, fatal);
 	}
 }
 
-void LES_Logger::SetConsoleOutput(const int channel, const bool consoleOutput)
+void gi_Logger_SetConsoleOutput(const int channel, const GI_Bool consoleOutput)
 {
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(channel);
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)
 	{
-		channelPtr->ChangeFlags(LES_LOGGERCHANNEL_FLAGS_CONSOLE_OUTPUT, consoleOutput);
+		gi_LoggerChannel_ChangeFlags(channelPtr, GI_LOGGERCHANNEL_FLAGS_CONSOLE_OUTPUT, consoleOutput);
 	}
 }
 
-void LES_Logger::SetFileOutput(const int channel, const bool fileOutput)
+void gi_Logger_SetFileOutput(const int channel, const GI_Bool fileOutput)
 {
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(channel);
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)
 	{
-		channelPtr->ChangeFlags(LES_LOGGERCHANNEL_FLAGS_FILE_OUTPUT, fileOutput);
+		gi_LoggerChannel_ChangeFlags(channelPtr, GI_LOGGERCHANNEL_FLAGS_FILE_OUTPUT, fileOutput);
 	}
 }
 
-void LES_Logger::SetChannelOutputFileName(const int channel, const char* const fname)
+void gi_Logger_SetChannelOutputFileName(const int channel, const char* const fname)
 {
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(channel);
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)
 	{
-		channelPtr->SetOutputFileName(fname);
+		gi_LoggerChannel_SetOutputFileName(channelPtr, fname);
 	}
 }
 
-void LES_Logger::FatalError(const char* const fmt, ...)
+void gi_Logger_FatalError(const char* const fmt, ...)
 {
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(GI_CHANNEL_FATAL_ERROR);
 	va_list argPtr;
 	va_start(argPtr, fmt);
 
-	SetErrorStatus();
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(CHANNEL_FATAL_ERROR);
+	gi_Logger_SetErrorStatus();
 	if (channelPtr)
 	{
-		channelPtr->InternalOutput(fmt, &argPtr);
+		gi_LoggerChannel_InternalOutput(channelPtr, fmt, &argPtr);
 	}
 }
 
-void LES_Logger::Error(const char* const fmt, ...)
+void gi_Logger_Error(const char* const fmt, ...)
 {
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(GI_CHANNEL_ERROR);
 	va_list argPtr;
 	va_start(argPtr, fmt);
 
-	SetErrorStatus();
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(CHANNEL_ERROR);
+	gi_Logger_SetErrorStatus();
 	if (channelPtr)
 	{
-		channelPtr->InternalOutput(fmt, &argPtr);
+		gi_LoggerChannel_InternalOutput(channelPtr, fmt, &argPtr);
 	}
 }
 
-void LES_Logger::Warning(const char* const fmt, ...)
+void gi_Logger_Warning(const char* const fmt, ...)
 {
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(GI_CHANNEL_WARNING);
 	va_list argPtr;
 	va_start(argPtr, fmt);
 
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(CHANNEL_WARNING);
 	if (channelPtr)
 	{
-		channelPtr->InternalOutput(fmt, &argPtr);
+		gi_LoggerChannel_InternalOutput(channelPtr, fmt, &argPtr);
 	}
 }
 
-void LES_Logger::Log(const char* const fmt, ...)
+void gi_Logger_Log(const char* const fmt, ...)
 {
+	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(GI_CHANNEL_LOG);
 	va_list argPtr;
 	va_start(argPtr, fmt);
 
-	LES_LoggerChannel* const channelPtr = GetDefaultChannel(CHANNEL_LOG);
 	if (channelPtr)
 	{
-		channelPtr->InternalOutput(fmt, &argPtr);
+		gi_LoggerChannel_InternalOutput(channelPtr, fmt, &argPtr);
 	}
 }
 
-LES_LoggerChannel* LES_Logger::CreateChannel(const char* const nickName, const char* const prefix, 
-																						 const char* const outputFileName, const unsigned int flags)
+gi_LoggerChannel* gi_Logger_CreateChannel(const char* const nickName, const char* const prefix, 
+																						 const char* const outputFileName, const size_t flags)
 {
-	for (int channel = 0; channel < LES_LOG_MAX_NUM_CHANNELS; channel++)
+	size_t channel;
+	for (channel = 0; channel < GI_LOG_MAX_NUM_CHANNELS; channel++)
 	{
-		LES_LoggerChannel* const channelPtr = s_channelPtrs[channel];
-		if (channelPtr == LES_NULL)
+		gi_LoggerChannel* const channelPtr = s_channelPtrs[channel];
+		if (channelPtr == NULL)
 		{
-			LES_LoggerChannel* const newChannel = new LES_LoggerChannel(nickName, prefix, outputFileName, flags);
+			gi_LoggerChannel* const newChannel = (gi_LoggerChannel* const)malloc(sizeof(gi_LoggerChannel));
+			gi_LoggerChannel_Init(newChannel, nickName, prefix, outputFileName, flags);
 			s_channelPtrs[channel] = newChannel;
 			return newChannel;
 		}
 	}
-	return LES_NULL;
+	return NULL;
 }
 
 

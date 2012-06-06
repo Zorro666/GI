@@ -2,25 +2,23 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "les_loggerchannel.h"
-#include "les_logger.h"
+#include "gi_LoggerChannel.h"
+#include "gi_Logger.h"
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Private functions
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////////////////////////////////////////////// */
+/* // */
+/* // Private functions */
+/* // */
+/* ///////////////////////////////////////////////////////////////////////////////////////////////// */
 
-void gi_LoggerChannel_SetOutputFileName(gi_LoggerChannel* const pThis, const char* const fname);
-void gi_LoggerChannel_InternalOutput(gi_LoggerChannel* const pThis, const char* const fmt, va_list* pArgPtr);
-
-void LES_LoggerChannel::SetOutputFileName(const char* const fname)
+void gi_LoggerChannel_SetOutputFileName(gi_LoggerChannel* const pThis, const char* const fname)
 {
-	if (strcmp(m_outputFileName, fname) != 0)
+	if (strcmp(pThis->m_outputFileName, fname) != 0)
 	{
-		m_outputFileName = fname;
-		FILE* const filePtr = fopen(m_outputFileName, "wb");
-		if (filePtr == LES_NULL)
+		FILE* filePtr;
+		pThis->m_outputFileName = fname;
+		filePtr = fopen(pThis->m_outputFileName, "wb");
+		if (filePtr == NULL)
 		{
 			return;
 		}
@@ -28,23 +26,23 @@ void LES_LoggerChannel::SetOutputFileName(const char* const fname)
 	}
 }
 
-void LES_LoggerChannel::InternalOutput(const char* const fmt, va_list* pArgPtr)
+void gi_LoggerChannel_InternalOutput(gi_LoggerChannel* const pThis, const char* const fmt, va_list* pArgPtr)
 {
 	char outputBuffer[1024];
 	va_list argPtr = *pArgPtr;
+	const size_t flags = pThis->m_flags;
+	const char* const prefix = pThis->m_prefixStr;
 
 	vsnprintf(outputBuffer, sizeof(outputBuffer), fmt, argPtr);
 	va_end(argPtr);
 
-	const unsigned int flags = m_flags;
-	const char* const prefix = m_prefixStr;
-	if (flags & LES_LOGGERCHANNEL_FLAGS_CONSOLE_OUTPUT)
+	if (flags & GI_LOGGERCHANNEL_FLAGS_CONSOLE_OUTPUT)
 	{
 		fprintf(stdout, "%s%s\n", prefix, outputBuffer);
 	}
-	if (flags & LES_LOGGERCHANNEL_FLAGS_FILE_OUTPUT)
+	if (flags & GI_LOGGERCHANNEL_FLAGS_FILE_OUTPUT)
 	{
-		const char* const fileName = m_outputFileName;
+		const char* const fileName = pThis->m_outputFileName;
 		FILE* const filePtr = fopen(fileName, "ab");
 		if (filePtr)
 		{
@@ -53,80 +51,67 @@ void LES_LoggerChannel::InternalOutput(const char* const fmt, va_list* pArgPtr)
 			fclose(filePtr);
 		}
 	}
-	if (flags & LES_LOGGERCHANNEL_FLAGS_FATAL)
+	if (flags & GI_LOGGERCHANNEL_FLAGS_FATAL)
 	{
-		LES_Logger::SetErrorStatus();
+		gi_Logger_SetErrorStatus();
 		exit(-1);
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Public functions
-//
-/////////////////////////////////////////////////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////////////////////////////////////////////// */
+/* // */
+/* // Public functions */
+/* // */
+/* ///////////////////////////////////////////////////////////////////////////////////////////////// */
 
-LES_LoggerChannel::LES_LoggerChannel()
+void gi_LoggerChannel_Init(gi_LoggerChannel* const pThis, const char* const nickName, 
+													 const char* const prefix, const char* const outputFileName, const size_t flags)
 {
-	m_nickName = LES_NULL;
-	m_prefixStr = LES_NULL;
-	m_outputFileName = LES_NULL;
-	m_flags = 0;
-}
+	FILE* filePtr;
 
-LES_LoggerChannel::LES_LoggerChannel( const char* const nickName, const char* const prefix, const char* const outputFileName, 
-																		  const unsigned int flags)
-{
-	m_nickName = nickName;
-	m_prefixStr = prefix;
-	m_flags = flags;
-	m_outputFileName = outputFileName;
-	FILE* const filePtr = fopen(m_outputFileName, "wb");
+	pThis->m_nickName = nickName;
+	pThis->m_prefixStr = prefix;
+	pThis->m_flags = flags;
+	pThis->m_outputFileName = outputFileName;
+
+	filePtr = fopen(pThis->m_outputFileName, "wb");
 	if (filePtr)
 	{
 		fclose(filePtr);
 	}
 }
 
-LES_LoggerChannel::~LES_LoggerChannel()
+void gi_LoggerChannel_SetFlags(gi_LoggerChannel* const pThis, size_t flags)
 {
-	m_nickName = LES_NULL;
-	m_prefixStr = LES_NULL;
-	m_outputFileName = LES_NULL;
-	m_flags = 0;
+	pThis->m_flags = flags;
 }
 
-void LES_LoggerChannel::SetFlags(unsigned int flags)
+size_t gi_LoggerChannel_GetFlags(gi_LoggerChannel* const pThis)
 {
-	m_flags = flags;
+	return pThis->m_flags;
 }
 
-unsigned int LES_LoggerChannel::GetFlags(void)
+void gi_LoggerChannel_ChangeFlags(gi_LoggerChannel* const pThis, const size_t flags, const GI_Bool enable)
 {
-	return m_flags;
+	const size_t currentFlags = pThis->m_flags;
+	const size_t newFlags = (currentFlags & ~flags) | (enable ? flags : 0);
+	pThis->m_flags = newFlags;
 }
 
-void LES_LoggerChannel::ChangeFlags(const int flags, const bool enable)
-{
-	const unsigned int currentFlags = m_flags;
-	const unsigned int newFlags = (currentFlags & ~flags) | (enable ? flags : 0);
-	m_flags = newFlags;
-}
-
-void LES_LoggerChannel::Error(const char* const fmt, ...)
+void gi_LoggerChannel_Error(gi_LoggerChannel* const pThis, const char* const fmt, ...)
 {
 	va_list argPtr;
 	va_start(argPtr, fmt);
 
-	LES_Logger::SetErrorStatus();
-	InternalOutput(fmt, &argPtr);
+	gi_Logger_SetErrorStatus();
+	gi_LoggerChannel_InternalOutput(pThis, fmt, &argPtr);
 }
 
-void LES_LoggerChannel::Print(const char* const fmt, ...)
+void gi_LoggerChannel_Print(gi_LoggerChannel* const pThis, const char* const fmt, ...)
 {
 	va_list argPtr;
 	va_start(argPtr, fmt);
 
-	InternalOutput(fmt, &argPtr);
+	gi_LoggerChannel_InternalOutput(pThis, fmt, &argPtr);
 }
 
