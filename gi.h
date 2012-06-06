@@ -12,8 +12,8 @@ typedef enum GI_Type
 
 typedef enum GI_Return
 {
-	GI_ERROR,
-	GI_SUCCESS
+	GI_RETURN_ERROR,
+	GI_RETURN_SUCCESS
 } GI_Return;
 
 typedef enum GI_Bool

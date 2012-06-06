@@ -23,15 +23,14 @@ static void gi_Team_SortByPosition(gi_Team* const pThis)
 		stats[i].m_value = pPlayer->m_position;
 		stats[i].m_key = i;
 	}
-	qsort(stats, numPlayers, sizeof(stats[0]), SizetItem_Compare);
+	qsort(stats, numPlayers, sizeof(stats[0]), SizetItem_CompareBigger);
 	for (i = 0; i < numPlayers; i++)
 	{
 		squadTemp[i] = pThis->m_squad[i];
 	}
 	for (i = 0; i < numPlayers; i++)
 	{
-		size_t reverseI = numPlayers-i-1;
-		const size_t playerIndex = stats[reverseI].m_key;
+		const size_t playerIndex = stats[i].m_key;
 		pThis->m_squad[i] = squadTemp[playerIndex];
 	}
 }
@@ -168,7 +167,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 
 	if (gi_Team_IsValueValid(root) == GI_FALSE)
 	{
-		return GI_ERROR;
+		return GI_RETURN_ERROR;
 	}
 
 	gi_Team_Init(pThis);
@@ -194,7 +193,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 					{
 						gi_Player player;
 						playerRoot = it2->m_first_child;
-						if (gi_Player_Load(&player, playerRoot) == GI_SUCCESS)
+						if (gi_Player_Load(&player, playerRoot) == GI_RETURN_SUCCESS)
 						{
 							if (player.m_unit != GI_UNIT_UNKNOWN)
 							{
@@ -214,7 +213,7 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 
 	gi_Team_ComputeSpecialTeams(pThis);
 
-	return GI_SUCCESS;
+	return GI_RETURN_SUCCESS;
 }
 
 void gi_Team_Print(const gi_Team* const pThis, FILE* const pFile)
@@ -267,7 +266,7 @@ static void gi_Team_computeAndPrintStats(const gi_Team* const pThis, FILE* const
 	{
 		return;
 	}
-	qsort(pStats, numPlayers, sizeof(pStats[0]), FloatItem_Compare);
+	qsort(pStats, numPlayers, sizeof(pStats[0]), FloatItem_CompareSmaller);
 	fprintf(pFile, "\n");
 	fprintf(pFile, "**** %s ****\n", statName);
 	for (i = 0; i < numPlayers; i++)
@@ -326,7 +325,7 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, FILE* const pFile
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Runner");
 }
 
-void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo)
+void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo)
 {
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
@@ -339,16 +338,16 @@ void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, const gi_PlayInfo* c
 	for (i = 0; i < numPlayers; i++)
 	{
 		size_t p;
-		float baseValues[GI_OFFENCE_PLAYS_MAX_SIZE];
 		const gi_Player* const pPlayer = &pThis->m_squad[i];
-		gi_PlayInfo_ComputeOffenceBase(pPlayInfo, pPlayer, baseValues);
+		gi_PlayInfo_ComputeOffenceBase(pPlayInfo, pPlayer, i);
 		for (p = 0; p < GI_OFFENCE_PLAYS_MAX_SIZE; p++)
 		{
-			if (baseValues[p] > 0.0f)
+			const float baseValue = pPlayInfo->m_offenceStatsBase[p][i];
+			if (baseValue > 0.0f)
 			{
-				fprintf(stdout, "Play '%s' Player '%s' %s value %f\n", 
+				fprintf(stdout, "Play '%s' Player[%d] '%s' %s value %f\n", 
 								pPlayInfo->m_offencePlays[p].m_name, 
-								pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), baseValues[p]);
+								i, pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), baseValue);
 			}
 		}
 	}

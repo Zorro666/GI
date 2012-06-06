@@ -26,6 +26,6 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root);
 void gi_Team_Print(const gi_Team* const pThis, FILE* const pFile);
 void gi_Team_ComputeSpecialTeams(gi_Team* const pThis);
 void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, FILE* const pFile);
-void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo);
+void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo);
 
 #endif /* #ifndef GI_TEAM_HH */

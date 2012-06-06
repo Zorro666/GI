@@ -72,7 +72,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 
 	if (gi_Player_IsValueValid(root) == GI_FALSE)
 	{
-		return GI_ERROR;
+		return GI_RETURN_ERROR;
 	}
 
 	gi_Player_Init(pThis);
@@ -157,7 +157,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 
 	gi_Player_ComputeQSTs(pThis);
 
-	return GI_SUCCESS;
+	return GI_RETURN_SUCCESS;
 }
 
 void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile)

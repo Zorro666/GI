@@ -54,7 +54,7 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 
 	if (gi_OffencePlay_IsValueValid(root) == GI_FALSE)
 	{
-		return GI_ERROR;
+		return GI_RETURN_ERROR;
 	}
 
 	gi_OffencePlay_Init(pThis);
@@ -99,7 +99,7 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 		}
 	}
 
-	return GI_SUCCESS;
+	return GI_RETURN_SUCCESS;
 }
 
 void gi_OffencePlay_Print(const gi_OffencePlay* const pThis, FILE* const pFile)
