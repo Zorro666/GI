@@ -3,6 +3,7 @@
 
 #include "gi_OffencePlay.h"
 #include "gi_Player.h"
+#include "gi_Logger.h"
 
 void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 {
