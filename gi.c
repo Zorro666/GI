@@ -68,6 +68,11 @@ void gi_Init(void)
 
 const char* gi_GetPositionName(const GI_POSITION position)
 {
+	if (position > GI_POSITION_UNKNOWN)
+	{
+		GI_FATAL_ERROR("ERROR gi_GetPositionName invalid position %d range:%d-%d", position, 0, GI_POSITION_UNKNOWN);
+		return NULL;
+	}
 	return s_positionNames[position];
 }
 
@@ -86,11 +91,21 @@ GI_POSITION gi_GetPositionFromName(const char* const position)
 
 const char* gi_GetUnitName(const GI_UNIT unit)
 {
+	if (unit > GI_UNIT_UNKNOWN)
+	{
+		GI_FATAL_ERROR("ERROR gi_GetUnitName invalid unit %d range:%d-%d", unit, 0, GI_UNIT_UNKNOWN);
+		return NULL;
+	}
 	return s_unitNames[unit];
 }
 
 const char* gi_GetQSTName(const GI_QST qst)
 {
+	if (qst > GI_QST_UNKNOWN)
+	{
+		GI_FATAL_ERROR("ERROR gi_GetQSTName invalid qst %d range:%d-%d", qst, 0, GI_QST_UNKNOWN);
+		return NULL;
+	}
 	return s_qstNames[qst];
 }
 
