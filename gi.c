@@ -4,6 +4,7 @@
 #include "gi.h"
 #include "gi_Team.h"
 #include "gi_GlobalInfo.h"
+#include "gi_Logger.h"
 
 static BlockAllocator s_json_allocator;
 static gi_GlobalInfo s_globalInfo;
@@ -60,6 +61,7 @@ static const char* const s_qstNames[GI_QST_NUM] = {
 
 void gi_Init(void)
 {
+	gi_Logger_Init();
 	BlockAllocator_Init(&s_json_allocator, 128*1024);
 	gi_GlobalInfo_Init(&s_globalInfo);
 }
@@ -196,8 +198,8 @@ Json_Value* gi_ParseFile(const char* const fileName, const size_t debug)
 	}
 	else
 	{
-		fprintf(stderr, "ERROR parsing file '%s'\n", fileName);
-		fprintf(stderr, "ERROR line:%d pos:'%s' desc:'%s'\n", error_line, error_pos, error_desc);
+		GI_FATAL_ERROR("ERROR parsing file '%s'\n", fileName);
+		GI_FATAL_ERROR("ERROR line:%d pos:'%s' desc:'%s'\n", error_line, error_pos, error_desc);
 		return NULL;
 	}
 
@@ -278,7 +280,7 @@ static FILE* openOutputFile(const char* const fileName)
 	pFile = fopen(fileName, "wa");
 	if (pFile == NULL)
 	{
-		fprintf(stderr,"ERROR opening file '%s'\n", fileName);
+		GI_FATAL_ERROR("opening file '%s'\n", fileName);
 	}
 	return pFile;
 }
@@ -304,7 +306,7 @@ static GI_Return gi_Output_Team(const gi_Team* const pTeam)
 
 	if (pTeam->m_name[0] == '\0')
 	{
-		fprintf(stderr, "ERROR: gi_Output_Team: team name is empty\n");
+		GI_FATAL_ERROR("ERROR: gi_Output_Team: team name is empty\n");
 		return GI_RETURN_ERROR;
 	}
 	fileName[0] = '\0';
@@ -325,11 +327,11 @@ void gi_Output(void)
 	const gi_Team* const pTeam = &s_globalInfo.m_team;
 	if (gi_Output_SpecialTeamsStats(pTeam) == GI_RETURN_ERROR)
 	{
-		fprintf(stderr,"ERROR outputting special teams stats\n");
+		GI_FATAL_ERROR("ERROR outputting special teams stats\n");
 	}
 	if (gi_Output_Team(pTeam) == GI_RETURN_ERROR)
 	{
-		fprintf(stderr,"ERROR outputting team\n");
+		GI_FATAL_ERROR("ERROR outputting team\n");
 	}
 	gi_Team_ComputeOffenceBase(pTeam, &s_globalInfo.m_playInfo);
 }

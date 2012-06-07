@@ -4,6 +4,7 @@
 #include "gi_Team.h"
 #include "gi_Compare.h"
 #include "gi_PlayInfo.h"
+#include "gi_Logger.h"
 
 static void gi_Team_SortByPosition(gi_Team* const pThis)
 {
@@ -61,7 +62,7 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 		{
 			if ((position < currentPosition) && (currentPosition != GI_POSITION_UNKNOWN))
 			{
-				fprintf(stderr, "ERROR unsorted positions in squad %d < %d\n", position, currentPosition);
+				GI_FATAL_ERROR("ERROR unsorted positions in squad %d < %d\n", position, currentPosition);
 				return;
 			}
 			if (currentPosition != GI_POSITION_UNKNOWN)
@@ -94,7 +95,7 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 #if 0
 	for (i = 0; i < GI_NUM_POSITIONS; i++)
 	{
-		fprintf(stderr, "position[%d] '%s': start:%d count:%d\n", i, gi_GetPositionName(i), 
+		GI_FATAL_ERROR("position[%d] '%s': start:%d count:%d\n", i, gi_GetPositionName(i), 
 						pThis->m_positionStarts[i], pThis->m_positionCounts[i]);
 	}
 #endif /*#if 0*/
@@ -140,17 +141,17 @@ GI_Bool gi_Team_IsValueValid(const Json_Value* const root)
 {
 	if (root == NULL)
 	{
-		fprintf(stderr, "root is NULL\n");
+		GI_FATAL_ERROR("root is NULL\n");
 		return GI_FALSE;
 	}
 	if (root->m_type != JSON_OBJECT)
 	{
-		fprintf(stderr, "NOT JSON_OBJECT\n");
+		GI_FATAL_ERROR("NOT JSON_OBJECT\n");
 		return GI_FALSE;
 	}
 	if (root->m_name == NULL)
 	{
-		fprintf(stderr, "name is NULL\n");
+		GI_FATAL_ERROR("name is NULL\n");
 		return GI_FALSE;
 	}
 	if (strcmp(root->m_name, "Team") != 0)
@@ -334,7 +335,7 @@ void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const p
 	{
 		return;
 	}
-	printf("HELLO\n");
+	GI_LOG("HELLO");
 	for (i = 0; i < numPlayers; i++)
 	{
 		size_t p;
@@ -345,7 +346,7 @@ void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const p
 			const float baseValue = pPlayInfo->m_offenceStatsBase[p][i];
 			if (baseValue > 0.0f)
 			{
-				fprintf(stdout, "Play '%s' Player[%d] '%s' %s value %f\n", 
+				GI_LOG("Play '%s' Player[%d] '%s' %s value %f", 
 								pPlayInfo->m_offencePlays[p].m_name, 
 								i, pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), baseValue);
 			}

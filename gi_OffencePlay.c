@@ -29,17 +29,17 @@ GI_Bool gi_OffencePlay_IsValueValid(const Json_Value* const root)
 {
 	if (root == NULL)
 	{
-		fprintf(stderr, "root is NULL\n");
+		GI_FATAL_ERROR("root is NULL\n");
 		return GI_FALSE;
 	}
 	if (root->m_type != JSON_OBJECT)
 	{
-		fprintf(stderr, "NOT JSON_OBJECT\n");
+		GI_FATAL_ERROR("NOT JSON_OBJECT\n");
 		return GI_FALSE;
 	}
 	if (root->m_name == NULL)
 	{
-		fprintf(stderr, "name is NULL\n");
+		GI_FATAL_ERROR("name is NULL\n");
 		return GI_FALSE;
 	}
 	if (strcmp(root->m_name, "OffencePlay") != 0)
