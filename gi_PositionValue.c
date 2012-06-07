@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "gi_PositionValue.h"
+#include "gi_Logger.h"
 
 void gi_PositionValue_Init(gi_PositionValue* const pThis)
 {
@@ -73,6 +74,11 @@ size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_
 					pSepEnd[0] = '\0';
 					strcpy(szQSTName, pSepStart+1);
 					positionValue[i].m_qst = gi_GetQSTFromName(szQSTName);
+					if (positionValue[i].m_qst == GI_QST_UNKNOWN)
+					{
+						GI_FATAL_ERROR("ERROR unknown QST '%s'", szQSTName);
+						return 0;
+					}
 				}
 				else
 				{
@@ -81,7 +87,17 @@ size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_
 
 				strncpy(positionValue[i].m_positionName, value->m_name, GI_POSITIONNAME_MAX_SIZE);
 				positionValue[i].m_position = gi_GetPositionFromName(szPositionnName);
+				if (positionValue[i].m_position == GI_POSITION_UNKNOWN)
+				{
+					GI_FATAL_ERROR("ERROR unknown position '%s'", szPositionnName);
+					return 0;
+				}
 				positionValue[i].m_basePosition = gi_GetBasePosition(positionValue[i].m_position);
+				if (positionValue[i].m_basePosition == GI_POSITION_UNKNOWN)
+				{
+					GI_FATAL_ERROR("ERROR unknown basePosition '%s'", positionValue[i].m_position);
+					return 0;
+				}
 				i++;
 			}
 			if (i >= maxSize)
