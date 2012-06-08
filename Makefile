@@ -18,7 +18,13 @@ C_LINK_FLAGS +=
 C_TARGET_EXTENSION := 
 endif	# ifdef WINDIR
 
-GI_C_DEPENDS:=Json.c BlockAllocator.c gi_main.c gi_PositionValue.c gi_OffencePlay.c gi_Player.c gi_Team.c gi_PlayInfo.c gi_GlobalInfo.c gi_SpecialTeamsValues.c gi_Compare.c gi_Logger.c gi_LoggerChannel.c
+GI_C_DEPENDS:=Json.c BlockAllocator.c \
+							gi_main.c \
+							gi_Logger.c gi_LoggerChannel.c \
+							gi_PositionValue.c gi_PlayInfo.c gi_Compare.c gi_GlobalInfo.c \
+							gi_OffencePlay.c gi_DefencePlay.c gi_SpecialTeamsValues.c \
+							gi_Player.c gi_Team.c 
+
 GI_CPP_DEPENDS:=
 C_PROJECTS:=gi
 
