@@ -1,5 +1,5 @@
+* TODO: special stats values should be in playinfo like the offence & defence stats - not in the player/team 
 * ERROR: unknown position whilst loading plays
-* Basic logger & fatal error handler
 * When computing base stat compute for all aliases and return them? or just highest
 * TODO: error if wrong type of data found when parsing position value arrays
 * compute some play values per player per offence play that has been loaded and output
