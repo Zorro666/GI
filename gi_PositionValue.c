@@ -76,7 +76,7 @@ size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_
 					positionValue[i].m_qst = gi_GetQSTFromName(szQSTName);
 					if (positionValue[i].m_qst == GI_QST_UNKNOWN)
 					{
-						GI_FATAL_ERROR("ERROR unknown QST '%s'", szQSTName);
+						GI_FATAL_ERROR("unknown QST '%s'", szQSTName);
 						return 0;
 					}
 				}
@@ -89,13 +89,13 @@ size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_
 				positionValue[i].m_position = gi_GetPositionFromName(szPositionnName);
 				if (positionValue[i].m_position == GI_POSITION_UNKNOWN)
 				{
-					GI_FATAL_ERROR("ERROR unknown position '%s'", szPositionnName);
+					GI_FATAL_ERROR("unknown position '%s'", szPositionnName);
 					return 0;
 				}
 				positionValue[i].m_basePosition = gi_GetBasePosition(positionValue[i].m_position);
 				if (positionValue[i].m_basePosition == GI_POSITION_UNKNOWN)
 				{
-					GI_FATAL_ERROR("ERROR unknown basePosition '%s'", positionValue[i].m_position);
+					GI_FATAL_ERROR("unknown basePosition '%s'", positionValue[i].m_position);
 					return 0;
 				}
 				i++;

@@ -62,7 +62,7 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 		{
 			if ((position < currentPosition) && (currentPosition != GI_POSITION_UNKNOWN))
 			{
-				GI_FATAL_ERROR("ERROR unsorted positions in squad %d < %d\n", position, currentPosition);
+				GI_FATAL_ERROR("unsorted positions in squad %d < %d\n", position, currentPosition);
 				return;
 			}
 			if (currentPosition != GI_POSITION_UNKNOWN)

@@ -70,7 +70,7 @@ const char* gi_GetPositionName(const GI_POSITION position)
 {
 	if (position > GI_POSITION_UNKNOWN)
 	{
-		GI_FATAL_ERROR("ERROR gi_GetPositionName invalid position %d range:%d-%d", position, 0, GI_POSITION_UNKNOWN);
+		GI_FATAL_ERROR("gi_GetPositionName invalid position %d range:%d-%d", position, 0, GI_POSITION_UNKNOWN);
 		return NULL;
 	}
 	return s_positionNames[position];
@@ -93,7 +93,7 @@ const char* gi_GetUnitName(const GI_UNIT unit)
 {
 	if (unit > GI_UNIT_UNKNOWN)
 	{
-		GI_FATAL_ERROR("ERROR gi_GetUnitName invalid unit %d range:%d-%d", unit, 0, GI_UNIT_UNKNOWN);
+		GI_FATAL_ERROR("gi_GetUnitName invalid unit %d range:%d-%d", unit, 0, GI_UNIT_UNKNOWN);
 		return NULL;
 	}
 	return s_unitNames[unit];
@@ -103,7 +103,7 @@ const char* gi_GetQSTName(const GI_QST qst)
 {
 	if (qst > GI_QST_UNKNOWN)
 	{
-		GI_FATAL_ERROR("ERROR gi_GetQSTName invalid qst %d range:%d-%d", qst, 0, GI_QST_UNKNOWN);
+		GI_FATAL_ERROR("gi_GetQSTName invalid qst %d range:%d-%d", qst, 0, GI_QST_UNKNOWN);
 		return NULL;
 	}
 	return s_qstNames[qst];
@@ -213,12 +213,10 @@ Json_Value* gi_ParseFile(const char* const fileName, const size_t debug)
 	}
 	else
 	{
-		GI_FATAL_ERROR("ERROR parsing file '%s'\n", fileName);
-		GI_FATAL_ERROR("ERROR line:%d pos:'%s' desc:'%s'\n", error_line, error_pos, error_desc);
+		GI_FATAL_ERROR("parsing file '%s'\nline:%d pos:'%s' desc:'%s'\n", fileName, error_line, error_pos, error_desc);
 		return NULL;
 	}
 
-	/* TODO: error handling output the error information */
 	return root;
 }
 
@@ -321,7 +319,7 @@ static GI_Return gi_Output_Team(const gi_Team* const pTeam)
 
 	if (pTeam->m_name[0] == '\0')
 	{
-		GI_FATAL_ERROR("ERROR: gi_Output_Team: team name is empty\n");
+		GI_FATAL_ERROR("gi_Output_Team: team name is empty\n");
 		return GI_RETURN_ERROR;
 	}
 	fileName[0] = '\0';
@@ -342,11 +340,11 @@ void gi_Output(void)
 	const gi_Team* const pTeam = &s_globalInfo.m_team;
 	if (gi_Output_SpecialTeamsStats(pTeam) == GI_RETURN_ERROR)
 	{
-		GI_FATAL_ERROR("ERROR outputting special teams stats\n");
+		GI_FATAL_ERROR("outputting special teams stats\n");
 	}
 	if (gi_Output_Team(pTeam) == GI_RETURN_ERROR)
 	{
-		GI_FATAL_ERROR("ERROR outputting team\n");
+		GI_FATAL_ERROR("outputting team\n");
 	}
 	gi_Team_ComputeOffenceBase(pTeam, &s_globalInfo.m_playInfo);
 }
