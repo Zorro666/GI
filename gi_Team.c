@@ -212,8 +212,6 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 	gi_Team_SortByPosition(pThis);
 	gi_Team_UpdatePositionArrays(pThis);
 
-	gi_Team_ComputeSpecialTeams(pThis);
-
 	return GI_RETURN_SUCCESS;
 }
 
@@ -335,7 +333,6 @@ void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const p
 	{
 		return;
 	}
-	GI_LOG("HELLO");
 	for (i = 0; i < numPlayers; i++)
 	{
 		size_t p;

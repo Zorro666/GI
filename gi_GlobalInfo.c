@@ -1,4 +1,5 @@
 #include "gi_GlobalInfo.h"
+#include "gi_Logger.h"
 
 void gi_GlobalInfo_Init(gi_GlobalInfo* const pThis)
 {
@@ -19,4 +20,9 @@ GI_Return gi_globalInfo_AddTeam(gi_GlobalInfo* const pThis, gi_Team* const pTeam
 GI_Return gi_globalInfo_AddOffencePlay(gi_GlobalInfo* const pThis, gi_OffencePlay* const pOffencePlay)
 {
 	return gi_PlayInfo_AddOffencePlay(&pThis->m_playInfo, pOffencePlay);
+}
+
+GI_Return gi_globalInfo_AddDefencePlay(gi_GlobalInfo* const pThis, gi_DefencePlay* const pDefencePlay)
+{
+	return gi_PlayInfo_AddDefencePlay(&pThis->m_playInfo, pDefencePlay);
 }

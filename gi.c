@@ -243,6 +243,19 @@ GI_Return gi_HandleValue(Json_Value* const value, const size_t debug)
 					return GI_RETURN_SUCCESS;
 				}
 			}
+			if (gi_DefencePlay_IsValueValid(value) == GI_TRUE)
+			{
+				gi_DefencePlay defencePlay;
+				if (gi_DefencePlay_Load(&defencePlay, value) == GI_RETURN_SUCCESS)
+				{
+					if (debug == 1)
+					{
+						gi_DefencePlay_Print(&defencePlay, stdout);
+					}
+					gi_globalInfo_AddDefencePlay(&s_globalInfo, &defencePlay);
+					return GI_RETURN_SUCCESS;
+				}
+			}
 			if (gi_Team_IsValueValid(value) == GI_TRUE)
 			{
 				gi_Team team;
@@ -335,6 +348,13 @@ static GI_Return gi_Output_Team(const gi_Team* const pTeam)
 	return GI_RETURN_SUCCESS;
 }
 
+void gi_Compute(void)
+{
+	gi_Team* const pTeam = &s_globalInfo.m_team;
+	gi_Team_ComputeSpecialTeams(pTeam);
+	gi_Team_ComputeOffenceBase(pTeam, &s_globalInfo.m_playInfo);
+}
+
 void gi_Output(void)
 {
 	const gi_Team* const pTeam = &s_globalInfo.m_team;
@@ -346,5 +366,4 @@ void gi_Output(void)
 	{
 		GI_FATAL_ERROR("outputting team\n");
 	}
-	gi_Team_ComputeOffenceBase(pTeam, &s_globalInfo.m_playInfo);
 }

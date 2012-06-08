@@ -80,6 +80,7 @@ typedef enum GI_QST
 
 #define GI_TEAMNAME_MAX_SIZE (128)
 #define GI_PLAYERNAME_MAX_SIZE (128)
+#define GI_ZONENAME_MAX_SIZE (16)
 #define GI_OFFENCENAME_MAX_SIZE (16)
 #define GI_DEFENCENAME_MAX_SIZE (16)
 #define GI_POSITIONNAME_MAX_SIZE (8)
@@ -108,6 +109,7 @@ typedef struct gi_SpecialTeamsValues gi_SpecialTeamsValues;
 void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const size_t debug);
 GI_Return gi_LoadFile(const char* const fileName, const size_t debug);
+void gi_Compute(void);
 void gi_Output(void);
 
 const char* gi_GetPositionName(const GI_POSITION position);

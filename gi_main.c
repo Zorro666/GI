@@ -18,10 +18,11 @@ int main(int argc, char* argv[])
 
 	gi_Init();
 
+	gi_LoadFile("data/london_monarchs.json", debug);
 	gi_LoadFile("data/offence/proset.json", debug);
 	gi_LoadFile("data/defence/3-4.json", 1);
-	gi_LoadFile("data/london_monarchs.json", debug);
 
+	gi_Compute();
 	gi_Output();
 	return -1;
 }
