@@ -246,7 +246,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const size_t debug)
 					{
 						gi_OffencePlay_Print(&offencePlay, stdout);
 					}
-					gi_globalInfo_AddOffencePlay(&s_globalInfo, &offencePlay);
+					gi_GlobalInfo_AddOffencePlay(&s_globalInfo, &offencePlay);
 					return GI_RETURN_SUCCESS;
 				}
 			}
@@ -259,7 +259,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const size_t debug)
 					{
 						gi_DefencePlay_Print(&defencePlay, stdout);
 					}
-					gi_globalInfo_AddDefencePlay(&s_globalInfo, &defencePlay);
+					gi_GlobalInfo_AddDefencePlay(&s_globalInfo, &defencePlay);
 					return GI_RETURN_SUCCESS;
 				}
 			}
@@ -272,7 +272,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const size_t debug)
 					{
 						gi_Team_Print(&team, stdout);
 					}
-					gi_globalInfo_AddTeam(&s_globalInfo, &team);
+					gi_GlobalInfo_AddTeam(&s_globalInfo, &team);
 					return GI_RETURN_SUCCESS;
 				}
 			}
@@ -318,7 +318,7 @@ static FILE* openOutputFile(const char* const fileName)
 	return pFile;
 }
 
-static GI_Return gi_Output_SpecialTeamsStats(const gi_Team* const pTeam)
+static GI_Return gi_Output_SpecialTeamsStats(const gi_Team* const pTeam, const gi_PlayInfo* const pPlayInfo)
 {
 	FILE* pFile;
 	const char* const fileName = "SpecialTeams_output.txt";
@@ -327,7 +327,7 @@ static GI_Return gi_Output_SpecialTeamsStats(const gi_Team* const pTeam)
 	{
 		return GI_RETURN_ERROR;
 	}
-	gi_Team_PrintBestSpecialTeams(pTeam, pFile);
+	gi_Team_PrintBestSpecialTeams(pTeam, pPlayInfo, pFile);
 	fclose(pFile);
 	return GI_RETURN_SUCCESS;
 }
@@ -357,15 +357,14 @@ static GI_Return gi_Output_Team(const gi_Team* const pTeam)
 
 void gi_Compute(void)
 {
-	gi_Team* const pTeam = &s_globalInfo.m_team;
-	gi_Team_ComputeSpecialTeams(pTeam);
-	gi_Team_ComputeOffenceBase(pTeam, &s_globalInfo.m_playInfo);
+	gi_GlobalInfo_Compute(&s_globalInfo);
 }
 
 void gi_Output(void)
 {
 	const gi_Team* const pTeam = &s_globalInfo.m_team;
-	if (gi_Output_SpecialTeamsStats(pTeam) == GI_RETURN_ERROR)
+	const gi_PlayInfo* const pPlayInfo = &s_globalInfo.m_playInfo;
+	if (gi_Output_SpecialTeamsStats(pTeam, pPlayInfo) == GI_RETURN_ERROR)
 	{
 		GI_FATAL_ERROR("outputting special teams stats\n");
 	}

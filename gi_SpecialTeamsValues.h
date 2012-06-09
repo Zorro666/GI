@@ -13,7 +13,6 @@ struct gi_SpecialTeamsValues
 };
 
 void gi_SpecialTeamsValues_Init(gi_SpecialTeamsValues* const pThis);
-void gi_SpecialTeamsValues_Set(gi_SpecialTeamsValues* const pThis, const float blocker, const float gunner, 
-															 const float protector, const float runner);
+void gi_SpecialTeamsValues_Compute(gi_SpecialTeamsValues* const pThis, const gi_Player* const pPlayer);
 
 #endif /* #ifndef GI_SPECIALTEAMSVALUES_HH */

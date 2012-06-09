@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include "gi.h"
-#include "gi_SpecialTeamsValues.h"
 
 struct gi_Player
 {
@@ -14,7 +13,6 @@ struct gi_Player
 	float m_experience;
 	GI_UNIT m_unit;
 	size_t m_age;
-	gi_SpecialTeamsValues m_specialTeamsValues;
 	float m_level;
 	float m_QST[GI_QST_NUM];
 };
@@ -23,6 +21,6 @@ void gi_Player_Init(gi_Player* const pThis);
 GI_Bool gi_Player_IsValueValid(const Json_Value* const root);
 GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root);
 void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile);
-void gi_Player_ComputeSpecialTeams(gi_Player* const pThis);
+void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeamsValues* const pSpecialTeamsValues);
 
 #endif /* #ifndef GI_PLAYER_HH */

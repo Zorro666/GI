@@ -34,6 +34,11 @@ void gi_PlayInfo_Init(gi_PlayInfo* const pThis)
 			pThis->m_defenceStatsTackler[i][p] = 0.0f;
 		}
 	}
+
+	for (i = 0; i < GI_SQUAD_PLAYERS_MAX_SIZE; i++)
+	{
+		gi_SpecialTeamsValues_Init(&pThis->m_specialTeamsValues[i]);
+	}
 }
 
 GI_Return gi_PlayInfo_AddOffencePlay(gi_PlayInfo* const pThis, gi_OffencePlay* const pOffencePlay)
@@ -92,5 +97,10 @@ void gi_PlayInfo_ComputeDefenceBase(gi_PlayInfo* const pThis, const gi_Player* c
 		const float baseValue = gi_DefencePlay_ComputeBase(pDefencePlay, pPlayer);
 		pThis->m_defenceStatsBase[i][playerIndex] = baseValue;
 	}
+}
+
+void gi_PlayInfo_ComputeSpecialTeams(gi_PlayInfo* const pThis, const gi_Player* const pPlayer, const size_t playerIndex)
+{
+	gi_SpecialTeamsValues_Compute(&pThis->m_specialTeamsValues[playerIndex], pPlayer);
 }
 
