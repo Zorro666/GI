@@ -169,15 +169,22 @@ GI_QST gi_GetBasePosition(const GI_POSITION position)
 			base = GI_POSITION_OT;
 			break;
 		case GI_POSITION_DE:
+		case GI_POSITION_LE:
+		case GI_POSITION_RE:
 			base = GI_POSITION_DE;
 			break;
 		case GI_POSITION_DT:
+		case GI_POSITION_NT:
 			base = GI_POSITION_DT;
 			break;
 		case GI_POSITION_IB:
+		case GI_POSITION_LILB:
+		case GI_POSITION_RILB:
 			base = GI_POSITION_IB;
 			break;
 		case GI_POSITION_OB:
+		case GI_POSITION_LLB:
+		case GI_POSITION_RLB:
 			base = GI_POSITION_OB;
 			break;
 		case GI_POSITION_CB:
