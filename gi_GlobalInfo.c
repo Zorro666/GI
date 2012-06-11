@@ -33,4 +33,5 @@ void gi_GlobalInfo_Compute(gi_GlobalInfo* const pThis)
 	gi_PlayInfo* const pPlayInfo = &pThis->m_playInfo;
 	gi_Team_ComputeSpecialTeams(pTeam, pPlayInfo);
 	gi_Team_ComputeOffenceBase(pTeam, pPlayInfo);
+	gi_Team_ComputeDefenceBase(pTeam, pPlayInfo);
 }
