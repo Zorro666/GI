@@ -125,7 +125,5 @@ void gi_SpecialTeamsValues_Compute(gi_SpecialTeamsValues* const pThis, const gi_
 	pThis->m_blocker = blocker;
 	pThis->m_runner = runner;
 	pThis->m_gunner = gunner;
-
-	GI_LOG("Set %f %f %f %f", protector, blocker, runner, gunner);
 }
 
