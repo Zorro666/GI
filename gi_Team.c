@@ -241,21 +241,6 @@ void gi_Team_Print(const gi_Team* const pThis, FILE* const pFile)
 	}
 }
 
-void gi_Team_ComputeSpecialTeams(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo)
-{
-	size_t i;
-	const size_t numPlayers = pThis->m_numPlayers;
-	if (numPlayers == 0)
-	{
-		return;
-	}
-	for (i = 0; i < numPlayers; i++)
-	{
-		const gi_Player* const pPlayer = &pThis->m_squad[i];
-		gi_PlayInfo_ComputeSpecialTeams(pPlayInfo, pPlayer, i);
-	}
-}
-
 static void gi_Team_computeAndPrintStats(const gi_Team* const pThis, FILE* const pFile, 
 																				 FloatItem* const pStats, const char* const statName)
 {
@@ -320,6 +305,21 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Runner");
 }
 
+void gi_Team_ComputeSpecialTeams(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo)
+{
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+	if (numPlayers == 0)
+	{
+		return;
+	}
+	for (i = 0; i < numPlayers; i++)
+	{
+		const gi_Player* const pPlayer = &pThis->m_squad[i];
+		gi_PlayInfo_ComputeSpecialTeams(pPlayInfo, pPlayer, i);
+	}
+}
+
 void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo)
 {
 	size_t i;
@@ -339,8 +339,37 @@ void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const p
 			const float baseValue = pPlayInfo->m_offenceStatsBase[p][i];
 			if (baseValue > 0.0f)
 			{
-				GI_LOG("Play '%s' Player[%d] '%s' %s value %f", 
-								pPlayInfo->m_offencePlays[p].m_name, 
+				const gi_OffencePlay* const pOffencePlay = &pPlayInfo->m_offencePlays[p];
+				GI_LOG("Play '%s' Defence:'%s' Player[%d] '%s' %s value %f", 
+								pOffencePlay->m_name, pOffencePlay->m_defense[0],
+								i, pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), baseValue);
+			}
+		}
+	}
+}
+
+void gi_Team_ComputeDefenceBase(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo)
+{
+	size_t i;
+	const size_t numPlayers = pThis->m_numPlayers;
+
+	if (numPlayers == 0)
+	{
+		return;
+	}
+	for (i = 0; i < numPlayers; i++)
+	{
+		size_t p;
+		const gi_Player* const pPlayer = &pThis->m_squad[i];
+		gi_PlayInfo_ComputeDefenceBase(pPlayInfo, pPlayer, i);
+		for (p = 0; p < GI_DEFENCE_PLAYS_MAX_SIZE; p++)
+		{
+			const float baseValue = pPlayInfo->m_defenceStatsBase[p][i];
+			if (baseValue > 0.0f)
+			{
+				const gi_DefencePlay* const pDefencePlay = &pPlayInfo->m_defencePlays[p];
+				GI_LOG("Play '%s' Zone:'%s' Player[%d] '%s' %s value %f", 
+								pDefencePlay->m_name, pDefencePlay->m_zone,
 								i, pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), baseValue);
 			}
 		}
