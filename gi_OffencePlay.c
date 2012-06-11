@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "gi_OffencePlay.h"
-#include "gi_Player.h"
 #include "gi_Logger.h"
 
 void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
@@ -139,10 +138,9 @@ void gi_OffencePlay_Print(const gi_OffencePlay* const pThis, FILE* const pFile)
 	fprintf(pFile, "\n");
 }
 
-float gi_OffencePlay_ComputeBase(const gi_OffencePlay* const pThis, const gi_Player* const pPlayer)
+float gi_OffencePlay_ComputeBase(const gi_OffencePlay* const pThis, const GI_POSITION playerPosition, const float* const playerQST)
 {
 	size_t i;
-	const GI_POSITION playerPosition = pPlayer->m_position;
 	float baseValue = 0.0f;
 
 	for (i = 0; i < pThis->m_numBase; i++)
@@ -153,7 +151,7 @@ float gi_OffencePlay_ComputeBase(const gi_OffencePlay* const pThis, const gi_Pla
 			if (pPositionValue->m_valueType == GI_TYPE_FLOAT)
 			{
 				const GI_QST playQST = pPositionValue->m_qst;
-				const float playerStat = pPlayer->m_QST[playQST] * pPositionValue->m_value.f;
+				const float playerStat = playerQST[playQST] * pPositionValue->m_value.f;
 				baseValue += playerStat;
 			}
 		}
