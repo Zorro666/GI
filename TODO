@@ -1,4 +1,7 @@
-* Have external file to mark players already used e.g. for special teams computation
+* Parse injury list - set injury level on player
+* Injury ERROR - invalid player name, invalid injury level
+* Use injury level in level computation in player
+* Parse "Used Players" data in team file store per unit in gi_Team
 * When computing base stat compute for all aliases and return them? or just highest
 * compute some play values per player per defence play that has been loaded and output
 * compute some play values per player per offence play that has been loaded and output
