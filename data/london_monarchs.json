@@ -61,7 +61,25 @@
 {"Player": {"Name":"Shurville", "Position":"P", "Age":1, "Level":4, "Q":0, "S":55, "T":45, "Experience":0}},
 {"Player": {"Name":"Sanders", "Position":"R", "Age":2, "Level":12, "Q":20, "S":0, "T":80, "Experience":-0.95}},
 {"Player": {"Name":"Murrey", "Position":"R", "Age":1, "Level":9, "Q":45, "S":0, "T":55, "Experience":-1.5}}
-		]
+		],
+		"Injuries" :
+		[
+{"Murrey", "E"}
+{"Ringo", "F"}
+		],
+		"Used Players" :
+		{
+			"Offence" :
+			[
+			],
+			"Defence" :
+			[
+			],
+			"Special Teams" :
+			[
+"Ringo"
+			],
+		}
 	}
 }
 
