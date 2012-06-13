@@ -129,6 +129,14 @@ void gi_Team_Init(gi_Team* const pThis)
 		pThis->m_positionStarts[i] = 0;
 		pThis->m_positionCounts[i] = 0;
 	}
+	for (i = 0; i < GI_UNIT_NUM; i++)
+	{
+		size_t p;
+		for (p = 0; p < GI_SQUAD_PLAYERS_MAX_SIZE; p++)
+		{
+			pThis->m_usedPlayers[i][p] = GI_SQUAD_PLAYERS_MAX_SIZE;
+		}
+	}
 
 	pThis->m_name[0] = '\0';
 	pThis->m_numPlayers = 0;
@@ -202,6 +210,33 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 								numPlayers++;
 							}
 						}
+					}
+				}
+			}
+			else if (strcmp(it->m_name, "Injuries") == 0)
+			{
+				Json_Value* injuryRoot;
+				for (injuryRoot = it->m_first_child; injuryRoot != NULL; injuryRoot = injuryRoot->m_next_sibling)
+				{
+					if (injuryRoot->m_type == JSON_OBJECT)
+					{
+						Json_Value* const injury = injuryRoot->m_first_child;
+						if (injury->m_type == JSON_STRING)
+						{
+							const char* const injuryPlayerName = injury->m_name;
+							const char* const injuryLevel = injury->m_value_data.string_value;
+							GI_LOG("Injury '%s' : '%s'", injuryPlayerName, injuryLevel);
+						}
+						else
+						{
+							GI_FATAL_ERROR("Wrong type found for injury data found:%d", injury->m_type);
+							return GI_RETURN_ERROR;
+						}
+					}
+					else
+					{
+						GI_FATAL_ERROR("Wrong type found for injury object found:%d", injuryRoot->m_type);
+						return GI_RETURN_ERROR;
 					}
 				}
 			}
