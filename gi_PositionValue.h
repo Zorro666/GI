@@ -20,6 +20,6 @@ struct gi_PositionValue
 
 void gi_PositionValue_Init(gi_PositionValue* const pThis);
 void gi_PositionValue_Print(const gi_PositionValue* const pThis, FILE* const pFile);
-size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root);
+size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root, const GI_Type dataType);
 
 #endif /* #ifndef GI_POSITIONVALUE_HH */

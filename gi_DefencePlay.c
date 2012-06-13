@@ -73,18 +73,18 @@ GI_Return gi_DefencePlay_Load(gi_DefencePlay* const pThis, const Json_Value* con
 		{
 			if (strcmp(it->m_name, "Base") == 0)
 			{
-				/* TODO: base should be FLOAT data - ERROR if INT data found */
-				pThis->m_numBase = gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it);
+				/* base should be FLOAT data - ERROR if INT data found */
+				pThis->m_numBase = gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it, GI_TYPE_FLOAT);
 			}
 			else if (strcmp(it->m_name, "Tackler") == 0)
 			{
-				/* TODO: tackler should be INT data - ERROR if FLOAT data found */
-				pThis->m_numTackler = gi_PositionValueArray_Parse(pThis->m_tackler, GI_POSITION_NUM, it);
+				/* tackler should be FLOAT data - ERROR if INT data found */
+				pThis->m_numTackler = gi_PositionValueArray_Parse(pThis->m_tackler, GI_POSITION_NUM, it, GI_TYPE_FLOAT);
 			}
 			else if (strcmp(it->m_name, "Weighting") == 0)
 			{
-				/* TODO: weighting should be INT data - ERROR if FLOAT data found */
-				pThis->m_numWeighting = gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it);
+				/* weighting should be INT data - ERROR if FLOAT data found */
+				pThis->m_numWeighting = gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it, GI_TYPE_INT);
 			}
 		}
 	}

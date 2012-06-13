@@ -38,7 +38,7 @@ void gi_PositionValue_Print(const gi_PositionValue* const pThis, FILE* const pFi
 	}
 }
 
-size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root)
+size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root, const GI_Type dataType)
 {
 	Json_Value* it;
 	size_t i;
@@ -51,11 +51,21 @@ size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_
 			Json_Value* value = it->m_first_child;
 			if (value->m_type == JSON_FLOAT)
 			{
+				if (dataType == GI_TYPE_INT)
+				{
+					GI_FATAL_ERROR("Found float data but expecting int data name:'%s'", value->m_name);
+					return 0;
+				}
 				positionValue[i].m_value.f = value->m_value_data.float_value;
 				positionValue[i].m_valueType = GI_TYPE_FLOAT;
 			}
 			else if (value->m_type == JSON_INT)
 			{
+				if (dataType == GI_TYPE_FLOAT)
+				{
+					GI_FATAL_ERROR("Found int data but expecting float data name:'%s'", value->m_name);
+					return 0;
+				}
 				positionValue[i].m_value.i = (size_t)(value->m_value_data.int_value);
 				positionValue[i].m_valueType = GI_TYPE_INT;
 			}

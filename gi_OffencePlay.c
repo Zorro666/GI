@@ -83,18 +83,18 @@ GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 			}
 			else if (strcmp(it->m_name, "Base") == 0)
 			{
-				/* TODO: base should be FLOAT data - ERROR if INT data found */
-				pThis->m_numBase = gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it);
+				/* base should be FLOAT data - ERROR if INT data found */
+				pThis->m_numBase = gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it, GI_TYPE_FLOAT);
 			}
 			else if (strcmp(it->m_name, "BC") == 0)
 			{
-				/* TODO: bc should be INT data - ERROR if FLOAT data found */
-				pThis->m_numBC = gi_PositionValueArray_Parse(pThis->m_bc, GI_POSITION_NUM, it);
+				/* bc should be FLOAT data - ERROR if INT data found */
+				pThis->m_numBC = gi_PositionValueArray_Parse(pThis->m_bc, GI_POSITION_NUM, it, GI_TYPE_FLOAT);
 			}
 			else if (strcmp(it->m_name, "Weighting") == 0)
 			{
-				/* TODO: weighting should be INT data - ERROR if FLOAT data found */
-				pThis->m_numWeighting = gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it);
+				/* weighting should be INT data - ERROR if FLOAT data found */
+				pThis->m_numWeighting = gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it, GI_TYPE_INT);
 			}
 		}
 	}
