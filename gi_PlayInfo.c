@@ -42,7 +42,7 @@ void gi_PlayInfo_Init(gi_PlayInfo* const pThis)
 	}
 }
 
-GI_Return gi_PlayInfo_AddOffencePlay(gi_PlayInfo* const pThis, gi_OffencePlay* const pOffencePlay)
+GI_RETURN gi_PlayInfo_AddOffencePlay(gi_PlayInfo* const pThis, gi_OffencePlay* const pOffencePlay)
 {
 	size_t index = pThis->m_numOffencePlays;
 	if (pThis->m_numOffencePlays >= GI_OFFENCE_PLAYS_MAX_SIZE)
@@ -55,7 +55,7 @@ GI_Return gi_PlayInfo_AddOffencePlay(gi_PlayInfo* const pThis, gi_OffencePlay* c
 	return GI_RETURN_SUCCESS;
 }
 
-GI_Return gi_PlayInfo_AddDefencePlay(gi_PlayInfo* const pThis, gi_DefencePlay* const pDefencePlay)
+GI_RETURN gi_PlayInfo_AddDefencePlay(gi_PlayInfo* const pThis, gi_DefencePlay* const pDefencePlay)
 {
 	size_t index = pThis->m_numDefencePlays;
 	if (pThis->m_numDefencePlays >= GI_DEFENCE_PLAYS_MAX_SIZE)

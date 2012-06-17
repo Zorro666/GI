@@ -6,6 +6,22 @@
 #include "gi_PlayInfo.h"
 #include "gi_Logger.h"
 
+static GI_RETURN gi_Team_SetPlayerInjury(gi_Team* const pThis, const char* const injuryPlayerName, const GI_INJURY injury)
+{
+	const size_t numPlayers = pThis->m_numPlayers;
+	size_t i;
+	for (i = 0; i < numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		if (strcmp(pPlayer->m_name, injuryPlayerName) == 0)
+		{
+			pPlayer->m_injury = injury;
+			return GI_RETURN_SUCCESS;
+		}
+	}
+	return GI_RETURN_ERROR;
+}
+
 static void gi_Team_SortByPosition(gi_Team* const pThis)
 {
 	gi_Player squadTemp[GI_SQUAD_PLAYERS_MAX_SIZE];
@@ -145,7 +161,7 @@ void gi_Team_Init(gi_Team* const pThis)
 	pThis->m_numSpecialTeams = 0;
 }
 
-GI_Bool gi_Team_IsValueValid(const Json_Value* const root)
+GI_BOOL gi_Team_IsValueValid(const Json_Value* const root)
 {
 	if (root == NULL)
 	{
@@ -169,7 +185,7 @@ GI_Bool gi_Team_IsValueValid(const Json_Value* const root)
 	return GI_TRUE;
 }
 
-GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
+GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
 	size_t numPlayers = 0;
@@ -212,6 +228,9 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 						}
 					}
 				}
+				pThis->m_numPlayers = numPlayers;
+				gi_Team_SortByPosition(pThis);
+				gi_Team_UpdatePositionArrays(pThis);
 			}
 			else if (strcmp(it->m_name, "Injuries") == 0)
 			{
@@ -220,16 +239,22 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 				{
 					if (injuryRoot->m_type == JSON_OBJECT)
 					{
-						Json_Value* const injury = injuryRoot->m_first_child;
-						if (injury->m_type == JSON_STRING)
+						Json_Value* const injuryObject = injuryRoot->m_first_child;
+						if (injuryObject->m_type == JSON_STRING)
 						{
-							const char* const injuryPlayerName = injury->m_name;
-							const char* const injuryLevel = injury->m_value_data.string_value;
-							GI_LOG("Injury '%s' : '%s'", injuryPlayerName, injuryLevel);
+							const char* const injuryPlayerName = injuryObject->m_name;
+							const char* const injuryString = injuryObject->m_value_data.string_value;
+							const GI_INJURY injury = gi_GetInjuryFromName(injuryString);
+							GI_LOG("Injury '%s' : '%s' -> %d '%s'", injuryPlayerName, injuryString, injury, gi_GetInjuryName(injury));
+							if (gi_Team_SetPlayerInjury(pThis, injuryPlayerName, injury) == GI_RETURN_ERROR)
+							{
+								GI_FATAL_ERROR("gi_Team_SetPlayerInjury failed Injury:'%s' %d '%s'", injuryPlayerName, injury, gi_GetInjuryName(injury));
+								return GI_RETURN_ERROR;
+							}
 						}
 						else
 						{
-							GI_FATAL_ERROR("Wrong type found for injury data found:%d", injury->m_type);
+							GI_FATAL_ERROR("Wrong type found for injury data found:%d", injuryObject->m_type);
 							return GI_RETURN_ERROR;
 						}
 					}
@@ -242,10 +267,6 @@ GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 			}
 		}
 	}
-	pThis->m_numPlayers = numPlayers;
-
-	gi_Team_SortByPosition(pThis);
-	gi_Team_UpdatePositionArrays(pThis);
 
 	return GI_RETURN_SUCCESS;
 }

@@ -28,7 +28,7 @@ void gi_LoggerChannel_Error(gi_LoggerChannel* const pThis, const char* const fmt
 void gi_LoggerChannel_Print(gi_LoggerChannel* const pThis, const char* const fmt, ...);
 
 void gi_LoggerChannel_SetFlags(gi_LoggerChannel* const pThis, const size_t flags);
-void gi_LoggerChannel_ChangeFlags(gi_LoggerChannel* const pThis, const size_t flags, const GI_Bool enable);
+void gi_LoggerChannel_ChangeFlags(gi_LoggerChannel* const pThis, const size_t flags, const GI_BOOL enable);
 size_t gi_LoggerChannel_GetFlags(gi_LoggerChannel* const pThis);
 
 void gi_LoggerChannel_SetOutputFileName(gi_LoggerChannel* const pThis, const char* const fname);

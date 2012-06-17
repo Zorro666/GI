@@ -23,7 +23,7 @@ enum gi_LogFlags { FLAGS_DEFAULT = GI_LOGGERCHANNEL_FLAGS_CONSOLE_OUTPUT | GI_LO
 void gi_Logger_Init(void);
 void gi_Logger_Shutdown(void);
 
-GI_Bool gi_Logger_GetErrorStatus(void);
+GI_BOOL gi_Logger_GetErrorStatus(void);
 void gi_Logger_ClearErrorStatus(void);
 
 gi_LoggerChannel* gi_Logger_CreateChannel(const char* const nickName, const char* const prefix, 
@@ -35,9 +35,9 @@ void gi_Logger_SetChannelOutputFileName(const int channel, const char* const fna
 void gi_Logger_SetChannelFlags(const int channel, const size_t flags);
 unsigned int gi_Logger_GetChannelFlags(const int channel);
 
-void gi_Logger_SetFatal(const int channel, const GI_Bool fatal);
-void gi_Logger_SetConsoleOutput(const int channel, const GI_Bool consoleOutput);
-void gi_Logger_SetFileOutput(const int channel, const GI_Bool fileOutput);
+void gi_Logger_SetFatal(const int channel, const GI_BOOL fatal);
+void gi_Logger_SetConsoleOutput(const int channel, const GI_BOOL consoleOutput);
+void gi_Logger_SetFileOutput(const int channel, const GI_BOOL fileOutput);
 
 void gi_Logger_FatalError(const char* const fmt, ...);
 void gi_Logger_Error(const char* const fmt, ...);

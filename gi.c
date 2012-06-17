@@ -269,7 +269,7 @@ Json_Value* gi_ParseFile(const char* const fileName, const size_t debug)
 	return root;
 }
 
-GI_Return gi_HandleValue(Json_Value* const value, const size_t debug)
+GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 {
 	if (value == NULL)
 	{
@@ -331,7 +331,7 @@ GI_Return gi_HandleValue(Json_Value* const value, const size_t debug)
 	return GI_RETURN_ERROR;
 }
 
-GI_Return gi_LoadFile(const char* const fileName, const size_t debug)
+GI_RETURN gi_LoadFile(const char* const fileName, const size_t debug)
 {
 	Json_Value* value = gi_ParseFile(fileName, debug);
 	if (value == NULL)
@@ -360,7 +360,7 @@ static FILE* openOutputFile(const char* const fileName)
 	return pFile;
 }
 
-static GI_Return gi_Output_SpecialTeamsStats(const gi_Team* const pTeam, const gi_PlayInfo* const pPlayInfo)
+static GI_RETURN gi_Output_SpecialTeamsStats(const gi_Team* const pTeam, const gi_PlayInfo* const pPlayInfo)
 {
 	FILE* pFile;
 	const char* const fileName = "SpecialTeams_output.txt";
@@ -374,7 +374,7 @@ static GI_Return gi_Output_SpecialTeamsStats(const gi_Team* const pTeam, const g
 	return GI_RETURN_SUCCESS;
 }
 
-static GI_Return gi_Output_Team(const gi_Team* const pTeam)
+static GI_RETURN gi_Output_Team(const gi_Team* const pTeam)
 {
 	FILE* pFile;
 	char fileName[GI_OUTPUTFILENAME_MAX_SIZE];

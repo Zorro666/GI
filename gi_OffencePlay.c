@@ -24,7 +24,7 @@ void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 	pThis->m_numWeighting = 0;
 }
 
-GI_Bool gi_OffencePlay_IsValueValid(const Json_Value* const root)
+GI_BOOL gi_OffencePlay_IsValueValid(const Json_Value* const root)
 {
 	if (root == NULL)
 	{
@@ -48,7 +48,7 @@ GI_Bool gi_OffencePlay_IsValueValid(const Json_Value* const root)
 	return GI_TRUE;
 }
 
-GI_Return gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* const root)
+GI_RETURN gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
 

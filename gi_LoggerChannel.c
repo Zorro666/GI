@@ -91,7 +91,7 @@ size_t gi_LoggerChannel_GetFlags(gi_LoggerChannel* const pThis)
 	return pThis->m_flags;
 }
 
-void gi_LoggerChannel_ChangeFlags(gi_LoggerChannel* const pThis, const size_t flags, const GI_Bool enable)
+void gi_LoggerChannel_ChangeFlags(gi_LoggerChannel* const pThis, const size_t flags, const GI_BOOL enable)
 {
 	const size_t currentFlags = pThis->m_flags;
 	const size_t newFlags = (currentFlags & ~flags) | (enable ? flags : 0);

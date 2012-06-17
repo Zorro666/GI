@@ -19,8 +19,8 @@ struct gi_Player
 };
 
 void gi_Player_Init(gi_Player* const pThis);
-GI_Bool gi_Player_IsValueValid(const Json_Value* const root);
-GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root);
+GI_BOOL gi_Player_IsValueValid(const Json_Value* const root);
+GI_RETURN gi_Player_Load(gi_Player* const pThis, const Json_Value* const root);
 void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile);
 void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeamsValues* const pSpecialTeamsValues);
 

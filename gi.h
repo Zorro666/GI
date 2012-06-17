@@ -3,24 +3,24 @@
 
 #include "Json.h"
 
-typedef enum GI_Type
+typedef enum GI_TYPE
 {
 	GI_TYPE_FLOAT,
 	GI_TYPE_INT,
 	GI_TYPE_UNKNOWN
-} GI_Type;
+} GI_TYPE;
 
-typedef enum GI_Return
+typedef enum GI_RETURN
 {
 	GI_RETURN_ERROR,
 	GI_RETURN_SUCCESS
-} GI_Return;
+} GI_RETURN;
 
-typedef enum GI_Bool
+typedef enum GI_BOOL
 {
 	GI_TRUE,
 	GI_FALSE
-} GI_Bool;
+} GI_BOOL;
 
 typedef enum GI_INJURY
 {
@@ -129,7 +129,7 @@ typedef struct gi_SpecialTeamsValues gi_SpecialTeamsValues;
 
 void gi_Init(void);
 Json_Value* gi_ParseFile(const char* const fileName, const size_t debug);
-GI_Return gi_LoadFile(const char* const fileName, const size_t debug);
+GI_RETURN gi_LoadFile(const char* const fileName, const size_t debug);
 void gi_Compute(void);
 void gi_Output(void);
 

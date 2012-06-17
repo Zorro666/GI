@@ -8,7 +8,7 @@
 #define DEFAULT_LOG_OUTPUT_FILE "log.txt"
 
 gi_LoggerChannel** s_channelPtrs = NULL;
-GI_Bool s_errorFlag = GI_FALSE;
+GI_BOOL s_errorFlag = GI_FALSE;
 
 gi_LoggerChannel* s_defaultChannels[GI_CHANNEL_NUM_DEFAULT_CHANNELS];
 
@@ -45,7 +45,7 @@ void gi_Logger_Shutdown(void)
 	/*Loop over channels closing them down*/
 }
 
-GI_Bool gi_Logger_GetErrorStatus(void)
+GI_BOOL gi_Logger_GetErrorStatus(void)
 {
 	return s_errorFlag;
 }
@@ -88,7 +88,7 @@ void gi_Logger_SetChannelFlags(const int channel, const size_t flags)
 	}
 }
 
-void gi_Logger_SetFatal(const int channel, const GI_Bool fatal)
+void gi_Logger_SetFatal(const int channel, const GI_BOOL fatal)
 {
 	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)
@@ -97,7 +97,7 @@ void gi_Logger_SetFatal(const int channel, const GI_Bool fatal)
 	}
 }
 
-void gi_Logger_SetConsoleOutput(const int channel, const GI_Bool consoleOutput)
+void gi_Logger_SetConsoleOutput(const int channel, const GI_BOOL consoleOutput)
 {
 	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)
@@ -106,7 +106,7 @@ void gi_Logger_SetConsoleOutput(const int channel, const GI_Bool consoleOutput)
 	}
 }
 
-void gi_Logger_SetFileOutput(const int channel, const GI_Bool fileOutput)
+void gi_Logger_SetFileOutput(const int channel, const GI_BOOL fileOutput)
 {
 	gi_LoggerChannel* const channelPtr = gi_Logger_GetDefaultChannel(channel);
 	if (channelPtr)

@@ -38,7 +38,7 @@ void gi_PositionValue_Print(const gi_PositionValue* const pThis, FILE* const pFi
 	}
 }
 
-size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root, const GI_Type dataType)
+size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root, const GI_TYPE dataType)
 {
 	Json_Value* it;
 	size_t i;

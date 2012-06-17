@@ -22,8 +22,8 @@ struct gi_Team
 };
 
 void gi_Team_Init(gi_Team* const pThis);
-GI_Bool gi_Team_IsValueValid(const Json_Value* const root);
-GI_Return gi_Team_Load(gi_Team* const pThis, const Json_Value* const root);
+GI_BOOL gi_Team_IsValueValid(const Json_Value* const root);
+GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root);
 void gi_Team_Print(const gi_Team* const pThis, FILE* const pFile);
 void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo, FILE* const pFile);
 

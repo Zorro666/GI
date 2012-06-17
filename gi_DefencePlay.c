@@ -22,7 +22,7 @@ void gi_DefencePlay_Init(gi_DefencePlay* const pThis)
 	pThis->m_numWeighting = 0;
 }
 
-GI_Bool gi_DefencePlay_IsValueValid(const Json_Value* const root)
+GI_BOOL gi_DefencePlay_IsValueValid(const Json_Value* const root)
 {
 	if (root == NULL)
 	{
@@ -46,7 +46,7 @@ GI_Bool gi_DefencePlay_IsValueValid(const Json_Value* const root)
 	return GI_TRUE;
 }
 
-GI_Return gi_DefencePlay_Load(gi_DefencePlay* const pThis, const Json_Value* const root)
+GI_RETURN gi_DefencePlay_Load(gi_DefencePlay* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
 

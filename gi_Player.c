@@ -41,7 +41,7 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_injury = GI_INJURY_UNKNOWN;
 }
 
-GI_Bool gi_Player_IsValueValid(const Json_Value* const root)
+GI_BOOL gi_Player_IsValueValid(const Json_Value* const root)
 {
 	if (root == NULL)
 	{
@@ -65,7 +65,7 @@ GI_Bool gi_Player_IsValueValid(const Json_Value* const root)
 	return GI_TRUE;
 }
 
-GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
+GI_RETURN gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 {
 	Json_Value* it;
 	char position[GI_POSITIONNAME_MAX_SIZE];
@@ -77,6 +77,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 	}
 
 	gi_Player_Init(pThis);
+	pThis->m_injury = GI_INJURY_A;
 
 	for (it = root->m_first_child; it != NULL; it = it->m_next_sibling)
 	{

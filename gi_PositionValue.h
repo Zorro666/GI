@@ -15,11 +15,11 @@ struct gi_PositionValue
 		size_t i;
 	} m_value;
 	GI_QST m_qst;
-	GI_Type m_valueType;
+	GI_TYPE m_valueType;
 };
 
 void gi_PositionValue_Init(gi_PositionValue* const pThis);
 void gi_PositionValue_Print(const gi_PositionValue* const pThis, FILE* const pFile);
-size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root, const GI_Type dataType);
+size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_t maxSize, Json_Value* const root, const GI_TYPE dataType);
 
 #endif /* #ifndef GI_POSITIONVALUE_HH */
