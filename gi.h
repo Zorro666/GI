@@ -22,6 +22,20 @@ typedef enum GI_Bool
 	GI_FALSE
 } GI_Bool;
 
+typedef enum GI_INJURY
+{
+	GI_INJURY_A = 0,
+	GI_INJURY_B = 1,
+	GI_INJURY_C = 2,
+	GI_INJURY_D = 3,
+	GI_INJURY_E = 4,
+	GI_INJURY_F = 5,
+	GI_INJURY_G = 6,
+	GI_INJURY_H = 7,
+	GI_INJURY_UNKNOWN = 8,
+	GI_INJURY_NUM = GI_INJURY_UNKNOWN+1
+} GI_INJURY;
+
 typedef enum GI_UNIT
 {
 	GI_UNIT_OFFENCE = 0,
@@ -122,8 +136,11 @@ void gi_Output(void);
 const char* gi_GetPositionName(const GI_POSITION position);
 const char* gi_GetUnitName(const GI_UNIT unit);
 const char* gi_GetQSTName(const GI_QST qst);
+const char* gi_GetInjuryName(const GI_INJURY injury);
+
 GI_POSITION gi_GetPositionFromName(const char* const position);
 GI_QST gi_GetQSTFromName(const char* const position);
 GI_QST gi_GetBasePosition(const GI_POSITION position);
+GI_INJURY gi_GetInjuryFromName(const char* const injury);
 
 #endif /* #ifndef GI_HH */

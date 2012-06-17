@@ -38,6 +38,7 @@ void gi_Player_Init(gi_Player* const pThis)
 	pThis->m_QST[0] = 0.0f;
 	pThis->m_QST[1] = 0.0f;
 	pThis->m_QST[2] = 0.0f;
+	pThis->m_injury = GI_INJURY_UNKNOWN;
 }
 
 GI_Bool gi_Player_IsValueValid(const Json_Value* const root)
@@ -162,7 +163,7 @@ GI_Return gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 
 void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile)
 {
-	fprintf(pFile, "Player:'%s' '%s' Position:%s Level:%d QST:%d %d %d Age:%d Experience:%.2f L:%5.2f QST:%5.2f %5.2f %5.2f\n",
+	fprintf(pFile, "Player:'%s' '%s' Position:%s Level:%d QST:%d %d %d Age:%d Experience:%.2f L:%5.2f QST:%5.2f %5.2f %5.2f Injury:%s\n",
 			pThis->m_name, 
 			gi_GetUnitName(pThis->m_unit),
 			gi_GetPositionName(pThis->m_position), 
@@ -170,7 +171,8 @@ void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile)
 			pThis->m_rawQST[GI_QST_Q], pThis->m_rawQST[GI_QST_S], pThis->m_rawQST[GI_QST_T], 
 			pThis->m_age, pThis->m_experience,
 			pThis->m_level, 
-			pThis->m_QST[GI_QST_Q], pThis->m_QST[GI_QST_S], pThis->m_QST[GI_QST_T]
+			pThis->m_QST[GI_QST_Q], pThis->m_QST[GI_QST_S], pThis->m_QST[GI_QST_T],
+			gi_GetInjuryName(pThis->m_injury)
 			);
 }
 

@@ -9,6 +9,18 @@
 static BlockAllocator s_json_allocator;
 static gi_GlobalInfo s_globalInfo;
 
+static const char* const s_injuryNames[GI_INJURY_NUM] = {
+	"A",				/*GI_INJURY_A = 0,*/
+	"B",				/*GI_INJURY_B = 1,*/
+	"C",				/*GI_INJURY_C = 2,*/
+	"D",				/*GI_INJURY_D = 3,*/
+	"E",				/*GI_INJURY_E = 4,*/
+	"F",				/*GI_INJURY_F = 5,*/
+	"G",				/*GI_INJURY_G = 6,*/
+	"H",				/*GI_INJURY_H = 7,*/
+	"UNKNOWN",	/*GI_INJURY_UNKNOWN = 8,*/
+	};
+
 static const char* const s_positionNames[GI_POSITION_NUM] = {
 	"QB",     	/*GI_POSITION_QB = 0,*/
 	"RB",     	/*GI_POSITION_RB = 1,*/
@@ -73,11 +85,34 @@ void gi_Init(void)
 	gi_GlobalInfo_Init(&s_globalInfo);
 }
 
+const char* gi_GetInjuryName(const GI_INJURY injury)
+{
+	if (injury > GI_INJURY_NUM)
+	{
+		GI_FATAL_ERROR("gi_GetInjuryName invalid injury %d range:%d-%d", injury, 0, GI_INJURY_NUM);
+		return NULL;
+	}
+	return s_injuryNames[injury];
+}
+
+GI_INJURY gi_GetInjuryFromName(const char* const injury)
+{
+	size_t i;
+	for (i = 0; i < GI_INJURY_NUM; i++)
+	{
+		if (strcmp(s_injuryNames[i], injury) == 0)
+		{
+			return i;
+		}
+	}
+	return GI_INJURY_UNKNOWN;
+}
+
 const char* gi_GetPositionName(const GI_POSITION position)
 {
-	if (position > GI_POSITION_UNKNOWN)
+	if (position > GI_POSITION_NUM)
 	{
-		GI_FATAL_ERROR("gi_GetPositionName invalid position %d range:%d-%d", position, 0, GI_POSITION_UNKNOWN);
+		GI_FATAL_ERROR("gi_GetPositionName invalid position %d range:%d-%d", position, 0, GI_POSITION_NUM);
 		return NULL;
 	}
 	return s_positionNames[position];
@@ -98,9 +133,9 @@ GI_POSITION gi_GetPositionFromName(const char* const position)
 
 const char* gi_GetUnitName(const GI_UNIT unit)
 {
-	if (unit > GI_UNIT_UNKNOWN)
+	if (unit > GI_UNIT_NUM)
 	{
-		GI_FATAL_ERROR("gi_GetUnitName invalid unit %d range:%d-%d", unit, 0, GI_UNIT_UNKNOWN);
+		GI_FATAL_ERROR("gi_GetUnitName invalid unit %d range:%d-%d", unit, 0, GI_UNIT_NUM);
 		return NULL;
 	}
 	return s_unitNames[unit];
@@ -108,9 +143,9 @@ const char* gi_GetUnitName(const GI_UNIT unit)
 
 const char* gi_GetQSTName(const GI_QST qst)
 {
-	if (qst > GI_QST_UNKNOWN)
+	if (qst > GI_QST_NUM)
 	{
-		GI_FATAL_ERROR("gi_GetQSTName invalid qst %d range:%d-%d", qst, 0, GI_QST_UNKNOWN);
+		GI_FATAL_ERROR("gi_GetQSTName invalid qst %d range:%d-%d", qst, 0, GI_QST_NUM);
 		return NULL;
 	}
 	return s_qstNames[qst];

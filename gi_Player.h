@@ -15,6 +15,7 @@ struct gi_Player
 	size_t m_age;
 	float m_level;
 	float m_QST[GI_QST_NUM];
+	GI_INJURY m_injury;
 };
 
 void gi_Player_Init(gi_Player* const pThis);
