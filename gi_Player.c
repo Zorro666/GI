@@ -178,6 +178,15 @@ void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile)
 			);
 }
 
+const char* gi_Player_GetName(const gi_Player* const pThis)
+{
+	return pThis->m_name;
+}
+const char* gi_Player_GetPositionName(const gi_Player* const pThis)
+{
+	return gi_GetPositionName(pThis->m_position);
+}
+
 GI_POSITION gi_Player_GetPosition(const gi_Player* const pThis)
 {
 	return pThis->m_position;

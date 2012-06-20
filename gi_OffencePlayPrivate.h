@@ -6,7 +6,7 @@
 struct gi_OffencePlay
 {
 	char m_name[GI_OFFENCENAME_MAX_SIZE];
-	char m_defense[GI_DEFENCE_FORMATIONS_MAX_SIZE][GI_DEFENCENAME_MAX_SIZE];
+	char m_defence[GI_DEFENCE_FORMATIONS_MAX_SIZE][GI_DEFENCENAME_MAX_SIZE];
 	gi_PositionValue m_base[GI_POSITION_NUM];
 	gi_PositionValue m_bc[GI_POSITION_NUM];
 	gi_PositionValue m_weighting[GI_POSITION_NUM];

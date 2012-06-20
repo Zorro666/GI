@@ -147,3 +147,14 @@ float gi_DefencePlay_ComputeBase(const gi_DefencePlay* const pThis, const GI_POS
 
 	return baseValue;
 }
+
+const char* gi_DefencePlay_GetName(const gi_DefencePlay* const pThis)
+{
+	return pThis->m_name;
+}
+
+const char* gi_DefencePlay_GetZone(const gi_DefencePlay* const pThis)
+{
+	return pThis->m_zone;
+}
+

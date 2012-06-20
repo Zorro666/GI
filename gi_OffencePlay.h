@@ -10,4 +10,7 @@ GI_RETURN gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 void gi_OffencePlay_Print(const gi_OffencePlay* const pThis, FILE* const pFile);
 float gi_OffencePlay_ComputeBase(const gi_OffencePlay* const pThis, const GI_POSITION playerPosition, const float* const playerQST);
 
+const char* gi_OffencePlay_GetName(const gi_OffencePlay* const pThis);
+const char* gi_OffencePlay_GetDefence(const gi_OffencePlay* const pThis, const size_t defenceIndex);
+
 #endif /* #ifndef GI_OFFENCEPLAY_HH */

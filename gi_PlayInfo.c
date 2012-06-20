@@ -1,6 +1,8 @@
 #include "gi_PlayInfo.h"
 #include "gi_PlayInfoPrivate.h"
 
+#include "gi_OffencePlay.h"
+#include "gi_DefencePlay.h"
 #include "gi_Player.h"
 #include "gi_Logger.h"
 

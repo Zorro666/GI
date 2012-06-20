@@ -13,7 +13,7 @@ void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 	pThis->m_name[0] = '\0';
 	for (i = 0; i < GI_DEFENCE_FORMATIONS_MAX_SIZE; i++)
 	{
-		pThis->m_defense[i][0] = '\0';
+		pThis->m_defence[i][0] = '\0';
 	}
 	for (i = 0; i < GI_POSITION_NUM; i++)
 	{
@@ -79,7 +79,7 @@ GI_RETURN gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 				i = 0;
 				for (it2 = it->m_first_child; it2 != NULL; it2 = it2->m_next_sibling)
 				{
-					strncpy(pThis->m_defense[i], it2->m_value_data.string_value, GI_DEFENCENAME_MAX_SIZE);
+					strncpy(pThis->m_defence[i], it2->m_value_data.string_value, GI_DEFENCENAME_MAX_SIZE);
 					i++;
 				}
 			}
@@ -111,9 +111,9 @@ void gi_OffencePlay_Print(const gi_OffencePlay* const pThis, FILE* const pFile)
 	fprintf(pFile, "Defence: ");
 	for (i = 0; i < GI_DEFENCE_FORMATIONS_MAX_SIZE; i++)
 	{
-		if (pThis->m_defense[i][0] != '\0')
+		if (pThis->m_defence[i][0] != '\0')
 		{
-			fprintf(pFile, "'%s' ", pThis->m_defense[i]);
+			fprintf(pFile, "'%s' ", pThis->m_defence[i]);
 		}
 	}
 	fprintf(pFile, "\n");
@@ -160,4 +160,14 @@ float gi_OffencePlay_ComputeBase(const gi_OffencePlay* const pThis, const GI_POS
 	}
 
 	return baseValue;
+}
+
+const char* gi_OffencePlay_GetName(const gi_OffencePlay* const pThis)
+{
+	return pThis->m_name;
+}
+
+const char* gi_OffencePlay_GetDefence(const gi_OffencePlay* const pThis, const size_t defenceIndex)
+{
+	return pThis->m_defence[defenceIndex];
 }

@@ -10,4 +10,7 @@ GI_RETURN gi_DefencePlay_Load(gi_DefencePlay* const pThis, const Json_Value* con
 void gi_DefencePlay_Print(const gi_DefencePlay* const pThis, FILE* const pFile);
 float gi_DefencePlay_ComputeBase(const gi_DefencePlay* const pThis, const GI_POSITION playerPosition, const float* const playerQST);
 
+const char* gi_DefencePlay_GetName(const gi_DefencePlay* const pThis);
+const char* gi_DefencePlay_GetZone(const gi_DefencePlay* const pThis);
+
 #endif /* #ifndef GI_DEFENCEPLAY_HH */
