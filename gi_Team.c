@@ -2,6 +2,14 @@
 #include <string.h>
 
 #include "gi_Team.h"
+
+#include "gi_PlayerPrivate.h"
+#include "gi_TeamPrivate.h"
+#include "gi_OffencePlay.h"
+#include "gi_DefencePlay.h"
+#include "gi_SpecialTeamsValues.h"
+#include "gi_PlayInfoPrivate.h"
+
 #include "gi_Compare.h"
 #include "gi_PlayInfo.h"
 #include "gi_Logger.h"

@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "gi_Player.h"
+#include "gi_PlayerPrivate.h"
 #include "gi_Logger.h"
 
 static void gi_Player_ComputeQSTs(gi_Player* const pThis)
@@ -175,5 +176,24 @@ void gi_Player_Print(const gi_Player* const pThis, FILE* const pFile)
 			pThis->m_QST[GI_QST_Q], pThis->m_QST[GI_QST_S], pThis->m_QST[GI_QST_T],
 			gi_GetInjuryName(pThis->m_injury)
 			);
+}
+
+GI_POSITION gi_Player_GetPosition(const gi_Player* const pThis)
+{
+	return pThis->m_position;
+}
+const float* gi_Player_GetQST(const gi_Player* const pThis)
+{
+	return pThis->m_QST;
+}
+
+size_t gi_Player_GetRawLevel(const gi_Player* const pThis)
+{
+	return pThis->m_rawLevel;
+}
+
+float gi_Player_GetExperience(const gi_Player* const pThis)
+{
+	return pThis->m_experience;
 }
 

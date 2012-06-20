@@ -1,4 +1,16 @@
 #include "gi_GlobalInfo.h"
+
+#include "gi_PlayerPrivate.h"
+#include "gi_TeamPrivate.h"
+#include "gi_OffencePlay.h"
+#include "gi_DefencePlay.h"
+#include "gi_SpecialTeamsValues.h"
+#include "gi_PlayInfoPrivate.h"
+#include "gi_GlobalInfoPrivate.h"
+
+#include "gi_PlayInfo.h"
+#include "gi_Team.h"
+
 #include "gi_Logger.h"
 
 void gi_GlobalInfo_Init(gi_GlobalInfo* const pThis)
@@ -35,3 +47,14 @@ void gi_GlobalInfo_Compute(gi_GlobalInfo* const pThis)
 	gi_Team_ComputeOffenceBase(pTeam, pPlayInfo);
 	gi_Team_ComputeDefenceBase(pTeam, pPlayInfo);
 }
+
+const gi_Team* gi_GlobalInfo_GetTeam(const gi_GlobalInfo* const pThis)
+{
+	return &pThis->m_team;
+}
+
+const gi_PlayInfo* gi_GlobalInfo_GetPlayInfo(const gi_GlobalInfo* const pThis)
+{
+	return &pThis->m_playInfo;
+}
+

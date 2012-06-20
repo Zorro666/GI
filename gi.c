@@ -3,11 +3,16 @@
 
 #include "gi.h"
 #include "gi_Team.h"
+
+#include "gi_PlayerPrivate.h"
+#include "gi_TeamPrivate.h"
+#include "gi_OffencePlay.h"
+#include "gi_DefencePlay.h"
+
 #include "gi_GlobalInfo.h"
 #include "gi_Logger.h"
 
 static BlockAllocator s_json_allocator;
-static gi_GlobalInfo s_globalInfo;
 
 static const char* const s_injuryNames[GI_INJURY_NUM] = {
 	"A",				/*GI_INJURY_A = 0,*/
@@ -82,7 +87,7 @@ void gi_Init(void)
 {
 	gi_Logger_Init();
 	BlockAllocator_Init(&s_json_allocator, 128*1024);
-	gi_GlobalInfo_Init(&s_globalInfo);
+	gi_GlobalInfo_Init(s_pGlobalInfo);
 }
 
 const char* gi_GetInjuryName(const GI_INJURY injury)
@@ -288,7 +293,7 @@ GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 					{
 						gi_OffencePlay_Print(&offencePlay, stdout);
 					}
-					gi_GlobalInfo_AddOffencePlay(&s_globalInfo, &offencePlay);
+					gi_GlobalInfo_AddOffencePlay(s_pGlobalInfo, &offencePlay);
 					return GI_RETURN_SUCCESS;
 				}
 			}
@@ -301,7 +306,7 @@ GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 					{
 						gi_DefencePlay_Print(&defencePlay, stdout);
 					}
-					gi_GlobalInfo_AddDefencePlay(&s_globalInfo, &defencePlay);
+					gi_GlobalInfo_AddDefencePlay(s_pGlobalInfo, &defencePlay);
 					return GI_RETURN_SUCCESS;
 				}
 			}
@@ -314,7 +319,7 @@ GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 					{
 						gi_Team_Print(&team, stdout);
 					}
-					gi_GlobalInfo_AddTeam(&s_globalInfo, &team);
+					gi_GlobalInfo_AddTeam(s_pGlobalInfo, &team);
 					return GI_RETURN_SUCCESS;
 				}
 			}
@@ -399,13 +404,13 @@ static GI_RETURN gi_Output_Team(const gi_Team* const pTeam)
 
 void gi_Compute(void)
 {
-	gi_GlobalInfo_Compute(&s_globalInfo);
+	gi_GlobalInfo_Compute(s_pGlobalInfo);
 }
 
 void gi_Output(void)
 {
-	const gi_Team* const pTeam = &s_globalInfo.m_team;
-	const gi_PlayInfo* const pPlayInfo = &s_globalInfo.m_playInfo;
+	const gi_Team* const pTeam = gi_GlobalInfo_GetTeam(s_pGlobalInfo);
+	const gi_PlayInfo* const pPlayInfo = gi_GlobalInfo_GetPlayInfo(s_pGlobalInfo);
 	if (gi_Output_SpecialTeamsStats(pTeam, pPlayInfo) == GI_RETURN_ERROR)
 	{
 		GI_FATAL_ERROR("outputting special teams stats\n");

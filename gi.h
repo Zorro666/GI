@@ -143,4 +143,6 @@ GI_QST gi_GetQSTFromName(const char* const position);
 GI_QST gi_GetBasePosition(const GI_POSITION position);
 GI_INJURY gi_GetInjuryFromName(const char* const injury);
 
+extern gi_GlobalInfo* s_pGlobalInfo;
+
 #endif /* #ifndef GI_HH */

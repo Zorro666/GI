@@ -12,16 +12,17 @@ void gi_SpecialTeamsValues_Init(gi_SpecialTeamsValues* const pThis)
 
 void gi_SpecialTeamsValues_Compute(gi_SpecialTeamsValues* const pThis, const gi_Player* const pPlayer)
 {
-	const GI_POSITION position = pPlayer->m_position;
+	const GI_POSITION position = gi_Player_GetPosition(pPlayer);
 	float blocker = 0.0f;
 	float gunner = 0.0f;
 	float protector = 0.0f;
 	float runner = 0.0f;
-	float level = (float)pPlayer->m_rawLevel;
-	float experience = pPlayer->m_experience;
-	float Q = (float)(pPlayer->m_rawQST[GI_QST_Q])/100.0f;
-	float S = (float)(pPlayer->m_rawQST[GI_QST_S])/100.0f;
-	float T = (float)(pPlayer->m_rawQST[GI_QST_T])/100.0f;
+	float level = (float)gi_Player_GetRawLevel(pPlayer);
+	float experience = gi_Player_GetExperience(pPlayer);
+	const float* const rawQST = gi_Player_GetQST(pPlayer);
+	float Q = (float)(rawQST[GI_QST_Q])/100.0f;
+	float S = (float)(rawQST[GI_QST_S])/100.0f;
+	float T = (float)(rawQST[GI_QST_T])/100.0f;
 
 	/* Ignore experience for R, K, P */
 	switch (position)

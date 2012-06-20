@@ -1,4 +1,5 @@
 #include "gi_PlayInfo.h"
+#include "gi_PlayInfoPrivate.h"
 #include "gi_Player.h"
 #include "gi_Logger.h"
 
@@ -79,8 +80,8 @@ void gi_PlayInfo_ComputeOffenceBase(gi_PlayInfo* const pThis, const gi_Player* c
 	for (i = 0; i < pThis->m_numOffencePlays; i++)
 	{
 		const gi_OffencePlay* const pOffencePlay = &pThis->m_offencePlays[i];
-		const GI_POSITION playerPosition = pPlayer->m_position;
-		const float* const playerQST = pPlayer->m_QST;
+		const GI_POSITION playerPosition = gi_Player_GetPosition(pPlayer);
+		const float* const playerQST = gi_Player_GetQST(pPlayer);
 		const float baseValue = gi_OffencePlay_ComputeBase(pOffencePlay, playerPosition, playerQST);
 		pThis->m_offenceStatsBase[i][playerIndex] = baseValue;
 	}
@@ -97,8 +98,8 @@ void gi_PlayInfo_ComputeDefenceBase(gi_PlayInfo* const pThis, const gi_Player* c
 	for (i = 0; i < pThis->m_numDefencePlays; i++)
 	{
 		const gi_DefencePlay* const pDefencePlay = &pThis->m_defencePlays[i];
-		const GI_POSITION playerPosition = pPlayer->m_position;
-		const float* const playerQST = pPlayer->m_QST;
+		const GI_POSITION playerPosition = gi_Player_GetPosition(pPlayer);
+		const float* const playerQST = gi_Player_GetQST(pPlayer);
 		const float baseValue = gi_DefencePlay_ComputeBase(pDefencePlay, playerPosition, playerQST);
 		pThis->m_defenceStatsBase[i][playerIndex] = baseValue;
 	}
