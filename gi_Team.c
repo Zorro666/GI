@@ -18,9 +18,9 @@ static GI_RETURN gi_Team_SetPlayerInjury(gi_Team* const pThis, const char* const
 	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
-		if (strcmp(pPlayer->m_name, injuryPlayerName) == 0)
+		if (strcmp(gi_Player_GetName(pPlayer), injuryPlayerName) == 0)
 		{
-			pPlayer->m_injury = injury;
+			gi_Player_SetInjury(pPlayer);
 			return GI_RETURN_SUCCESS;
 		}
 	}
@@ -77,7 +77,7 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
-		const GI_UNIT unit = pPlayer->m_unit;
+		const GI_UNIT unit = gi_Player_GetUnit(pPlayer);
 		const size_t position = gi_Player_GetPosition(pPlayer);
 		if (position != currentPosition)
 		{
@@ -320,7 +320,8 @@ static void gi_Team_computeAndPrintStats(const gi_Team* const pThis, FILE* const
 		{
 			const size_t playerIndex = pStats[i].m_key;
 			const gi_Player* const pPlayer = &pThis->m_squad[playerIndex];
-			fprintf(pFile, "Player[%d] '%s' Position:%s '%s':%f\n", playerIndex, pPlayer->m_name, gi_GetPositionName(pPlayer->m_position), 
+			fprintf(pFile, "Player[%d] '%s' Position:%s '%s':%f\n", playerIndex, 
+							gi_Player_GetName(pPlayer), gi_Player_GetPositionName(pPlayer), 
 							statName, pStats[i].m_value);
 		}
 	}
