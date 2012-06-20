@@ -182,18 +182,10 @@ const char* gi_Player_GetName(const gi_Player* const pThis)
 {
 	return pThis->m_name;
 }
-const char* gi_Player_GetPositionName(const gi_Player* const pThis)
-{
-	return gi_GetPositionName(pThis->m_position);
-}
 
 GI_POSITION gi_Player_GetPosition(const gi_Player* const pThis)
 {
 	return pThis->m_position;
-}
-const float* gi_Player_GetQST(const gi_Player* const pThis)
-{
-	return pThis->m_QST;
 }
 
 size_t gi_Player_GetRawLevel(const gi_Player* const pThis)
@@ -201,8 +193,48 @@ size_t gi_Player_GetRawLevel(const gi_Player* const pThis)
 	return pThis->m_rawLevel;
 }
 
+const size_t* gi_Player_GetRawQST(const gi_Player* const pThis)
+{
+	return pThis->m_rawQST;
+}
+
 float gi_Player_GetExperience(const gi_Player* const pThis)
 {
 	return pThis->m_experience;
+}
+
+GI_UNIT gi_Player_GetUnit(const gi_Player* const pThis)
+{
+	return pThis->m_unit;
+}
+
+size_t gi_Player_GetAge(const gi_Player* const pThis)
+{
+	return pThis->m_age;
+}
+
+float gi_Player_GetLevel(const gi_Player* const pThis)
+{
+	return pThis->m_level;
+}
+
+const float* gi_Player_GetQST(const gi_Player* const pThis)
+{
+	return pThis->m_QST;
+}
+
+GI_INJURY gi_Player_GetInjury(const gi_Player* const pThis)
+{
+	return pThis->m_injury;
+}
+
+const char* gi_Player_GetPositionName(const gi_Player* const pThis)
+{
+	return gi_GetPositionName(pThis->m_position);
+}
+
+void gi_Player_SetInjury(gi_Player* const pThis, const GI_INJURY injury)
+{
+	pThis->m_injury = injury;
 }
 

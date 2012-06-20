@@ -20,7 +20,7 @@ static GI_RETURN gi_Team_SetPlayerInjury(gi_Team* const pThis, const char* const
 		gi_Player* const pPlayer = &pThis->m_squad[i];
 		if (strcmp(gi_Player_GetName(pPlayer), injuryPlayerName) == 0)
 		{
-			gi_Player_SetInjury(pPlayer);
+			gi_Player_SetInjury(pPlayer, injury);
 			return GI_RETURN_SUCCESS;
 		}
 	}

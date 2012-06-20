@@ -13,11 +13,11 @@ void gi_PlayInfo_ComputeDefenceBase(gi_PlayInfo* const pThis, const gi_Player* c
 
 void gi_PlayInfo_ComputeSpecialTeams(gi_PlayInfo* const pThis, const gi_Player* const pPlayer, const size_t playerIndex);
 
-const gi_OffencePlay* gi_PlayInfo_GetOffencePlay(const gi_PlayInfo* const pPlayInfo, const size_t playIndex);
-float gi_PlayInfo_GetOffenceStatsBaseValue(const gi_PlayInfo* const pPlayInfo, const size_t playIndex, const size_t playerIndex);
+const gi_OffencePlay* gi_PlayInfo_GetOffencePlay(const gi_PlayInfo* const pThis, const size_t playIndex);
+float gi_PlayInfo_GetOffenceStatsBaseValue(const gi_PlayInfo* const pThis, const size_t playIndex, const size_t playerIndex);
 
-const gi_DefencePlay* gi_PlayInfo_GetDefencePlay(const gi_PlayInfo* const pPlayInfo, const size_t playIndex);
-float gi_PlayInfo_GetDefenceStatsBaseValue(const gi_PlayInfo* const pPlayInfo, const size_t playIndex, const size_t playerIndex);
+const gi_DefencePlay* gi_PlayInfo_GetDefencePlay(const gi_PlayInfo* const pThis, const size_t playIndex);
+float gi_PlayInfo_GetDefenceStatsBaseValue(const gi_PlayInfo* const pThis, const size_t playIndex, const size_t playerIndex);
 
 const gi_SpecialTeamsValues* gi_PlayInfo_GetSpecialTeamsValues(const gi_PlayInfo* const pThis);
 

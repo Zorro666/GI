@@ -113,3 +113,28 @@ void gi_PlayInfo_ComputeSpecialTeams(gi_PlayInfo* const pThis, const gi_Player* 
 	gi_SpecialTeamsValues_Compute(&pThis->m_specialTeamsValues[playerIndex], pPlayer);
 }
 
+const gi_OffencePlay* gi_PlayInfo_GetOffencePlay(const gi_PlayInfo* const pThis, const size_t playIndex)
+{
+	return &pThis->m_offencePlays[playIndex];
+}
+
+float gi_PlayInfo_GetOffenceStatsBaseValue(const gi_PlayInfo* const pThis, const size_t playIndex, const size_t playerIndex)
+{
+	return pThis->m_offenceStatsBase[playIndex][playerIndex];
+}
+
+const gi_DefencePlay* gi_PlayInfo_GetDefencePlay(const gi_PlayInfo* const pThis, const size_t playIndex)
+{
+	return &pThis->m_defencePlays[playIndex];
+}
+
+float gi_PlayInfo_GetDefenceStatsBaseValue(const gi_PlayInfo* const pThis, const size_t playIndex, const size_t playerIndex)
+{
+	return pThis->m_defenceStatsBase[playIndex][playerIndex];
+}
+
+const gi_SpecialTeamsValues* gi_PlayInfo_GetSpecialTeamsValues(const gi_PlayInfo* const pThis)
+{
+	return pThis->m_specialTeamsValues;
+}
+

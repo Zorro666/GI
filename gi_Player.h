@@ -12,9 +12,17 @@ void gi_Player_ComputeSpecialTeams(const gi_Player* const pThis, gi_SpecialTeams
 
 const char* gi_Player_GetName(const gi_Player* const pThis);
 GI_POSITION gi_Player_GetPosition(const gi_Player* const pThis);
-const char* gi_Player_GetPositionName(const gi_Player* const pThis);
-const float* gi_Player_GetQST(const gi_Player* const pThis);
 size_t gi_Player_GetRawLevel(const gi_Player* const pThis);
+const size_t* gi_Player_GetRawQST(const gi_Player* const pThis);
 float gi_Player_GetExperience(const gi_Player* const pThis);
+GI_UNIT gi_Player_GetUnit(const gi_Player* const pThis);
+size_t gi_Player_GetAge(const gi_Player* const pThis);
+float gi_Player_GetLevel(const gi_Player* const pThis);
+const float* gi_Player_GetQST(const gi_Player* const pThis);
+GI_INJURY gi_Player_GetInjury(const gi_Player* const pThis);
+
+const char* gi_Player_GetPositionName(const gi_Player* const pThis);
+
+void gi_Player_SetInjury(gi_Player* const pThis, const GI_INJURY injury);
 
 #endif /* #ifndef GI_PLAYER_HH */
