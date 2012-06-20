@@ -15,4 +15,6 @@ void gi_Team_ComputeSpecialTeams(const gi_Team* const pThis, gi_PlayInfo* const 
 void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo);
 void gi_Team_ComputeDefenceBase(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo);
 
+const char* gi_Team_GetName(const gi_Team* const pThis);
+
 #endif /* #ifndef GI_TEAM_HH */

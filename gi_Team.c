@@ -506,3 +506,7 @@ void gi_Team_ComputeDefenceBase(const gi_Team* const pThis, gi_PlayInfo* const p
 	}
 }
 
+const char* gi_Team_GetName(const gi_Team* const pThis)
+{
+	return pThis->m_name;
+}

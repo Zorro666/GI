@@ -3,10 +3,6 @@
 
 #include "gi.h"
 
-#include "gi_TeamPrivate.h"
-#include "gi_OffencePlayPrivate.h"
-#include "gi_DefencePlayPrivate.h"
-
 #include "gi_OffencePlay.h"
 #include "gi_DefencePlay.h"
 #include "gi_Team.h"
@@ -15,6 +11,11 @@
 #include "gi_Logger.h"
 
 static BlockAllocator s_json_allocator;
+extern gi_GlobalInfo* s_pGlobalInfo;
+extern gi_Team* s_pTeam ;
+extern gi_OffencePlay* s_pOffencePlay;
+extern gi_DefencePlay* s_pDefencePlay;
+
 
 static const char* const s_injuryNames[GI_INJURY_NUM] = {
 	"A",				/*GI_INJURY_A = 0,*/
@@ -288,40 +289,40 @@ GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 		{
 			if (gi_OffencePlay_IsValueValid(value) == GI_TRUE)
 			{
-				gi_OffencePlay offencePlay;
-				if (gi_OffencePlay_Load(&offencePlay, value) == GI_RETURN_SUCCESS)
+				gi_OffencePlay* pOffencePlay = s_pOffencePlay;
+				if (gi_OffencePlay_Load(pOffencePlay, value) == GI_RETURN_SUCCESS)
 				{
 					if (debug == 1)
 					{
-						gi_OffencePlay_Print(&offencePlay, stdout);
+						gi_OffencePlay_Print(pOffencePlay, stdout);
 					}
-					gi_GlobalInfo_AddOffencePlay(s_pGlobalInfo, &offencePlay);
+					gi_GlobalInfo_AddOffencePlay(s_pGlobalInfo, pOffencePlay);
 					return GI_RETURN_SUCCESS;
 				}
 			}
 			if (gi_DefencePlay_IsValueValid(value) == GI_TRUE)
 			{
-				gi_DefencePlay defencePlay;
-				if (gi_DefencePlay_Load(&defencePlay, value) == GI_RETURN_SUCCESS)
+				gi_DefencePlay* pDefencePlay = s_pDefencePlay;
+				if (gi_DefencePlay_Load(pDefencePlay, value) == GI_RETURN_SUCCESS)
 				{
 					if (debug == 1)
 					{
-						gi_DefencePlay_Print(&defencePlay, stdout);
+						gi_DefencePlay_Print(pDefencePlay, stdout);
 					}
-					gi_GlobalInfo_AddDefencePlay(s_pGlobalInfo, &defencePlay);
+					gi_GlobalInfo_AddDefencePlay(s_pGlobalInfo, pDefencePlay);
 					return GI_RETURN_SUCCESS;
 				}
 			}
 			if (gi_Team_IsValueValid(value) == GI_TRUE)
 			{
-				gi_Team team;
-				if (gi_Team_Load(&team, value) == GI_RETURN_SUCCESS)
+				gi_Team* pTeam = s_pTeam;
+				if (gi_Team_Load(pTeam, value) == GI_RETURN_SUCCESS)
 				{
 					if (debug == 1)
 					{
-						gi_Team_Print(&team, stdout);
+						gi_Team_Print(pTeam, stdout);
 					}
-					gi_GlobalInfo_AddTeam(s_pGlobalInfo, &team);
+					gi_GlobalInfo_AddTeam(s_pGlobalInfo, pTeam);
 					return GI_RETURN_SUCCESS;
 				}
 			}
@@ -385,14 +386,15 @@ static GI_RETURN gi_Output_Team(const gi_Team* const pTeam)
 {
 	FILE* pFile;
 	char fileName[GI_OUTPUTFILENAME_MAX_SIZE];
+	const char* const teamName = gi_Team_GetName(pTeam);
 
-	if (pTeam->m_name[0] == '\0')
+	if (teamName[0] == '\0')
 	{
 		GI_FATAL_ERROR("gi_Output_Team: team name is empty\n");
 		return GI_RETURN_ERROR;
 	}
 	fileName[0] = '\0';
-	strcpy(fileName, pTeam->m_name);
+	strcpy(fileName, teamName);
 	strcat(fileName, "_output.txt");
 	pFile = openOutputFile(fileName);
 	if (pFile == NULL)
