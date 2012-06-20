@@ -1,7 +1,7 @@
 #ifndef GI_OFFENCEPLAYPRIVATE_HH
 #define GI_OFFENCEPLAYPRIVATE_HH
 
-#include "gi_PositionValue.h"
+#include "gi_PositionValuePrivate.h"
 
 struct gi_OffencePlay
 {

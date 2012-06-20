@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "gi_PositionValue.h"
+#include "gi_PositionValuePrivate.h"
 #include "gi_Logger.h"
 
 void gi_PositionValue_Init(gi_PositionValue* const pThis)
@@ -117,5 +118,40 @@ size_t gi_PositionValueArray_Parse(gi_PositionValue positionValue[], const size_
 		}
 	}
 	return i;
+}
+
+const char* gi_PositionValue_GetPositionName(const gi_PositionValue* const pThis)
+{
+	return pThis->m_positionName;
+}
+
+GI_POSITION gi_PositionValue_GetPosition(const gi_PositionValue* const pThis)
+{
+	return pThis->m_position;
+}
+
+GI_POSITION gi_PositionValue_GetBasePosition(const gi_PositionValue* const pThis)
+{
+	return pThis->m_basePosition;
+}
+
+float gi_PositionValue_GetFloatValue(const gi_PositionValue* const pThis)
+{
+	return pThis->m_value.f;
+}
+
+size_t gi_PositionValue_GetSizetValue(const gi_PositionValue* const pThis)
+{
+	return pThis->m_value.i;
+}
+
+GI_QST gi_PositionValue_GetQST(const gi_PositionValue* const pThis)
+{
+	return pThis->m_qst;
+}
+
+GI_TYPE gi_PositionValue_GetValueType(const gi_PositionValue* const pThis)
+{
+	return pThis->m_valueType;
 }
 

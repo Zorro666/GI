@@ -1,4 +1,3 @@
-* Private headers: gi_PositionValue
 * Use injury level in level computation in player
 * Parse "Used Players" data in team file store per unit in gi_Team
 * When computing base stat compute for all aliases and return them? or just highest

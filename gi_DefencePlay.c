@@ -3,6 +3,7 @@
 
 #include "gi_DefencePlay.h"
 #include "gi_DefencePlayPrivate.h"
+#include "gi_PositionValue.h"
 #include "gi_Logger.h"
 
 void gi_DefencePlay_Init(gi_DefencePlay* const pThis)
@@ -134,12 +135,12 @@ float gi_DefencePlay_ComputeBase(const gi_DefencePlay* const pThis, const GI_POS
 	for (i = 0; i < pThis->m_numBase; i++)
 	{
 		const gi_PositionValue* const pPositionValue = &pThis->m_base[i];
-		if (pPositionValue->m_basePosition == playerPosition)
+		if (gi_PositionValue_GetBasePosition(pPositionValue) == playerPosition)
 		{
-			if (pPositionValue->m_valueType == GI_TYPE_FLOAT)
+			if (gi_PositionValue_GetValueType(pPositionValue) == GI_TYPE_FLOAT)
 			{
-				const GI_QST playQST = pPositionValue->m_qst;
-				const float playerStat = playerQST[playQST] * pPositionValue->m_value.f;
+				const GI_QST playQST = gi_PositionValue_GetQST(pPositionValue);
+				const float playerStat = playerQST[playQST] * gi_PositionValue_GetFloatValue(pPositionValue);
 				baseValue += playerStat;
 			}
 		}
