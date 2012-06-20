@@ -1,5 +1,3 @@
-* Remove need for gi_PlayInfoPrivate private headers in gi_Team.c !
-* Private headers: gi_SpecialTeamsValues
 * Private headers: gi_PositionValue
 * Use injury level in level computation in player
 * Parse "Used Players" data in team file store per unit in gi_Team

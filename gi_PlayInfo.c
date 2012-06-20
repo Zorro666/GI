@@ -3,6 +3,7 @@
 
 #include "gi_OffencePlay.h"
 #include "gi_DefencePlay.h"
+#include "gi_SpecialTeamsValues.h"
 #include "gi_Player.h"
 #include "gi_Logger.h"
 
@@ -133,8 +134,8 @@ float gi_PlayInfo_GetDefenceStatsBaseValue(const gi_PlayInfo* const pThis, const
 	return pThis->m_defenceStatsBase[playIndex][playerIndex];
 }
 
-const gi_SpecialTeamsValues* gi_PlayInfo_GetSpecialTeamsValues(const gi_PlayInfo* const pThis)
+const gi_SpecialTeamsValues* gi_PlayInfo_GetSpecialTeamsValuesForPlayer(const gi_PlayInfo* const pThis, const size_t playerIndex)
 {
-	return pThis->m_specialTeamsValues;
+	return &pThis->m_specialTeamsValues[playerIndex];
 }
 

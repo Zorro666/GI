@@ -371,7 +371,6 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 	const size_t numGunners = 1;
 	const size_t numProtectors = 1;
 	const size_t numRunners = 4;
-	const gi_SpecialTeamsValues* const pSpecialTeamsValues = gi_PlayInfo_GetSpecialTeamsValues(pPlayInfo);
 
 	if (numPlayers == 0)
 	{
@@ -384,7 +383,8 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 
 	for (i = 0; i < numPlayers; i++)
 	{
-		stats[i].m_value = pSpecialTeamsValues[i].m_blocker;
+		const gi_SpecialTeamsValues* const pSpecialTeamsValues = gi_PlayInfo_GetSpecialTeamsValuesForPlayer(pPlayInfo, i);
+		stats[i].m_value = gi_SpecialTeamsValues_GetBlocker(pSpecialTeamsValues);
 		stats[i].m_key = i;
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Blocker");
@@ -398,7 +398,8 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 
 	for (i = 0; i < numPlayers; i++)
 	{
-		stats[i].m_value = pSpecialTeamsValues[i].m_gunner;
+		const gi_SpecialTeamsValues* const pSpecialTeamsValues = gi_PlayInfo_GetSpecialTeamsValuesForPlayer(pPlayInfo, i);
+		stats[i].m_value = gi_SpecialTeamsValues_GetGunner(pSpecialTeamsValues);
 		stats[i].m_key = i;
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Gunner");
@@ -412,7 +413,8 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 
 	for (i = 0; i < numPlayers; i++)
 	{
-		stats[i].m_value = pSpecialTeamsValues[i].m_protector;
+		const gi_SpecialTeamsValues* const pSpecialTeamsValues = gi_PlayInfo_GetSpecialTeamsValuesForPlayer(pPlayInfo, i);
+		stats[i].m_value = gi_SpecialTeamsValues_GetProtector(pSpecialTeamsValues);
 		stats[i].m_key = i;
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Protector");
@@ -426,7 +428,8 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 
 	for (i = 0; i < numPlayers; i++)
 	{
-		stats[i].m_value = pSpecialTeamsValues[i].m_runner;
+		const gi_SpecialTeamsValues* const pSpecialTeamsValues = gi_PlayInfo_GetSpecialTeamsValuesForPlayer(pPlayInfo, i);
+		stats[i].m_value = gi_SpecialTeamsValues_GetRunner(pSpecialTeamsValues);
 		stats[i].m_key = i;
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, "Runner");

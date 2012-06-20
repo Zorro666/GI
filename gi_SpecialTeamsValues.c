@@ -1,4 +1,5 @@
 #include "gi_SpecialTeamsValues.h"
+#include "gi_SpecialTeamsValuesPrivate.h"
 #include "gi_Player.h"
 #include "gi_Logger.h"
 
@@ -126,5 +127,25 @@ void gi_SpecialTeamsValues_Compute(gi_SpecialTeamsValues* const pThis, const gi_
 	pThis->m_blocker = blocker;
 	pThis->m_runner = runner;
 	pThis->m_gunner = gunner;
+}
+
+float gi_SpecialTeamsValues_GetProtector(const gi_SpecialTeamsValues* const pThis)
+{
+	return pThis->m_protector;
+}
+
+float gi_SpecialTeamsValues_GetBlocker(const gi_SpecialTeamsValues* const pThis)
+{
+	return pThis->m_blocker;
+}
+
+float gi_SpecialTeamsValues_GetRunner(const gi_SpecialTeamsValues* const pThis)
+{
+	return pThis->m_runner;
+}
+
+float gi_SpecialTeamsValues_GetGunner(const gi_SpecialTeamsValues* const pThis)
+{
+	return pThis->m_gunner;
 }
 

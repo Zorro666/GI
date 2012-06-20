@@ -3,7 +3,7 @@
 
 #include "gi_OffencePlayPrivate.h"
 #include "gi_DefencePlayPrivate.h"
-#include "gi_SpecialTeamsValues.h"
+#include "gi_SpecialTeamsValuesPrivate.h"
 
 struct gi_PlayInfo
 {

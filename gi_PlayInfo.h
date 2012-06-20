@@ -19,6 +19,6 @@ float gi_PlayInfo_GetOffenceStatsBaseValue(const gi_PlayInfo* const pThis, const
 const gi_DefencePlay* gi_PlayInfo_GetDefencePlay(const gi_PlayInfo* const pThis, const size_t playIndex);
 float gi_PlayInfo_GetDefenceStatsBaseValue(const gi_PlayInfo* const pThis, const size_t playIndex, const size_t playerIndex);
 
-const gi_SpecialTeamsValues* gi_PlayInfo_GetSpecialTeamsValues(const gi_PlayInfo* const pThis);
+const gi_SpecialTeamsValues* gi_PlayInfo_GetSpecialTeamsValuesForPlayer(const gi_PlayInfo* const pThis, const size_t playerIndex);
 
 #endif /* #ifndef GI_PLAYINFO_HH */

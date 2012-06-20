@@ -4,15 +4,12 @@
 #include <stdio.h>
 #include "gi.h"
 
-struct gi_SpecialTeamsValues
-{
-	float m_protector;
-	float m_blocker;
-	float m_runner;
-	float m_gunner;
-};
-
 void gi_SpecialTeamsValues_Init(gi_SpecialTeamsValues* const pThis);
 void gi_SpecialTeamsValues_Compute(gi_SpecialTeamsValues* const pThis, const gi_Player* const pPlayer);
 
-#endif /* #ifndef GI_SPECIALTEAMSVALUES_HH */
+float gi_SpecialTeamsValues_GetProtector(const gi_SpecialTeamsValues* const pThis);
+float gi_SpecialTeamsValues_GetBlocker(const gi_SpecialTeamsValues* const pThis);
+float gi_SpecialTeamsValues_GetRunner(const gi_SpecialTeamsValues* const pThis);
+float gi_SpecialTeamsValues_GetGunner(const gi_SpecialTeamsValues* const pThis);
+
+#endif /* #ifndef GI_SPECIALTEAMSVALUESPRIVATE_HH */

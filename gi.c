@@ -289,7 +289,7 @@ GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 		{
 			if (gi_OffencePlay_IsValueValid(value) == GI_TRUE)
 			{
-				gi_OffencePlay* pOffencePlay = s_pOffencePlay;
+				gi_OffencePlay* const pOffencePlay = s_pOffencePlay;
 				if (gi_OffencePlay_Load(pOffencePlay, value) == GI_RETURN_SUCCESS)
 				{
 					if (debug == 1)
@@ -302,7 +302,7 @@ GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 			}
 			if (gi_DefencePlay_IsValueValid(value) == GI_TRUE)
 			{
-				gi_DefencePlay* pDefencePlay = s_pDefencePlay;
+				gi_DefencePlay* const pDefencePlay = s_pDefencePlay;
 				if (gi_DefencePlay_Load(pDefencePlay, value) == GI_RETURN_SUCCESS)
 				{
 					if (debug == 1)
@@ -315,7 +315,7 @@ GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 			}
 			if (gi_Team_IsValueValid(value) == GI_TRUE)
 			{
-				gi_Team* pTeam = s_pTeam;
+				gi_Team* const pTeam = s_pTeam;
 				if (gi_Team_Load(pTeam, value) == GI_RETURN_SUCCESS)
 				{
 					if (debug == 1)
