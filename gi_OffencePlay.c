@@ -2,6 +2,8 @@
 #include <string.h>
 
 #include "gi_OffencePlay.h"
+#include "gi_PositionValue.h"
+#include "gi_OffencePlayPrivate.h"
 #include "gi_Logger.h"
 
 void gi_OffencePlay_Init(gi_OffencePlay* const pThis)

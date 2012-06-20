@@ -1,6 +1,10 @@
 #ifndef GI_PLAYINFOPRIVATE_HH
 #define GI_PLAYINFOPRIVATE_HH
 
+#include "gi_OffencePlayPrivate.h"
+#include "gi_DefencePlay.h"
+#include "gi_SpecialTeamsValues.h"
+
 struct gi_PlayInfo
 {
 	size_t m_numOffencePlays;

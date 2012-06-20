@@ -1,6 +1,8 @@
 #ifndef GI_TEAMPRIVATE_HH
 #define GI_TEAMPRIVATE_HH
 
+#include "gi_PlayerPrivate.h"
+
 struct gi_Team
 {
 	gi_Player m_squad[GI_SQUAD_PLAYERS_MAX_SIZE];

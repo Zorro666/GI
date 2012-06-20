@@ -1,5 +1,6 @@
 #include "gi_PlayInfo.h"
 #include "gi_PlayInfoPrivate.h"
+
 #include "gi_Player.h"
 #include "gi_Logger.h"
 

@@ -2,14 +2,15 @@
 #include <string.h>
 
 #include "gi.h"
-#include "gi_Team.h"
 
-#include "gi_PlayerPrivate.h"
 #include "gi_TeamPrivate.h"
+#include "gi_OffencePlayPrivate.h"
+
 #include "gi_OffencePlay.h"
 #include "gi_DefencePlay.h"
-
+#include "gi_Team.h"
 #include "gi_GlobalInfo.h"
+
 #include "gi_Logger.h"
 
 static BlockAllocator s_json_allocator;
