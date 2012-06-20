@@ -1,7 +1,7 @@
-* Private headers: gi_OffencePlay
-* Private headers: gi_DefencePlay
 * Private headers: gi_SpecialTeamsValues
 * Private headers: gi_PositionValue
+* Remove need for private headers in gi.c !
+* Remove need for gi_PlayInfoPrivate private headers in gi_Team.c !
 * Use injury level in level computation in player
 * Parse "Used Players" data in team file store per unit in gi_Team
 * When computing base stat compute for all aliases and return them? or just highest

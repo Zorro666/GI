@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "gi_DefencePlay.h"
+#include "gi_DefencePlayPrivate.h"
 #include "gi_Logger.h"
 
 void gi_DefencePlay_Init(gi_DefencePlay* const pThis)

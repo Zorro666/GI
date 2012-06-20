@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include "gi.h"
-#include "gi_PositionValue.h"
 
 void gi_OffencePlay_Init(gi_OffencePlay* const pThis);
 GI_BOOL gi_OffencePlay_IsValueValid(const Json_Value* const root);

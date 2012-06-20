@@ -5,6 +5,7 @@
 
 #include "gi_TeamPrivate.h"
 #include "gi_OffencePlayPrivate.h"
+#include "gi_DefencePlayPrivate.h"
 
 #include "gi_OffencePlay.h"
 #include "gi_DefencePlay.h"
