@@ -1,4 +1,5 @@
-* Parse "Used Players" data in team file store per unit in gi_Team
+* Does usedPlayer want to be playerIndex 0, 1 value OR array of playerIndecies
+* Use existing usedPlayer data e.g. gi_Team_IsPlayerFree(????) function when computing values
 * When computing base stat compute for all aliases and return them? or just highest
 * TODO: compute play values per player for all positions - function to gi_Player_GetLevelAtPosition()
 * TODO: find best team special teams - explore all possible player options
@@ -9,3 +10,4 @@
 * TODO: find best team offence - 1 formation vs 1 play - loop formations : find best formation vs 1 play
 * TODO: find best team defence - 1 formation vs 1 zone - output best offence for each play
 * TODO: find best team offence - combined measure across plays, find best offence vs a zone
+* LOW: make JSON members private - force use of accessor functions

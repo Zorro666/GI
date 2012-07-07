@@ -11,18 +11,83 @@
 #include "gi_PlayInfo.h"
 #include "gi_Logger.h"
 
-static GI_RETURN gi_Team_SetPlayerInjury(gi_Team* const pThis, const char* const injuryPlayerName, const GI_INJURY injury)
+static gi_Player* gi_Team_FindPlayer(gi_Team* const pThis, const char* const playerName, size_t* const pPlayerIndex)
 {
 	const size_t numPlayers = pThis->m_numPlayers;
 	size_t i;
 	for (i = 0; i < numPlayers; i++)
 	{
 		gi_Player* const pPlayer = &pThis->m_squad[i];
-		if (strcmp(gi_Player_GetName(pPlayer), injuryPlayerName) == 0)
+		if (strcmp(gi_Player_GetName(pPlayer), playerName) == 0)
 		{
-			gi_Player_SetInjury(pPlayer, injury);
-			return GI_RETURN_SUCCESS;
+			if (pPlayerIndex != NULL)
+			{
+				*pPlayerIndex = i;
+			}
+			return pPlayer;
 		}
+	}
+	if (pPlayerIndex != NULL)
+	{
+		*pPlayerIndex = GI_SQUAD_PLAYERS_MAX_SIZE;
+	}
+	return NULL;
+}
+
+static gi_Player* gi_Team_FindPlayerUnit(gi_Team* const pThis, const char* const playerName, const GI_UNIT unit, size_t* const pPlayerIndex)
+{
+	const size_t numPlayers = pThis->m_numPlayers;
+	size_t i;
+	for (i = 0; i < numPlayers; i++)
+	{
+		gi_Player* const pPlayer = &pThis->m_squad[i];
+		if (strcmp(gi_Player_GetName(pPlayer), playerName) == 0)
+		{
+			if (gi_Player_GetUnit(pPlayer) == unit)
+			{
+				if (pPlayerIndex != NULL)
+				{
+					*pPlayerIndex = i;
+				}
+				return pPlayer;
+			}
+		}
+	}
+	if (pPlayerIndex != NULL)
+	{
+		*pPlayerIndex = GI_SQUAD_PLAYERS_MAX_SIZE;
+	}
+	return NULL;
+}
+
+static GI_RETURN gi_Team_AddUsedPlayer(gi_Team* const pThis, const char* const usedPlayerName, const GI_UNIT usedPlayerUnit)
+{
+	gi_Player* pPlayer = NULL;
+	size_t playerIndex = GI_SQUAD_PLAYERS_MAX_SIZE;
+	/* Any player is allowed to be on special teams */
+	if (usedPlayerUnit == GI_UNIT_SPECIALTEAMS)
+	{
+		pPlayer = gi_Team_FindPlayer(pThis, usedPlayerName, &playerIndex);
+	}
+	else
+	{
+		pPlayer = gi_Team_FindPlayerUnit(pThis, usedPlayerName, usedPlayerUnit, &playerIndex);
+	}
+	if ((pPlayer != NULL) && (playerIndex < GI_SQUAD_PLAYERS_MAX_SIZE))
+	{
+		pThis->m_usedPlayers[usedPlayerUnit][playerIndex] = 1;
+		return GI_RETURN_SUCCESS;
+	}
+	return GI_RETURN_ERROR;
+}
+
+static GI_RETURN gi_Team_SetPlayerInjury(gi_Team* const pThis, const char* const injuryPlayerName, const GI_INJURY injury)
+{
+	gi_Player* const pPlayer = gi_Team_FindPlayer(pThis, injuryPlayerName, NULL);
+	if (pPlayer != NULL)
+	{
+		gi_Player_SetInjury(pPlayer, injury);
+		return GI_RETURN_SUCCESS;
 	}
 	return GI_RETURN_ERROR;
 }
@@ -208,7 +273,8 @@ static void gi_Team_BestStatHelper(const gi_Team* const pThis, const gi_PlayInfo
 	for (i = lastNumUsedPlayers; i < numUsedPlayers; i++)
 	{
 		const size_t playerIndex = pUsedPlayers[i];
-		GI_LOG("Best %ss[%d] Player[%d] '%s'", statName, i-lastNumUsedPlayers, playerIndex, pThis->m_squad[playerIndex].m_name);
+		GI_LOG("Best %ss[%d] Player[%d] '%s'", statName, i-lastNumUsedPlayers, playerIndex, 
+						gi_Player_GetName(&(pThis->m_squad[playerIndex])));
 	}
 	*pNumUsedPlayers = numUsedPlayers;
 }
@@ -298,7 +364,7 @@ GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 				strncpy(pThis->m_name, it->m_value_data.string_value, GI_TEAMNAME_MAX_SIZE);
 			}
 		}
-		if (it->m_type == JSON_ARRAY)
+		else if (it->m_type == JSON_ARRAY)
 		{
 			if (strcmp(it->m_name, "Squad") == 0)
 			{
@@ -312,7 +378,7 @@ GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 						playerRoot = it2->m_first_child;
 						if (gi_Player_Load(&player, playerRoot) == GI_RETURN_SUCCESS)
 						{
-							if (player.m_unit != GI_UNIT_UNKNOWN)
+							if (gi_Player_GetUnit(&player) != GI_UNIT_UNKNOWN)
 							{
 								pThis->m_squad[numPlayers] = player;
 								numPlayers++;
@@ -352,7 +418,76 @@ GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 					}
 					else
 					{
-						GI_FATAL_ERROR("Wrong type found for injury object found:%d", injuryRoot->m_type);
+						GI_FATAL_ERROR("Wrong type found for Injuries object found:%d", injuryRoot->m_type);
+						return GI_RETURN_ERROR;
+					}
+				}
+			}
+			else 
+			{
+				GI_FATAL_ERROR("Unknown ARRAY object found:'%s'", it->m_name);
+				return GI_RETURN_ERROR;
+			}
+		}
+		else if (it->m_type == JSON_OBJECT)
+		{
+			if (strcmp(it->m_name, "UsedPlayers") == 0)
+			{
+				Json_Value* usedUnitRoot;
+				for (usedUnitRoot = it->m_first_child; usedUnitRoot != NULL; usedUnitRoot = usedUnitRoot->m_next_sibling)
+				{
+					if (usedUnitRoot->m_type == JSON_ARRAY)
+					{
+						Json_Value* usedPlayersRoot;
+						GI_UNIT usedPlayersUnit = GI_UNIT_UNKNOWN;
+						const char* const usedPlayersUnitName = usedUnitRoot->m_name;
+						if (usedPlayersUnitName)
+						{
+							if (strcmp(usedPlayersUnitName, "Offence") == 0)
+							{
+								usedPlayersUnit = GI_UNIT_OFFENCE;
+							}
+							else if (strcmp(usedPlayersUnitName, "Defence") == 0)
+							{
+								usedPlayersUnit = GI_UNIT_DEFENCE;
+							}
+							else if (strcmp(usedPlayersUnitName, "Special Teams") == 0)
+							{
+								usedPlayersUnit = GI_UNIT_SPECIALTEAMS;
+							}
+						}
+						else
+						{
+							GI_FATAL_ERROR("Used Players object name is NULL");
+							return GI_RETURN_ERROR;
+						}
+						if (usedPlayersUnit == GI_UNIT_UNKNOWN)
+						{
+							GI_FATAL_ERROR("Unknown Used Players unit name:'%s'", usedPlayersUnitName);
+							return GI_RETURN_ERROR;
+						}
+						for (usedPlayersRoot = usedUnitRoot->m_first_child; usedPlayersRoot != NULL; usedPlayersRoot = usedPlayersRoot->m_next_sibling)
+						{
+							if (usedPlayersRoot->m_type == JSON_STRING)
+							{
+								const char* const usedPlayerName = usedPlayersRoot->m_value_data.string_value;
+								GI_LOG("Used Player '%s' Unit '%s'", usedPlayerName, gi_GetUnitName(usedPlayersUnit));
+								if (gi_Team_AddUsedPlayer(pThis, usedPlayerName, usedPlayersUnit) == GI_RETURN_ERROR)
+								{
+									GI_FATAL_ERROR("gi_Team_AddUsedPlayer failed Player:'%s' Unit:'%s'", usedPlayerName, gi_GetUnitName(usedPlayersUnit));
+									return GI_RETURN_ERROR;
+								}
+							}
+							else
+							{
+								GI_FATAL_ERROR("Wrong type found for Used Players data found:%d unit:'%s'", usedPlayersRoot->m_type, usedPlayersUnitName);
+								return GI_RETURN_ERROR;
+							}
+						}
+					}
+					else
+					{
+						GI_FATAL_ERROR("Wrong type found for Used Players object found:%d", usedUnitRoot->m_type);
 						return GI_RETURN_ERROR;
 					}
 				}

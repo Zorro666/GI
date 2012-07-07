@@ -64,22 +64,24 @@
 		],
 		"Injuries" :
 		[
-{"Murrey", "E"}
-{"Ringo", "F"}
+{"Murrey", "A"}
+{"Ringo", "A"}
 		],
-		"Used Players" :
+		"UsedPlayers" :
 		{
 			"Offence" :
 			[
+"Mack"
 			],
 			"Defence" :
 			[
+"Jonson"
 			],
 			"Special Teams" :
 			[
 "Ringo"
 			],
-		}
+		},
 	}
 }
 
