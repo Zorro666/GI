@@ -14,7 +14,8 @@ void gi_GlobalInfo_Init(gi_GlobalInfo* const pThis)
 
 GI_RETURN gi_GlobalInfo_AddTeam(gi_GlobalInfo* const pThis, gi_Team* const pTeam)
 {
-	if (pThis->m_team.m_name[0] != '\0')
+	const char* const teamName = gi_Team_GetName(&(pThis->m_team));
+	if (teamName[0] != '\0')
 	{
 		return GI_RETURN_ERROR;
 	}
