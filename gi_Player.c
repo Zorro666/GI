@@ -5,15 +5,46 @@
 #include "gi_PlayerPrivate.h"
 #include "gi_Logger.h"
 
+static float ConvertInjuryToFraction(const GI_INJURY injury)
+{
+	static int s_injuryPercentage[GI_INJURY_NUM] = {
+			00, 	/* GI_INJURY_A */
+			10, 	/* GI_INJURY_B */
+			20, 	/* GI_INJURY_C */
+			30, 	/* GI_INJURY_D */
+			50, 	/* GI_INJURY_E */
+			50, 	/* GI_INJURY_F */
+			75, 	/* GI_INJURY_G */
+			100,	/* GI_INJURY_H */
+			100, 	/* GI_INJURY_UNKNOWN */
+	};
+	float fraction = 1.0f - (float)(s_injuryPercentage[injury])/100.0f;
+	if (fraction > 1.0f)
+	{
+		fraction = 1.0f;
+	}
+	if (fraction < 0.0f)
+	{
+		fraction = 0.0f;
+	}
+	return fraction;
+}
+
 static void gi_Player_ComputeQSTs(gi_Player* const pThis)
 {
 	float level = (float)pThis->m_rawLevel;
-	float experience = pThis->m_experience;
+	const float experience = pThis->m_experience;
+	const float injuryFraction = ConvertInjuryToFraction(pThis->m_injury);
 	float Q = (float)(pThis->m_rawQST[GI_QST_Q])/100.0f;
 	float S = (float)(pThis->m_rawQST[GI_QST_S])/100.0f;
 	float T = (float)(pThis->m_rawQST[GI_QST_T])/100.0f;
 
 	level += experience;
+	level *= injuryFraction;
+	if (level < 1.0f)
+	{
+		level = 1;
+	}
 	Q *= level;
 	S *= level;
 	T *= level;
@@ -236,5 +267,48 @@ const char* gi_Player_GetPositionName(const gi_Player* const pThis)
 void gi_Player_SetInjury(gi_Player* const pThis, const GI_INJURY injury)
 {
 	pThis->m_injury = injury;
+}
+
+float gi_Player_GetSpecialTeamsLevelQST(const gi_Player* const pThis, float* const pQ, float* const pS, float* const pT)
+{
+	const GI_POSITION position = pThis->m_position;
+	const float injuryFraction = ConvertInjuryToFraction(pThis->m_injury);
+	float level = (float)(pThis->m_rawLevel);
+	float experience = pThis->m_experience;
+	float Q = (float)(pThis->m_rawQST[GI_QST_Q])/100.0f;
+	float S = (float)(pThis->m_rawQST[GI_QST_S])/100.0f;
+	float T = (float)(pThis->m_rawQST[GI_QST_T])/100.0f;
+
+	/* Ignore experience for R, K, P */
+	switch (position)
+	{
+		case GI_POSITION_R:
+		case GI_POSITION_K:
+		case GI_POSITION_P:
+			experience = 0.0f;
+			break;
+		default:
+			break;
+	};
+	level += experience;
+	level *= injuryFraction;
+	if (level > 10.0f)
+	{
+		level = 10.0f+((level-10.0f)*0.2f);
+	}
+	if (level < 1.0f)
+	{
+		level = 1;
+	}
+
+	Q *= level;
+	S *= level;
+	T *= level;
+
+	*pQ = Q;
+	*pS = S;
+	*pT = T;
+
+	return level;
 }
 

@@ -20,6 +20,7 @@ size_t gi_Player_GetAge(const gi_Player* const pThis);
 float gi_Player_GetLevel(const gi_Player* const pThis);
 const float* gi_Player_GetQST(const gi_Player* const pThis);
 GI_INJURY gi_Player_GetInjury(const gi_Player* const pThis);
+float gi_Player_GetSpecialTeamsLevelQST(const gi_Player* const pThis, float* const pQ, float* const pS, float* const pT);
 
 const char* gi_Player_GetPositionName(const gi_Player* const pThis);
 

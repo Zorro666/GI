@@ -13,37 +13,16 @@ void gi_SpecialTeamsValues_Init(gi_SpecialTeamsValues* const pThis)
 
 void gi_SpecialTeamsValues_Compute(gi_SpecialTeamsValues* const pThis, const gi_Player* const pPlayer)
 {
+	float Q = 0.0f;
+	float S = 0.0f;
+	float T = 0.0f;
+	const float level = gi_Player_GetSpecialTeamsLevelQST(pPlayer, &Q, &S, &T);
 	const GI_POSITION position = gi_Player_GetPosition(pPlayer);
+
 	float blocker = 0.0f;
 	float gunner = 0.0f;
 	float protector = 0.0f;
 	float runner = 0.0f;
-	float level = (float)gi_Player_GetRawLevel(pPlayer);
-	float experience = gi_Player_GetExperience(pPlayer);
-	const float* const rawQST = gi_Player_GetQST(pPlayer);
-	float Q = (float)(rawQST[GI_QST_Q])/100.0f;
-	float S = (float)(rawQST[GI_QST_S])/100.0f;
-	float T = (float)(rawQST[GI_QST_T])/100.0f;
-
-	/* Ignore experience for R, K, P */
-	switch (position)
-	{
-		case GI_POSITION_R:
-		case GI_POSITION_K:
-		case GI_POSITION_P:
-			experience = 0.0f;
-			break;
-		default:
-			break;
-	};
-	level += experience;
-	if (level > 10.0f)
-	{
-		level = 10.0f+((level-10.0f)*0.2f);
-	}
-	Q *= level;
-	S *= level;
-	T *= level;
 
 	/* Personal Protector: RB, SF, TE, IB, OB: S x 1.5 */
 	switch (position)
