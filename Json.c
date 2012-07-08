@@ -197,7 +197,7 @@ void Json_Append(Json_Value* const lhs, Json_Value* const rhs)
 	return 0; \
 }
 
-#define CHECK_TOP() if (!top) {ERROR(it, "Unexpected character");}
+#define CHECK_TOP(MSG) if (!top) {ERROR(it, "unexpected character at top scope:'" MSG "'");}
 
 Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[], int* error_line, BlockAllocator* const allocator)
 {
@@ -265,13 +265,13 @@ Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[]
 			case ':':
 				if (!top || top->m_type != JSON_OBJECT)
 				{
-					ERROR(it, "Unexpected character");
+					ERROR(it, "Unexpected character at top or non-object scope:':'");
 				}
 				++it;
 				break;
 
 			case ',':
-				CHECK_TOP();
+				CHECK_TOP(",");
 				++it;
 				break;
 
@@ -279,7 +279,7 @@ Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[]
 				{
 					char* first;
 					char* last;
-					CHECK_TOP();
+					CHECK_TOP("\"");
 
 					/* skip '"' character */
 					++it;
@@ -392,7 +392,7 @@ Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[]
 			case 'f':
 				{
 					Json_Value* object;
-					CHECK_TOP();
+					CHECK_TOP("ntf");
 
 					/* new null/bool value */
 					object = Json_Alloc(allocator);
@@ -443,7 +443,7 @@ Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[]
 				{
 					char* first;
 					Json_Value* object;
-					CHECK_TOP();
+					CHECK_TOP("-0123456789");
 
 					/* new number value */
 					object = Json_Alloc(allocator);
@@ -478,7 +478,10 @@ Json_Value* Json_Parse(char* const source, char* error_pos[], char* error_desc[]
 				break;
 
 			default:
+			{
+				fprintf(stderr,"Unexpected character found:%c\n", *it);
 				ERROR(it, "Unexpected character");
+			}
 		}
 
 		/* skip white space */
@@ -512,9 +515,10 @@ Json_Value* Json_ParseFile(const char* const filename, char* error_pos[], char* 
 	fseek(fp, 0, SEEK_END);
 	size = (size_t)ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	buffer = (char*)malloc(size);
+	buffer = (char*)malloc(size+1);
 	numRead = fread(buffer, 1, size, fp);
 	fclose(fp);
+	buffer[size] = '\0';
 
 	if (numRead != size)
 	{
