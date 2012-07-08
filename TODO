@@ -10,4 +10,3 @@
 * TODO: find best team offence - 1 formation vs 1 play - loop formations : find best formation vs 1 play
 * TODO: find best team defence - 1 formation vs 1 zone - output best offence for each play
 * TODO: find best team offence - combined measure across plays, find best offence vs a zone
-* LOW: make JSON members private - force use of accessor functions
