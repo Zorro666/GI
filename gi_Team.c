@@ -321,22 +321,24 @@ void gi_Team_Init(gi_Team* const pThis)
 
 GI_BOOL gi_Team_IsValueValid(const Json_Value* const root)
 {
+	const char* rootName;
 	if (root == NULL)
 	{
 		GI_FATAL_ERROR("root is NULL\n");
 		return GI_FALSE;
 	}
-	if (root->m_type != JSON_OBJECT)
+	if (Json_Value_GetType(root) != JSON_OBJECT)
 	{
 		GI_FATAL_ERROR("NOT JSON_OBJECT\n");
 		return GI_FALSE;
 	}
-	if (root->m_name == NULL)
+	rootName = Json_Value_GetName(root);
+	if (rootName == NULL)
 	{
 		GI_FATAL_ERROR("name is NULL\n");
 		return GI_FALSE;
 	}
-	if (strcmp(root->m_name, "Team") != 0)
+	if (strcmp(rootName, "Team") != 0)
 	{
 		return GI_FALSE;
 	}
@@ -345,7 +347,7 @@ GI_BOOL gi_Team_IsValueValid(const Json_Value* const root)
 
 GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 {
-	Json_Value* it;
+	const Json_Value* it;
 	size_t numPlayers = 0;
 
 	if (gi_Team_IsValueValid(root) == GI_FALSE)
@@ -355,27 +357,33 @@ GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 
 	gi_Team_Init(pThis);
 
-	for (it = root->m_first_child; it != NULL; it = it->m_next_sibling)
+	for (it = Json_Value_GetFirstChild(root); it != NULL; it = Json_Value_GetNextSibling(it))
 	{
-		if (it->m_type == JSON_STRING)
+		const char* const itName = Json_Value_GetName(it);
+		const Json_Type itType = Json_Value_GetType(it);
+		if (itType == JSON_STRING)
 		{
-			if (strcmp(it->m_name, "Name") == 0)
+			if (strcmp(itName, "Name") == 0)
 			{
-				strncpy(pThis->m_name, it->m_value_data.string_value, GI_TEAMNAME_MAX_SIZE);
+				strncpy(pThis->m_name, Json_Value_GetStringValue(it), GI_TEAMNAME_MAX_SIZE);
+			}
+			else
+			{
+				GI_FATAL_ERROR("gi_Team_Load unknown string data found '%s'\n", itName);
+				return GI_RETURN_ERROR;
 			}
 		}
-		else if (it->m_type == JSON_ARRAY)
+		else if (itType == JSON_ARRAY)
 		{
-			if (strcmp(it->m_name, "Squad") == 0)
+			if (strcmp(itName, "Squad") == 0)
 			{
-				Json_Value* it2;
-				for (it2 = it->m_first_child; it2 != NULL; it2 = it2->m_next_sibling)
+				const Json_Value* it2;
+				for (it2 = Json_Value_GetFirstChild(it); it2 != NULL; it2 = Json_Value_GetNextSibling(it2))
 				{
-					Json_Value* playerRoot = it2->m_first_child;
+					const Json_Value* const playerRoot = Json_Value_GetFirstChild(it2);
 					if (gi_Player_IsValueValid(playerRoot) == GI_TRUE)
 					{
 						gi_Player player;
-						playerRoot = it2->m_first_child;
 						if (gi_Player_Load(&player, playerRoot) == GI_RETURN_SUCCESS)
 						{
 							if (gi_Player_GetUnit(&player) != GI_UNIT_UNKNOWN)
@@ -390,18 +398,20 @@ GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 				gi_Team_SortByPosition(pThis);
 				gi_Team_UpdatePositionArrays(pThis);
 			}
-			else if (strcmp(it->m_name, "Injuries") == 0)
+			else if (strcmp(itName, "Injuries") == 0)
 			{
-				Json_Value* injuryRoot;
-				for (injuryRoot = it->m_first_child; injuryRoot != NULL; injuryRoot = injuryRoot->m_next_sibling)
+				const Json_Value* injuryRoot;
+				for (injuryRoot = Json_Value_GetFirstChild(it); injuryRoot != NULL; injuryRoot = Json_Value_GetNextSibling(injuryRoot))
 				{
-					if (injuryRoot->m_type == JSON_OBJECT)
+					const Json_Type injuryRootType = Json_Value_GetType(injuryRoot);
+					if (injuryRootType == JSON_OBJECT)
 					{
-						Json_Value* const injuryObject = injuryRoot->m_first_child;
-						if (injuryObject->m_type == JSON_STRING)
+						const Json_Value* const injuryObject = Json_Value_GetFirstChild(injuryRoot);
+						const Json_Type injuryObjectType = Json_Value_GetType(injuryObject);
+						if (injuryObjectType == JSON_STRING)
 						{
-							const char* const injuryPlayerName = injuryObject->m_name;
-							const char* const injuryString = injuryObject->m_value_data.string_value;
+							const char* const injuryPlayerName = Json_Value_GetName(injuryObject);
+							const char* const injuryString = Json_Value_GetStringValue(injuryObject);
 							const GI_INJURY injury = gi_GetInjuryFromName(injuryString);
 							GI_LOG("Injury '%s' : '%s' -> %d '%s'", injuryPlayerName, injuryString, injury, gi_GetInjuryName(injury));
 							if (gi_Team_SetPlayerInjury(pThis, injuryPlayerName, injury) == GI_RETURN_ERROR)
@@ -412,35 +422,36 @@ GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 						}
 						else
 						{
-							GI_FATAL_ERROR("Wrong type found for injury data found:%d", injuryObject->m_type);
+							GI_FATAL_ERROR("Wrong type found for injury data found:%d", injuryObjectType);
 							return GI_RETURN_ERROR;
 						}
 					}
 					else
 					{
-						GI_FATAL_ERROR("Wrong type found for Injuries object found:%d", injuryRoot->m_type);
+						GI_FATAL_ERROR("Wrong type found for Injuries object found:%d", injuryRootType);
 						return GI_RETURN_ERROR;
 					}
 				}
 			}
 			else 
 			{
-				GI_FATAL_ERROR("Unknown ARRAY object found:'%s'", it->m_name);
+				GI_FATAL_ERROR("Unknown ARRAY object found:'%s'", itName);
 				return GI_RETURN_ERROR;
 			}
 		}
-		else if (it->m_type == JSON_OBJECT)
+		else if (itType == JSON_OBJECT)
 		{
-			if (strcmp(it->m_name, "UsedPlayers") == 0)
+			if (strcmp(itName, "UsedPlayers") == 0)
 			{
-				Json_Value* usedUnitRoot;
-				for (usedUnitRoot = it->m_first_child; usedUnitRoot != NULL; usedUnitRoot = usedUnitRoot->m_next_sibling)
+				const Json_Value* usedUnitRoot;
+				for (usedUnitRoot = Json_Value_GetFirstChild(it); usedUnitRoot != NULL; usedUnitRoot = Json_Value_GetNextSibling(usedUnitRoot))
 				{
-					if (usedUnitRoot->m_type == JSON_ARRAY)
+					const Json_Type usedUnitRootType = Json_Value_GetType(usedUnitRoot);
+					if (usedUnitRootType == JSON_ARRAY)
 					{
-						Json_Value* usedPlayersRoot;
+						const Json_Value* usedPlayersRoot;
 						GI_UNIT usedPlayersUnit = GI_UNIT_UNKNOWN;
-						const char* const usedPlayersUnitName = usedUnitRoot->m_name;
+						const char* const usedPlayersUnitName = Json_Value_GetName(usedUnitRoot);
 						if (usedPlayersUnitName)
 						{
 							if (strcmp(usedPlayersUnitName, "Offence") == 0)
@@ -466,11 +477,13 @@ GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 							GI_FATAL_ERROR("Unknown Used Players unit name:'%s'", usedPlayersUnitName);
 							return GI_RETURN_ERROR;
 						}
-						for (usedPlayersRoot = usedUnitRoot->m_first_child; usedPlayersRoot != NULL; usedPlayersRoot = usedPlayersRoot->m_next_sibling)
+						for (usedPlayersRoot = Json_Value_GetFirstChild(usedUnitRoot); usedPlayersRoot != NULL; 
+								 usedPlayersRoot = Json_Value_GetNextSibling(usedPlayersRoot))
 						{
-							if (usedPlayersRoot->m_type == JSON_STRING)
+							const Json_Type usedPlayersRootType = Json_Value_GetType(usedPlayersRoot);
+							if (usedPlayersRootType == JSON_STRING)
 							{
-								const char* const usedPlayerName = usedPlayersRoot->m_value_data.string_value;
+								const char* const usedPlayerName = Json_Value_GetStringValue(usedPlayersRoot);
 								GI_LOG("Used Player '%s' Unit '%s'", usedPlayerName, gi_GetUnitName(usedPlayersUnit));
 								if (gi_Team_AddUsedPlayer(pThis, usedPlayerName, usedPlayersUnit) == GI_RETURN_ERROR)
 								{
@@ -480,17 +493,22 @@ GI_RETURN gi_Team_Load(gi_Team* const pThis, const Json_Value* const root)
 							}
 							else
 							{
-								GI_FATAL_ERROR("Wrong type found for Used Players data found:%d unit:'%s'", usedPlayersRoot->m_type, usedPlayersUnitName);
+								GI_FATAL_ERROR("Wrong type found for Used Players data found:%d unit:'%s'", usedPlayersRootType, usedPlayersUnitName);
 								return GI_RETURN_ERROR;
 							}
 						}
 					}
 					else
 					{
-						GI_FATAL_ERROR("Wrong type found for Used Players object found:%d", usedUnitRoot->m_type);
+						GI_FATAL_ERROR("Wrong type found for Used Players object found:%d", usedUnitRootType);
 						return GI_RETURN_ERROR;
 					}
 				}
+			}
+			else
+			{
+				GI_FATAL_ERROR("gi_Team_Load unknown OBJECT data found '%s'\n", itName);
+				return GI_RETURN_ERROR;
 			}
 		}
 	}

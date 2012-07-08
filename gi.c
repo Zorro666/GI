@@ -277,15 +277,18 @@ Json_Value* gi_ParseFile(const char* const fileName, const size_t debug)
 	return root;
 }
 
-GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
+GI_RETURN gi_HandleValue(const Json_Value* const value, const size_t debug)
 {
+	Json_Type valueType;
 	if (value == NULL)
 	{
 		return GI_RETURN_ERROR;
 	}
-	if (value->m_type == JSON_OBJECT)
+	valueType = Json_Value_GetType(value);
+	if (valueType == JSON_OBJECT)
 	{
-		if (value->m_name != NULL) 
+		const char* const valueName = Json_Value_GetName(value);
+		if (valueName != NULL) 
 		{
 			if (gi_OffencePlay_IsValueValid(value) == GI_TRUE)
 			{
@@ -328,10 +331,10 @@ GI_RETURN gi_HandleValue(Json_Value* const value, const size_t debug)
 			}
 		}
 	}
-	if ((value->m_type == JSON_OBJECT) || (value->m_type == JSON_ARRAY))
+	if ((valueType == JSON_OBJECT) || (valueType == JSON_ARRAY))
 	{
-		Json_Value* it;
-		for (it = value->m_first_child; it; it = it->m_next_sibling)
+		const Json_Value* it;
+		for (it = Json_Value_GetFirstChild(value); it; it = Json_Value_GetNextSibling(it))
 		{
 			gi_HandleValue(it, debug);
 		}

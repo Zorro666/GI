@@ -75,22 +75,24 @@ void gi_Player_Init(gi_Player* const pThis)
 
 GI_BOOL gi_Player_IsValueValid(const Json_Value* const root)
 {
+	const char* rootName;
 	if (root == NULL)
 	{
 		GI_FATAL_ERROR("root is NULL\n");
 		return GI_FALSE;
 	}
-	if (root->m_type != JSON_OBJECT)
+	if (Json_Value_GetType(root) != JSON_OBJECT)
 	{
 		GI_FATAL_ERROR("NOT JSON_OBJECT\n");
 		return GI_FALSE;
 	}
-	if (root->m_name == NULL)
+	rootName = Json_Value_GetName(root);
+	if (rootName == NULL)
 	{
 		GI_FATAL_ERROR("name is NULL\n");
 		return GI_FALSE;
 	}
-	if (strcmp(root->m_name, "Player") != 0)
+	if (strcmp(rootName, "Player") != 0)
 	{
 		return GI_FALSE;
 	}
@@ -99,7 +101,7 @@ GI_BOOL gi_Player_IsValueValid(const Json_Value* const root)
 
 GI_RETURN gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 {
-	Json_Value* it;
+	const Json_Value* it;
 	char position[GI_POSITIONNAME_MAX_SIZE];
 	position[0] = '\0';
 
@@ -111,49 +113,66 @@ GI_RETURN gi_Player_Load(gi_Player* const pThis, const Json_Value* const root)
 	gi_Player_Init(pThis);
 	pThis->m_injury = GI_INJURY_A;
 
-	for (it = root->m_first_child; it != NULL; it = it->m_next_sibling)
+	for (it = Json_Value_GetFirstChild(root); it != NULL; it = Json_Value_GetNextSibling(it))
 	{
-		if (it->m_type == JSON_STRING)
+		const char* const itName = Json_Value_GetName(it);
+		const Json_Type itType = Json_Value_GetType(it);
+		if (itType == JSON_STRING)
 		{
-			if (strcmp(it->m_name, "Name") == 0)
+			if (strcmp(itName, "Name") == 0)
 			{
-				strncpy(pThis->m_name, it->m_value_data.string_value, GI_PLAYERNAME_MAX_SIZE);
+				strncpy(pThis->m_name, Json_Value_GetStringValue(it), GI_PLAYERNAME_MAX_SIZE);
 			}
-			else if (strcmp(it->m_name, "Position") == 0)
+			else if (strcmp(itName, "Position") == 0)
 			{
-				strncpy(position, it->m_value_data.string_value, GI_POSITIONNAME_MAX_SIZE);
+				strncpy(position, Json_Value_GetStringValue(it), GI_POSITIONNAME_MAX_SIZE);
+			}
+			else
+			{
+				GI_FATAL_ERROR("gi_Player_Load unknown STRING data found '%s' name:'%s'\n", itName, pThis->m_name);
+				return GI_RETURN_ERROR;
 			}
 		}
-		else if (it->m_type == JSON_INT)
+		else if (itType == JSON_INT)
 		{
-			const size_t value = (size_t)(it->m_value_data.int_value);
-			if (strcmp(it->m_name, "Level") == 0)
+			const size_t value = (size_t)(Json_Value_GetIntValue(it));
+			if (strcmp(itName, "Level") == 0)
 			{
 				pThis->m_rawLevel = value;
 			}
-			else if (strcmp(it->m_name, "Q") == 0)
+			else if (strcmp(itName, "Q") == 0)
 			{
 				pThis->m_rawQST[GI_QST_Q] = value;
 			}
-			else if (strcmp(it->m_name, "S") == 0)
+			else if (strcmp(itName, "S") == 0)
 			{
 				pThis->m_rawQST[GI_QST_S] = value;
 			}
-			else if (strcmp(it->m_name, "T") == 0)
+			else if (strcmp(itName, "T") == 0)
 			{
 				pThis->m_rawQST[GI_QST_T] = value;
 			}
-			else if (strcmp(it->m_name, "Age") == 0)
+			else if (strcmp(itName, "Age") == 0)
 			{
 				pThis->m_age = value;
 			}
+			else
+			{
+				GI_FATAL_ERROR("gi_Player_Load unknown INT data found '%s' name:'%s'\n", itName, pThis->m_name);
+				return GI_RETURN_ERROR;
+			}
 		}
-		else if (it->m_type == JSON_FLOAT)
+		else if (itType == JSON_FLOAT)
 		{
-			const float value = it->m_value_data.float_value;
-			if (strcmp(it->m_name, "Experience") == 0)
+			const float value = Json_Value_GetFloatValue(it);
+			if (strcmp(itName, "Experience") == 0)
 			{
 				pThis->m_experience = value;
+			}
+			else
+			{
+				GI_FATAL_ERROR("gi_Player_Load unknown FLOAT data found '%s' name:'%s'\n", itName, pThis->m_name);
+				return GI_RETURN_ERROR;
 			}
 		}
 	}

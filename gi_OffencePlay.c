@@ -28,22 +28,24 @@ void gi_OffencePlay_Init(gi_OffencePlay* const pThis)
 
 GI_BOOL gi_OffencePlay_IsValueValid(const Json_Value* const root)
 {
+	const char* rootName;
 	if (root == NULL)
 	{
 		GI_FATAL_ERROR("root is NULL\n");
 		return GI_FALSE;
 	}
-	if (root->m_type != JSON_OBJECT)
+	if (Json_Value_GetType(root) != JSON_OBJECT)
 	{
 		GI_FATAL_ERROR("NOT JSON_OBJECT\n");
 		return GI_FALSE;
 	}
-	if (root->m_name == NULL)
+	rootName = Json_Value_GetName(root);
+	if (rootName == NULL)
 	{
 		GI_FATAL_ERROR("name is NULL\n");
 		return GI_FALSE;
 	}
-	if (strcmp(root->m_name, "OffencePlay") != 0)
+	if (strcmp(rootName, "OffencePlay") != 0)
 	{
 		return GI_FALSE;
 	}
@@ -52,7 +54,7 @@ GI_BOOL gi_OffencePlay_IsValueValid(const Json_Value* const root)
 
 GI_RETURN gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* const root)
 {
-	Json_Value* it;
+	const Json_Value* it;
 
 	if (gi_OffencePlay_IsValueValid(root) == GI_FALSE)
 	{
@@ -60,43 +62,55 @@ GI_RETURN gi_OffencePlay_Load(gi_OffencePlay* const pThis, const Json_Value* con
 	}
 
 	gi_OffencePlay_Init(pThis);
-	for (it = root->m_first_child; it != NULL; it = it->m_next_sibling)
+	for (it = Json_Value_GetFirstChild(root); it != NULL; it = Json_Value_GetNextSibling(it))
 	{
-		if (it->m_type == JSON_STRING)
+		const char* const itName = Json_Value_GetName(it);
+		const Json_Type itType = Json_Value_GetType(it);
+		if (itType == JSON_STRING)
 		{
-			if (strcmp(it->m_name, "Name") == 0)
+			if (strcmp(itName, "Name") == 0)
 			{
-				strncpy(pThis->m_name, it->m_value_data.string_value, GI_OFFENCENAME_MAX_SIZE);
+				strncpy(pThis->m_name, Json_Value_GetStringValue(it), GI_OFFENCENAME_MAX_SIZE);
+			}
+			else
+			{
+				GI_FATAL_ERROR("gi_OffencePlay_Load unknown STRING data found '%s'\n", itName);
+				return GI_RETURN_ERROR;
 			}
 		}
-		if (it->m_type == JSON_ARRAY)
+		if (itType == JSON_ARRAY)
 		{
-			if (strcmp(it->m_name, "Def") == 0)
+			if (strcmp(itName, "Def") == 0)
 			{
-				Json_Value* it2;
+				const Json_Value* it2;
 				size_t i;
 
 				i = 0;
-				for (it2 = it->m_first_child; it2 != NULL; it2 = it2->m_next_sibling)
+				for (it2 = Json_Value_GetFirstChild(it); it2 != NULL; it2 = Json_Value_GetNextSibling(it2))
 				{
-					strncpy(pThis->m_defence[i], it2->m_value_data.string_value, GI_DEFENCENAME_MAX_SIZE);
+					strncpy(pThis->m_defence[i], Json_Value_GetStringValue(it2), GI_DEFENCENAME_MAX_SIZE);
 					i++;
 				}
 			}
-			else if (strcmp(it->m_name, "Base") == 0)
+			else if (strcmp(itName, "Base") == 0)
 			{
 				/* base should be FLOAT data - ERROR if INT data found */
 				pThis->m_numBase = gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it, GI_TYPE_FLOAT);
 			}
-			else if (strcmp(it->m_name, "BC") == 0)
+			else if (strcmp(itName, "BC") == 0)
 			{
 				/* bc should be FLOAT data - ERROR if INT data found */
 				pThis->m_numBC = gi_PositionValueArray_Parse(pThis->m_bc, GI_POSITION_NUM, it, GI_TYPE_FLOAT);
 			}
-			else if (strcmp(it->m_name, "Weighting") == 0)
+			else if (strcmp(itName, "Weighting") == 0)
 			{
 				/* weighting should be INT data - ERROR if FLOAT data found */
 				pThis->m_numWeighting = gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it, GI_TYPE_INT);
+			}
+			else
+			{
+				GI_FATAL_ERROR("gi_OffencePlay_Load unknown ARRAY data found '%s'\n", itName);
+				return GI_RETURN_ERROR;
 			}
 		}
 	}

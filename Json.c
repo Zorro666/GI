@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "Json.h"
+#include "Json_private.h"
 
 /* true if character represent a digit */
 #define IS_DIGIT(c) (c >= '0' && c <= '9')
@@ -589,3 +590,62 @@ Json_Value* Json_FindObjectByName(Json_Value* const value, const char* const nam
 	return NULL;
 }
 
+const Json_Value* Json_Value_GetParent(const Json_Value* pThis)
+{
+	return pThis->m_parent;
+}
+
+const Json_Value* Json_Value_GetNextSibling(const Json_Value* pThis)
+{
+	return pThis->m_next_sibling;
+}
+
+const Json_Value* Json_Value_GetFirstChild(const Json_Value* pThis)
+{
+	return pThis->m_first_child;
+}
+
+const Json_Value* Json_Value_GetLastChild(const Json_Value* pThis)
+{
+	return pThis->m_last_child;
+}
+
+const char* Json_Value_GetName(const Json_Value* const pThis)
+{
+	return pThis->m_name;
+}
+
+Json_Type Json_Value_GetType(const Json_Value* const pThis)
+{
+	return pThis->m_type;
+}
+
+const char* Json_Value_GetStringValue(const Json_Value* const pThis)
+{
+	if (pThis->m_type != JSON_STRING)
+	{
+		fprintf(stderr, "Json_Value_GetStringValue '%s' not string value type:%d\n", pThis->m_name, pThis->m_type);
+		return NULL;
+	}
+	return pThis->m_value_data.string_value;
+}
+
+int Json_Value_GetIntValue(const Json_Value* const pThis)
+{
+	if (pThis->m_type != JSON_INT)
+	{
+		fprintf(stderr, "Json_Value_GetIntValue '%s' not int value type:%d\n", pThis->m_name, pThis->m_type);
+		return 0;
+	}
+	return pThis->m_value_data.int_value;
+}
+
+float Json_Value_GetFloatValue(const Json_Value* const pThis)
+{
+	if (pThis->m_type != JSON_FLOAT)
+	{
+		fprintf(stderr, "Json_Value_GetFloatValue '%s' not float value type:%d\n", pThis->m_name, pThis->m_type);
+		return 0.0f;
+	}
+	return pThis->m_value_data.float_value;
+}

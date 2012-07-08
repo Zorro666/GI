@@ -26,22 +26,24 @@ void gi_DefencePlay_Init(gi_DefencePlay* const pThis)
 
 GI_BOOL gi_DefencePlay_IsValueValid(const Json_Value* const root)
 {
+	const char* rootName;
 	if (root == NULL)
 	{
 		GI_FATAL_ERROR("root is NULL\n");
 		return GI_FALSE;
 	}
-	if (root->m_type != JSON_OBJECT)
+	if (Json_Value_GetType(root) != JSON_OBJECT)
 	{
 		GI_FATAL_ERROR("NOT JSON_OBJECT\n");
 		return GI_FALSE;
 	}
-	if (root->m_name == NULL)
+	rootName = Json_Value_GetName(root);
+	if (rootName == NULL)
 	{
 		GI_FATAL_ERROR("name is NULL\n");
 		return GI_FALSE;
 	}
-	if (strcmp(root->m_name, "DefencePlay") != 0)
+	if (strcmp(rootName, "DefencePlay") != 0)
 	{
 		return GI_FALSE;
 	}
@@ -50,7 +52,7 @@ GI_BOOL gi_DefencePlay_IsValueValid(const Json_Value* const root)
 
 GI_RETURN gi_DefencePlay_Load(gi_DefencePlay* const pThis, const Json_Value* const root)
 {
-	Json_Value* it;
+	const Json_Value* it;
 
 	if (gi_DefencePlay_IsValueValid(root) == GI_FALSE)
 	{
@@ -58,35 +60,47 @@ GI_RETURN gi_DefencePlay_Load(gi_DefencePlay* const pThis, const Json_Value* con
 	}
 
 	gi_DefencePlay_Init(pThis);
-	for (it = root->m_first_child; it != NULL; it = it->m_next_sibling)
+	for (it = Json_Value_GetFirstChild(root); it != NULL; it = Json_Value_GetNextSibling(it))
 	{
-		if (it->m_type == JSON_STRING)
+		const char* const itName = Json_Value_GetName(it);
+		const Json_Type itType = Json_Value_GetType(it);
+		if (itType == JSON_STRING)
 		{
-			if (strcmp(it->m_name, "Name") == 0)
+			if (strcmp(itName, "Name") == 0)
 			{
-				strncpy(pThis->m_name, it->m_value_data.string_value, GI_DEFENCENAME_MAX_SIZE);
+				strncpy(pThis->m_name, Json_Value_GetStringValue(it), GI_DEFENCENAME_MAX_SIZE);
 			}
-			if (strcmp(it->m_name, "Zone") == 0)
+			else if (strcmp(itName, "Zone") == 0)
 			{
-				strncpy(pThis->m_zone, it->m_value_data.string_value, GI_ZONENAME_MAX_SIZE);
+				strncpy(pThis->m_zone, Json_Value_GetStringValue(it), GI_ZONENAME_MAX_SIZE);
+			}
+			else
+			{
+				GI_FATAL_ERROR("gi_DefencePlay_Load unknown STRING data found '%s'\n", itName);
+				return GI_RETURN_ERROR;
 			}
 		}
-		if (it->m_type == JSON_ARRAY)
+		if (itType == JSON_ARRAY)
 		{
-			if (strcmp(it->m_name, "Base") == 0)
+			if (strcmp(itName, "Base") == 0)
 			{
 				/* base should be FLOAT data - ERROR if INT data found */
 				pThis->m_numBase = gi_PositionValueArray_Parse(pThis->m_base, GI_POSITION_NUM, it, GI_TYPE_FLOAT);
 			}
-			else if (strcmp(it->m_name, "Tackler") == 0)
+			else if (strcmp(itName, "Tackler") == 0)
 			{
 				/* tackler should be FLOAT data - ERROR if INT data found */
 				pThis->m_numTackler = gi_PositionValueArray_Parse(pThis->m_tackler, GI_POSITION_NUM, it, GI_TYPE_FLOAT);
 			}
-			else if (strcmp(it->m_name, "Weighting") == 0)
+			else if (strcmp(itName, "Weighting") == 0)
 			{
 				/* weighting should be INT data - ERROR if FLOAT data found */
 				pThis->m_numWeighting = gi_PositionValueArray_Parse(pThis->m_weighting, GI_POSITION_NUM, it, GI_TYPE_INT);
+			}
+			else
+			{
+				GI_FATAL_ERROR("gi_DefencePlay_Load unknown ARRAY data found '%s'\n", itName);
+				return GI_RETURN_ERROR;
 			}
 		}
 	}
