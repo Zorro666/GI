@@ -216,67 +216,61 @@ static void gi_Team_computeAndPrintStats(const gi_Team* const pThis, FILE* const
 	}
 }
 
-static void gi_PickBestPlayers(const size_t numPlayersToPick, size_t* const pUsedPlayers, size_t* const pNumUsedPlayers, 
-															 const FloatItem* const pStats, const size_t numPlayers)
+static void gi_PickBestPlayers(const size_t numPlayersToPick, const size_t* const pUsedPlayers,
+															 const FloatItem* const pStats, const size_t numPlayers,
+															 size_t* const pPlayerPlays)
 {
+	size_t pPickedPlayers[GI_SQUAD_PLAYERS_MAX_SIZE];
 	size_t i;
-	size_t numUsedPlayers = *pNumUsedPlayers;
+	for (i = 0; i < numPlayers; i++)
+	{
+		pPickedPlayers[i] = 0;
+	}
 	for (i = 0; i < numPlayersToPick; i++)
 	{
 		size_t p;
 		size_t playerIndex = GI_SQUAD_PLAYERS_MAX_SIZE;
 		for (p = 0; p < numPlayers; p++)
 		{
-			size_t u;
 			playerIndex = pStats[p].m_key;
-			for (u = 0; u < numUsedPlayers; u++)
-			{
-				if (pUsedPlayers[u] == playerIndex)
-				{
-					playerIndex = GI_SQUAD_PLAYERS_MAX_SIZE;
-					break;
-				}
-			}
-			if (playerIndex != GI_SQUAD_PLAYERS_MAX_SIZE)
+			if ((pUsedPlayers[playerIndex] == 0) && (pPickedPlayers[playerIndex] == 0))
 			{
 				break;
 			}
 		}
-		pUsedPlayers[numUsedPlayers] = playerIndex;
-		numUsedPlayers++;
+		if (playerIndex == GI_SQUAD_PLAYERS_MAX_SIZE)
+		{
+			GI_FATAL_ERROR("gi_PickBestPlayers invalid playerIndex");
+		}
+		pPlayerPlays[i] = playerIndex;
+		pPickedPlayers[playerIndex] = 1;
 	}
-	*pNumUsedPlayers = numUsedPlayers;
 }
 
 typedef float StatFunc(const gi_SpecialTeamsValues* const pSpecialTeamsValues);
 
-static void gi_Team_BestStatHelper(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo, 
-																	 size_t* pNumUsedPlayers, size_t* const pUsedPlayers, 
+static void gi_Team_BestStatHelper(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo, size_t* const pUsedPlayers, 
 																	 StatFunc func, const size_t numForStat, const char* const statName, FILE* const pFile)
 {
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
-	size_t lastNumUsedPlayers;
-	size_t numUsedPlayers = *pNumUsedPlayers;
 	FloatItem stats[GI_SQUAD_PLAYERS_MAX_SIZE];
+	size_t playerPlays[GI_SQUAD_PLAYERS_MAX_SIZE];
 
 	for (i = 0; i < numPlayers; i++)
 	{
 		const gi_SpecialTeamsValues* const pSpecialTeamsValues = gi_PlayInfo_GetSpecialTeamsValuesForPlayer(pPlayInfo, i);
-		/*stats[i].m_value = gi_SpecialTeamsValues_GetBlocker(pSpecialTeamsValues);*/
 		stats[i].m_value = func(pSpecialTeamsValues);
 		stats[i].m_key = i;
+		playerPlays[i] = GI_SQUAD_PLAYERS_MAX_SIZE;
 	}
 	gi_Team_computeAndPrintStats(pThis, pFile, stats, statName);
-	lastNumUsedPlayers = numUsedPlayers;
-	gi_PickBestPlayers(numForStat, pUsedPlayers, &numUsedPlayers, stats, numPlayers);
-	for (i = lastNumUsedPlayers; i < numUsedPlayers; i++)
+	gi_PickBestPlayers(numForStat, pUsedPlayers, stats, numPlayers, playerPlays);
+	for (i = 0; i < numForStat; i++)
 	{
-		const size_t playerIndex = pUsedPlayers[i];
-		GI_LOG("Best %ss[%d] Player[%d] '%s'", statName, i-lastNumUsedPlayers, playerIndex, 
-						gi_Player_GetName(&(pThis->m_squad[playerIndex])));
+		const size_t playerIndex = playerPlays[i];
+		GI_LOG("Best %ss[%d] Player[%d] '%s'", statName, i, playerIndex, gi_Player_GetName(&(pThis->m_squad[playerIndex])));
 	}
-	*pNumUsedPlayers = numUsedPlayers;
 }
 
 void gi_Team_Init(gi_Team* const pThis)
@@ -308,7 +302,7 @@ void gi_Team_Init(gi_Team* const pThis)
 		size_t p;
 		for (p = 0; p < GI_SQUAD_PLAYERS_MAX_SIZE; p++)
 		{
-			pThis->m_usedPlayers[i][p] = GI_SQUAD_PLAYERS_MAX_SIZE;
+			pThis->m_usedPlayers[i][p] = 0;
 		}
 	}
 
@@ -547,7 +541,6 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
 	size_t usedPlayers[GI_SQUAD_PLAYERS_MAX_SIZE];
-	size_t numUsedPlayers = 0;
 	const size_t numBlockers = 7;
 	const size_t numGunners = 1;
 	const size_t numProtectors = 1;
@@ -559,13 +552,13 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 	}
 	for (i = 0; i < numPlayers; i++)
 	{
-		usedPlayers[i] = GI_SQUAD_PLAYERS_MAX_SIZE;
+		usedPlayers[i] = pThis->m_usedPlayers[GI_UNIT_SPECIALTEAMS][i];
 	}
 
-	gi_Team_BestStatHelper(pThis, pPlayInfo, &numUsedPlayers, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, &numUsedPlayers, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, &numUsedPlayers, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, &numUsedPlayers, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", pFile);
 }
 
 void gi_Team_ComputeSpecialTeams(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo)

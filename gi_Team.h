@@ -16,5 +16,7 @@ void gi_Team_ComputeOffenceBase(const gi_Team* const pThis, gi_PlayInfo* const p
 void gi_Team_ComputeDefenceBase(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo);
 
 const char* gi_Team_GetName(const gi_Team* const pThis);
+GI_BOOL gi_Team_IsPlayerUsedByName(const gi_Team* const pThis, const char* const playerName);
+GI_BOOL gi_Team_IsPlayerUsedByIndex(const gi_Team* const pThis, size_t playerIndex);
 
 #endif /* #ifndef GI_TEAM_HH */
