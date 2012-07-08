@@ -270,7 +270,7 @@ Json_Value* gi_ParseFile(const char* const fileName, const size_t debug)
 	}
 	else
 	{
-		GI_FATAL_ERROR("parsing file '%s'\nline:%d pos:'%s' desc:'%s'\n", fileName, error_line, error_pos, error_desc);
+		GI_FATAL_ERROR("parsing file '%s' desc:'%s'\nline:%d pos:'%10s'\n", fileName, error_desc, error_line, error_pos);
 		return NULL;
 	}
 
