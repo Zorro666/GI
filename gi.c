@@ -62,13 +62,14 @@ static const char* const s_positionNames[GI_POSITION_NUM] = {
 	"SS",     	/*GI_POSITION_SS = 29,*/
 	"C",     		/*GI_POSITION_C = 30,*/
 	"NT",    		/*GI_POSITION_NT = 31,*/
-	"LE",    		/*GI_POSITION_LE = 33,*/
-	"RE",    		/*GI_POSITION_RE = 34,*/
-	"LILB",    	/*GI_POSITION_LILB = 35,*/
+	"LE",    		/*GI_POSITION_LE = 32,*/
+	"RE",    		/*GI_POSITION_RE = 33,*/
+	"LILB",    	/*GI_POSITION_LILB = 34,*/
+	"MILB",			/*GI_POSITION_MILB = 35,*/
 	"RILB",    	/*GI_POSITION_RILB = 36,*/
-	"LLB",    	/*GI_POSITION_LLB = 36,*/
-	"RLB",    	/*GI_POSITION_RLB = 37,*/
-	"UNKNOWN" 	/*GI_POSITION_UNKNOWN = 38,*/
+	"LLB",    	/*GI_POSITION_LLB = 37,*/
+	"RLB",    	/*GI_POSITION_RLB = 38,*/
+	"UNKNOWN" 	/*GI_POSITION_UNKNOWN = 39,*/
 	};
 
 static const char* const s_unitNames[GI_UNIT_NUM] = {
