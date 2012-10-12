@@ -11,6 +11,189 @@
 #include "gi_PlayInfo.h"
 #include "gi_Logger.h"
 
+typedef struct gi_FormationStatInfo gi_FormationStatInfo;
+
+struct gi_FormationStatInfo
+{
+	float m_statScores[GI_FORMATION_NUM_PLAYERS][GI_SQUAD_PLAYERS_MAX_SIZE];
+	size_t m_positionNumPlayers[GI_FORMATION_NUM_PLAYERS];
+	size_t m_positionStarts[GI_FORMATION_NUM_PLAYERS];
+	size_t m_formationSize;
+	size_t m_numPlayers;
+};
+
+static void gi_FormationStatInfo_PrintFormation(const gi_FormationStatInfo* const pThis)
+{
+	const size_t formationSize = pThis->m_formationSize;
+	size_t i;
+	for (i = 0; i < formationSize; i++)
+	{
+		printf("%d:", pThis->m_positionStarts[i]);
+	}
+	printf("\n");
+}
+
+static GI_BOOL gi_ForamtionStatInfo_IsValid(const gi_FormationStatInfo* const pThis)
+{
+	const size_t formationSize = pThis->m_formationSize;
+	size_t i;
+	for (i = 0; i < formationSize-1; i++)
+	{
+		const size_t sourceIndex = pThis->m_positionStarts[i];
+		size_t j;
+		for (j = i+1; j < formationSize; j++)
+		{
+			const size_t destIndex = pThis->m_positionStarts[j];
+			if (destIndex == sourceIndex)
+			{
+				return GI_FALSE;
+			}
+		}
+	}
+	return GI_TRUE;
+}
+
+GI_BOOL gi_FormationStatInfo_FindNextFormation(gi_FormationStatInfo* const pThis)
+{
+	const size_t formationSize = pThis->m_formationSize;
+	GI_BOOL validFormation = GI_FALSE;
+	static size_t numIterations = 0;
+
+	do
+	{
+		GI_BOOL doCarry = GI_FALSE;
+		size_t positionIndex = 0;
+
+		numIterations++;
+		if (numIterations%100000000 == 0)
+		{
+			gi_FormationStatInfo_PrintFormation(pThis);
+		}
+
+		do
+		{
+			const size_t numPlayers = pThis->m_positionNumPlayers[positionIndex];
+			doCarry = GI_FALSE;
+			do
+			{
+				const size_t currentPlayerIndex = pThis->m_positionStarts[positionIndex];
+				size_t newPlayerIndex = currentPlayerIndex+1;
+
+				validFormation = GI_TRUE;
+				if (newPlayerIndex >= numPlayers)
+				{
+					newPlayerIndex = 0;
+					doCarry = GI_TRUE;
+				}
+				pThis->m_positionStarts[positionIndex] = newPlayerIndex;
+				if ((doCarry == GI_FALSE) || (doCarry == GI_TRUE))
+				{
+					if (positionIndex < 10000)
+					{
+						validFormation = gi_ForamtionStatInfo_IsValid(pThis);
+					}
+				}
+				/*gi_FormationStatInfo_PrintFormation(pThis);*/
+			} while (validFormation == GI_FALSE);
+
+			if (doCarry == GI_TRUE)
+			{
+				positionIndex++;
+				if (positionIndex >= formationSize)
+				{
+					GI_FATAL_ERROR("The End");
+					return GI_FALSE;
+				}
+			}
+		} while (doCarry == GI_TRUE);
+
+		validFormation = gi_ForamtionStatInfo_IsValid(pThis);
+	}
+	while (validFormation == GI_FALSE);
+
+	return GI_TRUE;
+}
+
+void gi_FormationStatInfo_FindStartingFormation(gi_FormationStatInfo* const pThis)
+{
+	const size_t numPlayers = pThis->m_numPlayers;
+	const size_t formationSize = pThis->m_formationSize;
+	size_t i;
+
+	for (i = 0; i < formationSize; i++)
+	{
+		size_t p;
+		size_t positionNumPlayers = 0;
+		for (p = 0; p < numPlayers; p++)
+		{
+			if (pThis->m_statScores[i][p] > 0.0f)
+			{
+				positionNumPlayers++;
+			}
+		}
+		pThis->m_positionNumPlayers[i] = positionNumPlayers;
+		GI_LOG("Position[%d] num:%d", i, positionNumPlayers);
+	}
+	for (i = 0; i < formationSize; i++)
+	{
+		pThis->m_positionStarts[i] = i;
+	}
+
+	gi_FormationStatInfo_PrintFormation(pThis);
+}
+
+float gi_FormationStatInfo_ComputeScore(const gi_FormationStatInfo* const pThis)
+{
+	size_t i;
+	const size_t formationSize = pThis->m_formationSize;
+	float score = 0.0f;
+	for (i = 0; i < formationSize; i++)
+	{
+		const size_t playerIndex = pThis->m_positionStarts[i];
+		const float playerScore = pThis->m_statScores[i][playerIndex];
+		score += playerScore;
+	}
+	return score;
+}
+
+static float gi_Team_FindBestFormation(const gi_Team* const pThis, const size_t formationSize, 
+																			 const float statScores[GI_FORMATION_NUM_PLAYERS][GI_SQUAD_PLAYERS_MAX_SIZE])
+{
+	float bestScore = 0.0f;
+	size_t i;
+	size_t j;
+	size_t numPlayers = pThis->m_numPlayers;
+	gi_FormationStatInfo formationStatInfo;
+	GI_BOOL doMore = GI_FALSE;
+
+	for (i = 0; i < formationSize; i++)
+	{
+		for (j = 0; j < numPlayers; j++)
+		{
+			formationStatInfo.m_statScores[i][j] = statScores[i][j];
+		}
+	}
+
+	formationStatInfo.m_formationSize = formationSize;
+	formationStatInfo.m_numPlayers = numPlayers;
+	gi_FormationStatInfo_FindStartingFormation(&formationStatInfo);
+
+	do
+	{
+		const float score = gi_FormationStatInfo_ComputeScore(&formationStatInfo);
+		if (score > bestScore)
+		{
+			bestScore = score;
+			GI_LOG("Best Score %f", bestScore);
+			gi_FormationStatInfo_PrintFormation(&formationStatInfo);
+		}
+		doMore = gi_FormationStatInfo_FindNextFormation(&formationStatInfo);
+	} while (doMore == GI_TRUE);
+
+	GI_LOG("Best Score %f", bestScore);
+	return bestScore;
+}
+
 static gi_Player* gi_Team_FindPlayer(gi_Team* const pThis, const char* const playerName, size_t* const pPlayerIndex)
 {
 	const size_t numPlayers = pThis->m_numPlayers;
@@ -191,7 +374,7 @@ static void gi_Team_UpdatePositionArrays(gi_Team* const pThis)
 	pThis->m_numSpecialTeams = numSpecialTeams;
 }
 
-static void gi_Team_computeAndPrintStats(const gi_Team* const pThis, FILE* const pFile, 
+static void gi_Team_ComputeAndPrintStats(const gi_Team* const pThis, FILE* const pFile, 
 																				 FloatItem* const pStats, const char* const statName)
 {
 	size_t i;
@@ -249,6 +432,25 @@ static void gi_PickBestPlayers(const size_t numPlayersToPick, const size_t* cons
 
 typedef float StatFunc(const gi_SpecialTeamsValues* const pSpecialTeamsValues);
 
+static size_t gi_Team_StatScoresHelper(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo, StatFunc func, 
+																			 const size_t positionStart, const size_t numPositions, 
+																			 float statScores[GI_FORMATION_NUM_PLAYERS][GI_SQUAD_PLAYERS_MAX_SIZE] )
+{
+	size_t position;
+	const size_t numPlayers = pThis->m_numPlayers;
+	for (position = 0; position < numPositions; position++)
+	{
+		size_t i;
+		for (i = 0; i < numPlayers; i++)
+		{
+			const gi_SpecialTeamsValues* const pSpecialTeamsValues = gi_PlayInfo_GetSpecialTeamsValuesForPlayer(pPlayInfo, i);
+			const float score = func(pSpecialTeamsValues);
+			statScores[position+positionStart][i] = score;
+		}
+	}
+	return (positionStart+numPositions);
+}
+
 static void gi_Team_BestStatHelper(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo, size_t* const pUsedPlayers, 
 																	 StatFunc func, const size_t numForStat, const char* const statName, FILE* const pFile)
 {
@@ -264,7 +466,7 @@ static void gi_Team_BestStatHelper(const gi_Team* const pThis, const gi_PlayInfo
 		stats[i].m_key = i;
 		playerPlays[i] = GI_SQUAD_PLAYERS_MAX_SIZE;
 	}
-	gi_Team_computeAndPrintStats(pThis, pFile, stats, statName);
+	gi_Team_ComputeAndPrintStats(pThis, pFile, stats, statName);
 	gi_PickBestPlayers(numForStat, pUsedPlayers, stats, numPlayers, playerPlays);
 	for (i = 0; i < numForStat; i++)
 	{
@@ -538,22 +740,76 @@ void gi_Team_Print(const gi_Team* const pThis, FILE* const pFile)
 
 void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo* const pPlayInfo, FILE* const pFile)
 {
+	size_t formationSize;
+	size_t positionStart;
+	size_t position;
 	size_t i;
 	const size_t numPlayers = pThis->m_numPlayers;
 	size_t usedPlayers[GI_SQUAD_PLAYERS_MAX_SIZE];
-	const size_t numBlockers = 7;
-	const size_t numGunners = 1;
-	const size_t numProtectors = 1;
-	const size_t numRunners = 4;
+	size_t numBlockers = 7;
+	size_t numRunners = 4;
+	size_t numGunners = 1;
+	size_t numProtectors = 1;
+	gi_FormationStatInfo formationStatInfo;
+	void* statScores = formationStatInfo.m_statScores;
 
 	if (numPlayers == 0)
 	{
 		return;
 	}
+	/* Punt return: Kick Defence */
+	numBlockers = 6;
+	numRunners = 4;
+	numGunners = 0;
+	numProtectors = 0;
 	for (i = 0; i < numPlayers; i++)
 	{
 		usedPlayers[i] = pThis->m_usedPlayers[GI_UNIT_SPECIALTEAMS][i];
 	}
+	for (position = 0; position < GI_FORMATION_NUM_PLAYERS; position++)
+	{
+		for (i = 0; i < numPlayers; i++)
+		{
+			formationStatInfo.m_statScores[position][i] = 0.0f;
+		}
+	}
+
+	positionStart = 0;
+	positionStart = gi_Team_StatScoresHelper(pThis, pPlayInfo, gi_SpecialTeamsValues_GetBlocker, positionStart, numBlockers, statScores);
+	positionStart = gi_Team_StatScoresHelper(pThis, pPlayInfo, gi_SpecialTeamsValues_GetRunner, positionStart, numRunners, statScores);
+	positionStart = gi_Team_StatScoresHelper(pThis, pPlayInfo, gi_SpecialTeamsValues_GetGunner, positionStart, numGunners, statScores);
+	positionStart = gi_Team_StatScoresHelper(pThis, pPlayInfo, gi_SpecialTeamsValues_GetProtector, positionStart, numProtectors, statScores);
+	
+	formationSize = numBlockers + numRunners + numGunners + numProtectors;
+	gi_Team_FindBestFormation(pThis, formationSize, statScores);
+
+	/* Punt return: Kick Offence */
+	numBlockers = 5;
+	numRunners = 2;
+	numGunners = 1;
+	numProtectors = 1;
+
+	/* Kick return: Kick Defence */
+	numBlockers = 5;
+	numRunners = 4;
+	numGunners = 0;
+	numProtectors = 0;
+	/* Kick return: Kick Offence */
+	numBlockers = 6;
+	numRunners = 3;
+	numGunners = 1;
+	numProtectors = 0;
+
+	/* Field Goal/Extra Point: Kick Defence */
+	numBlockers = 7;
+	numRunners = 4;
+	numGunners = 0;
+	numProtectors = 0;
+	/* Field Goal/Extra Point: Kick Offence */
+	numBlockers = 6;
+	numRunners = 2;
+	numGunners = 0;
+	numProtectors = 0;
 
 	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
 	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
