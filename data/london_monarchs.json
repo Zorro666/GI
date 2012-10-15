@@ -4,7 +4,7 @@
 		"Name": "London Monarchs",
 		"Squad" :
 		[
-{"Player": {"Name":"Sanchez", "Position":"QB", "Age":0, "Level":5, "Q":20, "S":30, "T":50, "Experience":-1.5}},
+{"Player": {"Name":"Sanchez", "Position":"QB", "Age":0, "Level":6, "Q":20, "S":30, "T":50, "Experience":-1.5}},
 {"Player": {"Name":"Young", "Position":"QB", "Age":3, "Level":13, "Q":40, "S":30, "T":30, "Experience":-1.1}},
 {"Player": {"Name":"Montana", "Position":"QB", "Age":3, "Level":14, "Q":20, "S":20, "T":60, "Experience":-0.05}},
 {"Player": {"Name":"Simpson", "Position":"RB", "Age":3, "Level":13, "Q":30, "S":40, "T":30, "Experience":0.05}},
@@ -16,7 +16,7 @@
 {"Player": {"Name":"Irvin", "Position":"WR", "Age":5, "Level":6, "Q":70, "S":0, "T":30, "Experience":-1.35}},
 {"Player": {"Name":"Ganzi", "Position":"TE", "Age":2, "Level":8, "Q":35, "S":35, "T":30, "Experience":-0.5}},
 {"Player": {"Name":"Sharpe", "Position":"TE", "Age":4, "Level":10, "Q":50, "S":30, "T":20, "Experience":0.05}},
-{"Player": {"Name":"Hardacre", "Position":"TE", "Age":0, "Level":7, "Q":35, "S":35, "T":30, "Experience":-1.4}},
+{"Player": {"Name":"Hardacre", "Position":"TE", "Age":0, "Level":8, "Q":35, "S":35, "T":30, "Experience":-1.4}},
 {"Player": {"Name":"Ringo", "Position":"OC", "Age":3, "Level":11, "Q":40, "S":55, "T":5, "Experience":-0.25}},
 {"Player": {"Name":"Kiesling", "Position":"OG", "Age":5, "Level":5, "Q":40, "S":60, "T":0, "Experience":-1.05}},
 {"Player": {"Name":"Fortmann", "Position":"OG", "Age":4, "Level":7, "Q":50, "S":50, "T":0, "Experience":-0.75}},
@@ -36,11 +36,11 @@
 {"Player": {"Name":"Jones", "Position":"IB", "Age":1, "Level":9, "Q":0, "S":25, "T":75, "Experience":-1.02}},
 {"Player": {"Name":"Wilcox", "Position":"IB", "Age":4, "Level":8, "Q":0, "S":40, "T":60, "Experience":0.05}},
 {"Player": {"Name":"Ryan", "Position":"IB", "Age":1, "Level":7, "Q":0, "S":30, "T":70, "Experience":-0.98}},
-{"Player": {"Name":"Simons", "Position":"IB", "Age":1, "Level":8, "Q":0, "S":30, "T":70, "Experience":-0.98}},
+{"Player": {"Name":"Simons", "Position":"IB", "Age":1, "Level":9, "Q":0, "S":30, "T":70, "Experience":-0.98}},
 {"Player": {"Name":"Toms", "Position":"OB", "Age":0, "Level":6, "Q":35, "S":65, "T":0, "Experience":-1.32}},
 {"Player": {"Name":"George", "Position":"OB", "Age":3, "Level":11, "Q":40, "S":60, "T":0, "Experience":-0.5}},
 {"Player": {"Name":"Tams", "Position":"OB", "Age":0, "Level":6, "Q":25, "S":75, "T":0, "Experience":-1.32}},
-{"Player": {"Name":"Tims", "Position":"OB", "Age":1, "Level":7, "Q":20, "S":80, "T":0, "Experience":-0.92}},
+{"Player": {"Name":"Tims", "Position":"OB", "Age":1, "Level":8, "Q":20, "S":80, "T":0, "Experience":-0.92}},
 {"Player": {"Name":"Welsh", "Position":"OB", "Age":1, "Level":7, "Q":45, "S":55, "T":0, "Experience":-1.06}},
 {"Player": {"Name":"Wilson", "Position":"SF", "Age":4, "Level":10, "Q":50, "S":30, "T":20, "Experience":-0.7}},
 {"Player": {"Name":"Monteverde", "Position":"SF", "Age":2, "Level":9, "Q":45, "S":20, "T":35, "Experience":-0.7}},
@@ -70,6 +70,8 @@
 			"Special Teams" :
 			[
 "Ringo"
+"Murrey"
+"Sanchez"
 			],
 		},
 	}
