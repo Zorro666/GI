@@ -1,7 +1,7 @@
 {
 	"DefencePlay": 
 	{
-		"Name": "3-4",
+		"Name": "3-5",
 		"Zone": "Run Line",
 		"Base":	[ 
 			{"NT[S]": 6.25},
@@ -11,13 +11,15 @@
 			{"LE[S]": 4.5},
 			{"RILB[S]": 2.0},
 			{"LILB[S]": 2.0},	
+			{"MILB[S]": 2.0},	
 						],
 		"Tackler":	[ 
-		{"NT[S]": 3.00},
+		{"NT[S]": 2.25},
 		{"RE[S]": 1.75},
 		{"LE[S]": 1.75},
 		{"RILB[S]": 0.75},
 		{"LILB[S]": 0.75}
+		{"MILB[S]": 0.75}
 								],
 		"Weighting":	[ 
 		{"NT": 45},
@@ -25,68 +27,65 @@
 		{"LE": 30},
 		{"ROLB": 25},
 		{"LOLB": 25}
+		{"MILB": 10}
 									]
 	}
 	"DefencePlay": 
 	{
-		"Name": "3-4",
+		"Name": "3-5",
 		"Zone": "Run Flat",
 		"Base":	[ 
 			{"ROLB[S]": 4.0},
 			{"LOLB[S]": 4.0},
-			{"FS[S]": 2.5},
 			{"SS[S]": 4.25},
 						],
 		"Tackler":	[ 
 		{"ROLB[S]": 1.5},
 		{"LOLB[S]": 1.5},
-		{"FS[S]": 1.0},
 		{"SS[S]": 1.75},
 								],
 		"Weighting":	[ 
 		{"LOLB": 50},
 		{"ROLB": 50},
 		{"SS": 35},
-		{"FS": 15},
 									]
 	}
 	"DefencePlay": 
 	{
-		"Name": "3-4",
+		"Name": "3-5",
 		"Zone": "Short Zone",
 		"Base":	[ 
 			{"RILB[T]": 4.0},
 			{"LILB[T]": 4.0},
-			{"FS[T]": 3.5},
 			{"SS[T]": 3.5},
 			{"RCB[T]": 1.0},
 			{"LCB[T]": 1.0},
+			{"MILB[T]": 4.0},
 						],
 		"Tackler":	[ 
 		{"RILB[T]": 1.5},
 		{"LILB[T]": 1.5},
-		{"FS[T]": 1.75},
 		{"SS[T]": 1.75},
 		{"RCB[T]": 0.5},
 		{"LCB[T]": 0.5},
+		{"MILB[T]": 1.5},
 								],
 		"Weighting":	[ 
 		{"RILB": 45},
 		{"LILB": 45},
+		{"MILB": 45},
 		{"SS": 30},
-		{"FS": 25},
 		{"LCB": 25},
 		{"RCB": 25},
 									]
 	}
 	"DefencePlay": 
 	{
-		"Name": "3-4",
+		"Name": "3-5",
 		"Zone": "Deep Zone",
 		"Base":	[ 
 			{"ROLB[Q]": 1.33},
 			{"LOLB[Q]": 1.33},
-			{"FS[Q]": 3.25},
 			{"SS[Q]": 1.5},
 			{"RCB[Q]": 4.0},
 			{"LCB[Q]": 4.0},
@@ -94,7 +93,6 @@
 		"Tackler":	[ 
 		{"ROLB[Q]": 0.5},
 		{"LOLB[Q]": 0.5},
-		{"FS[Q]": 1.25},
 		{"SS[Q]": 0.75},
 		{"RCB[Q]": 1.5},
 		{"LCB[Q]": 1.5},
@@ -102,10 +100,9 @@
 		"Weighting":	[ 
 		{"ROLB": 5},
 		{"LOLB": 5},
-		{"SS": 10},
-		{"FS": 35},
-		{"LCB": 60},
-		{"RCB": 60},
+		{"SS": 5},
+		{"LCB": 65},
+		{"RCB": 65},
 									]
 	}
 }
