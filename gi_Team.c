@@ -385,6 +385,11 @@ static void gi_Team_ComputeAndPrintStats(const gi_Team* const pThis, FILE* const
 		return;
 	}
 	qsort(pStats, numPlayers, sizeof(pStats[0]), FloatItem_CompareSmaller);
+
+	if (pFile == NULL)
+	{
+		return;
+	}
 	fprintf(pFile, "\n");
 	fprintf(pFile, "**** %s ****\n", statName);
 	for (i = 0; i < numPlayers; i++)
@@ -472,7 +477,7 @@ static void gi_Team_BestStatHelper(const gi_Team* const pThis, const gi_PlayInfo
 	for (i = 0; i < numForStat; i++)
 	{
 		const size_t playerIndex = playerPlays[i];
-		GI_LOG("Best %ss[%d] Player[%d] '%s'", statName, i, playerIndex, gi_Player_GetName(&(pThis->m_squad[playerIndex])));
+		GI_LOG("Best %ss[%d] Player[%d] '%s' %f", statName, i, playerIndex, gi_Player_GetName(&(pThis->m_squad[playerIndex])), stats[i].m_value);
 	}
 }
 
@@ -784,65 +789,76 @@ void gi_Team_PrintBestSpecialTeams(const gi_Team* const pThis, const gi_PlayInfo
 	formationSize = numBlockers + numRunners + numGunners + numProtectors;
 	gi_Team_FindBestFormation(pThis, formationSize, statScores);
 
+	/* Output the special teams values to the text file */
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, 0, "Blocker", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, 0, "Gunner", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, 0, "Protector", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, 0, "Runner", pFile);
+
 	/* Punt return: Kick Offence */
+	GI_LOG("\nPunt return : Kick Offence");
 	numBlockers = 8;
 	numRunners = 5;
 	numGunners = 2;
 	numProtectors = 2;
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", NULL);
 
 	/* Kick return: Kick Defence */
+	GI_LOG("\nKick return : Kick Defence");
 	numBlockers = 5;
 	numRunners = 4;
 	numGunners = 0;
 	numProtectors = 0;
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", NULL);
 	/* Kick return: Kick Offence */
+	GI_LOG("\nKick return : Kick Offence");
 	numBlockers = 6;
 	numRunners = 3;
 	numGunners = 1;
 	numProtectors = 0;
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", NULL);
 
 	/* Field Goal/Extra Point: Kick Defence */
+	GI_LOG("\nField Goal/Extra Point : Kick Defence");
 	numBlockers = 7;
 	numRunners = 4;
 	numGunners = 0;
 	numProtectors = 0;
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", NULL);
 	/* Field Goal/Extra Point: Kick Offence */
+	GI_LOG("\nField Goal/Extra Point : Kick Offence");
 	numBlockers = 6;
 	numRunners = 2;
 	numGunners = 0;
 	numProtectors = 0;
 
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", pFile);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", NULL);
 
 	/* Best of all */
+	GI_LOG("\nBest of all");
 	numBlockers = 8;
 	numRunners = 8;
-	numGunners = 1;
-	numProtectors = 1;
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", pFile);
-	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", pFile);
-
+	numGunners = 4;
+	numProtectors = 4;
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetBlocker, numBlockers, "Blocker", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetGunner, numGunners, "Gunner", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetProtector, numProtectors, "Protector", NULL);
+	gi_Team_BestStatHelper(pThis, pPlayInfo, usedPlayers, gi_SpecialTeamsValues_GetRunner, numRunners, "Runner", NULL);
 }
 
 void gi_Team_ComputeSpecialTeams(const gi_Team* const pThis, gi_PlayInfo* const pPlayInfo)

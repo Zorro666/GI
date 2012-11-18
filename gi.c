@@ -67,9 +67,11 @@ static const char* const s_positionNames[GI_POSITION_NUM] = {
 	"LILB",    	/*GI_POSITION_LILB = 34,*/
 	"MILB",			/*GI_POSITION_MILB = 35,*/
 	"RILB",    	/*GI_POSITION_RILB = 36,*/
-	"LLB",    	/*GI_POSITION_LLB = 37,*/
-	"RLB",    	/*GI_POSITION_RLB = 38,*/
-	"UNKNOWN" 	/*GI_POSITION_UNKNOWN = 39,*/
+	"LOLB",    	/*GI_POSITION_LOLB = 37,*/
+	"ROLB",    	/*GI_POSITION_ROLB = 38,*/
+	"LCB",			/*GI_POSITION_LCB = 39,*/
+	"RCB",			/*GI_POSITION_RCB = 40,*/
+	"UNKNOWN" 	/*GI_POSITION_UNKNOWN = 41,*/
 	};
 
 static const char* const s_unitNames[GI_UNIT_NUM] = {
@@ -224,11 +226,12 @@ GI_QST gi_GetBasePosition(const GI_POSITION position)
 		case GI_POSITION_IB:
 		case GI_POSITION_LILB:
 		case GI_POSITION_RILB:
+		case GI_POSITION_MILB:
 			base = GI_POSITION_IB;
 			break;
 		case GI_POSITION_OB:
-		case GI_POSITION_LLB:
-		case GI_POSITION_RLB:
+		case GI_POSITION_LOLB:
+		case GI_POSITION_ROLB:
 			base = GI_POSITION_OB;
 			break;
 		case GI_POSITION_CB:
